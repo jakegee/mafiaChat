@@ -35,6 +35,14 @@ public class Server implements IServer{
 	private ClientHandler[] threads;
 	private LinkedBlockingQueue<Socket> connections;
 	
+	/**
+	 * Constructor for instantiating an instance of the Server class
+	 * 
+	 * @param port Port on which the server will listen for incoming
+	 * connection requests
+	 * @param maxServerSize Number of simultaneous clients the Server
+	 * will be able to support
+	 */
 	public Server(int port, int maxServerSize) {
 		threads = new ClientHandler[maxServerSize];
 		GsonBuilder builder = new GsonBuilder();
@@ -104,11 +112,27 @@ public class Server implements IServer{
 		}
 	}
 	
+	/**
+	 * Function for passing on a command received within a ClientHandler
+	 * Thread to the game object.
+	 * 
+	 * @param message The command to be parsed by the game file
+	 * @param Origin ID of the ClientHandler which passed on the command
+	 */
 	public void sendGameCommand(Message message, int Origin) {
 		game.handleMessage(message, Origin);
 	}
 	
-	public void relayChat(Message message) {
+	/**
+	 * Function for relaying chat to every ClientHandler
+	 * 
+	 * @param message Message to be transmitted
+	 * @param Origin ID of the ClientHandler which passed on the command
+	 */
+	public void relayChat(Message message, int Origin) {
+		
+		// TODO: Add userName support to specify which user sent the message
+		
 		String JSONText = sGson.toJson(new ServerMessage(
 							ServerMessage.messageType.CHAT,
 							message.messageText));
@@ -119,6 +143,14 @@ public class Server implements IServer{
 		
 	}
 	
+	/**
+	 * Inner class extending thread which populates the thread pool used in the
+	 * Server. Continously waits for sockets and then handles communication with
+	 * a single client throughout the time the client is connected to the system.
+	 * 
+	 * @author Team Nice
+	 * @version 2-03-2017
+	 */
 	class ClientHandler extends Thread {
 		private Socket socket;
 		private DataInputStream in;
@@ -128,7 +160,15 @@ public class Server implements IServer{
 		private Server server;
 		private boolean active;
 
+		/**
+		 * Constructor for instantiating an object of the ClientHandler class
+		 * 
+		 * @param idNumber ID of Thread
+		 * @param server Reference to server object which created the class
+		 * in order to call the helper methods within that class.
+		 */
 		public ClientHandler(int idNumber, Server server) {
+			super();
 			GsonBuilder builder = new GsonBuilder();
 			builder.setPrettyPrinting(); 
 			gson = builder.create();
@@ -136,6 +176,12 @@ public class Server implements IServer{
 			this.server = server;
 		}
 		
+		/**
+		 * Function for sending a ServerMessage object represented by a String
+		 * in JSON form to the client
+		 * 
+		 * @param JSONText Json representation of a ServerMessage object
+		 */
 		public void sendServerMessage(String JSONText) {
 			if (active == true) {
 				System.out.println("Thread " + idNumber + " Standing by");
@@ -149,14 +195,25 @@ public class Server implements IServer{
 			}
 		}
 		
+		/**
+		 * @return ID of the ClientHandler object
+		 */
 		public int getIDNumber() {
 			return this.idNumber;
 		}
 		
+		/**
+		 * @return Returns whether the thread has an active connection
+		 * with a client
+		 */
 		public boolean isActive() {
 			return this.active;
 		}
 		
+		/**
+		 * Method called upon instantiation, will run continuously throughout
+		 * the operation of the server. 
+		 */
 		@Override
 		public void run() {
 			try {
@@ -178,7 +235,7 @@ public class Server implements IServer{
 						Message message = gson.fromJson(input, Message.class);
 						System.out.println(message.messageText);
 						if (message.type == Message.messageType.MESSAGE) {
-							server.relayChat(message);
+							server.relayChat(message, this.idNumber);
 						} else if (message.type == Message.messageType.COMMAND){
 							sendGameCommand(message, idNumber);
 						} else if (message.type == Message.messageType.LOGIN) {
