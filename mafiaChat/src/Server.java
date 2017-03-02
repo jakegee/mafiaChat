@@ -76,73 +76,6 @@ public class Server implements IServer{
 	}
 	
 	/**
-	 * Function for sending a public message to all clients
-	 * 
-	 * @param message String to be sent to the chat window of all
-	 * clients, will be marked as being from the Server
-	 */
-	@Override
-	public void publicMessage(String message) {
-		String JSONText = sGson.toJson(new ServerMessage(
-				ServerMessage.messageType.PUBLIC, message));
-		for (ClientHandler serverThread : threads) {
-			serverThread.sendServerMessage(JSONText);
-		}
-	}
-
-	/**
-	 * Function for sending a message to the specified clients
-	 * 
-	 * @param message String to be sent to the chat window of the
-	 * clients specified by recipients, the message will be marked
-	 * as being from the Server
-	 * @param recipients int array containing the ids of users who
-	 * will recieve the message
-	 */
-	@Override
-	public void privateMessage(String message, int[] recipients) {
-		String JSONText = sGson.toJson(new ServerMessage(
-				ServerMessage.messageType.PRIVATE, message));
-		IntStream intStream = Arrays.stream(recipients);
-		for (ClientHandler serverThread : threads) {
-			if (IntStream.of(recipients).anyMatch(x -> x == serverThread.getIDNumber())) {
-				serverThread.sendServerMessage(JSONText);
-			}
-		}
-	}
-	
-	/**
-	 * Function for passing on a command received within a ClientHandler
-	 * Thread to the game object.
-	 * 
-	 * @param message The command to be parsed by the game file
-	 * @param Origin ID of the ClientHandler which passed on the command
-	 */
-	public void sendGameCommand(Message message, int Origin) {
-		game.handleMessage(message, Origin);
-	}
-	
-	/**
-	 * Function for relaying chat to every ClientHandler
-	 * 
-	 * @param message Message to be transmitted
-	 * @param Origin ID of the ClientHandler which passed on the command
-	 */
-	public void relayChat(Message message, int Origin) {
-		
-		// TODO: Add userName support to specify which user sent the message
-		
-		String JSONText = sGson.toJson(new ServerMessage(
-							ServerMessage.messageType.CHAT,
-							message.messageText));
-
-		for (ClientHandler serverThread : threads) {
-			serverThread.sendServerMessage(JSONText);
-		}
-		
-	}
-	
-	/**
 	 * Inner class extending thread which populates the thread pool used in the
 	 * Server. Continously waits for sockets and then handles communication with
 	 * a single client throughout the time the client is connected to the system.
@@ -256,26 +189,123 @@ public class Server implements IServer{
 		}
 	}
 	
-	public static void main(String[] args) {
-		Server server = new Server(8000, 20);
+	/**
+	 * Function for passing on a command received within a ClientHandler
+	 * Thread to the game object.
+	 * 
+	 * @param message The command to be parsed by the game file
+	 * @param Origin ID of the ClientHandler which passed on the command
+	 */
+	public void sendGameCommand(Message message, int Origin) {
+		game.handleMessage(message, Origin);
+	}
+	
+	/**
+	 * Function for relaying chat to every ClientHandler
+	 * 
+	 * @param message Message to be transmitted
+	 * @param Origin ID of the ClientHandler which passed on the command
+	 */
+	public void relayChat(Message message, int Origin) {
+		
+		// TODO: Add userName support to specify which user sent the message
+		
+		String JSONText = sGson.toJson(new ServerMessage(
+							ServerMessage.messageType.CHAT,
+							message.messageText));
+
+		for (ClientHandler serverThread : threads) {
+			serverThread.sendServerMessage(JSONText);
+		}
+		
+	}
+	
+	/**
+	 * Function for sending a public message to all clients
+	 * 
+	 * @param message String to be sent to the chat window of all
+	 * clients, will be marked as being from the Server
+	 */
+	@Override
+	public void publicMessage(String message) {
+		String JSONText = sGson.toJson(new ServerMessage(
+				ServerMessage.messageType.PUBLIC, message));
+		for (ClientHandler serverThread : threads) {
+			serverThread.sendServerMessage(JSONText);
+		}
 	}
 
+	/**
+	 * Function for sending a message to a single specified client
+	 * 
+	 * @param message String to be sent to the chat window of the
+	 * client specified by recipient, the message will be marked
+	 * as being from the Server
+	 * @param recipient int containing id of client that will recieve
+	 * the message
+	 */
+	@Override
+	public void privateMessage(String message, int recipient) {
+		String JSONText = sGson.toJson(new ServerMessage(
+				ServerMessage.messageType.PRIVATE, message));
+			threads[recipient].sendServerMessage(JSONText);
+	}
+
+	/**
+	 * Function for sending a message to the specified clients
+	 * 
+	 * @param message String to be sent to the chat window of the
+	 * clients specified by recipients, the message will be marked
+	 * as being from the Server
+	 * @param recipients int array containing the ids of users who
+	 * will recieve the message
+	 */
+	@Override
+	public void privateMessage(String message, int[] recipients) {
+		String JSONText = sGson.toJson(new ServerMessage(
+				ServerMessage.messageType.PRIVATE, message));
+		for (int recipient : recipients) {
+			threads[recipient].sendServerMessage(JSONText);
+		}
+	}
+	
+	/**
+	 * Function for muting or unmuting a player specified by playerID,
+	 * muting prevents any chat entered by the player from being relayed
+	 * but still allows the player to see the chat. This mutes one specific
+	 * player whereas
+	 * 
+	 * @param playerID Player to be muted
+	 * @param muted True if the player will be muted, false otherwise
+	 */
 	@Override
 	public void setPlayerMuted(int playerID, boolean muted) {
 		// TODO Auto-generated method stub
-		
 	}
 
+	/**
+	 * Function for unmuting all players, resets all muted variables to false
+	 * and allows every client to relay chat, as long as chat is active
+	 */
+	@Override
+	public void unMuteAllPlayers() {
+		// TODO Auto-generated method stub	
+	}
+	
 	@Override
 	public void setChatActive(boolean active) {
 		// TODO Auto-generated method stub
-		
 	}
-
-	@Override
-	public void unMuteAllPlayers() {
-		// TODO Auto-generated method stub
-		
+	
+	/**
+	 * Function for setting whether the chat should be active or not. Active
+	 * chat is relayed between users, if it is set to false then no chat will
+	 * be passed between clients
+	 * 
+	 * @param active True if chat is to be relayed between clients, false otherwise
+	 */
+	public static void main(String[] args) {
+		Server server = new Server(8000, 20);
 	}
 
 }

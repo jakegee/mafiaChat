@@ -18,6 +18,17 @@ public interface IServer {
 	public void publicMessage(String message);
 
 	/**
+	 * Function for sending a message to a single specified client
+	 * 
+	 * @param message String to be sent to the chat window of the
+	 * client specified by recipient, the message will be marked
+	 * as being from the Server
+	 * @param recipient int containing id of client that will recieve
+	 * the message
+	 */
+	public void privateMessage(String message, int recipient);
+	
+	/**
 	 * Function for sending a message to the specified clients
 	 * 
 	 * @param message String to be sent to the chat window of the
