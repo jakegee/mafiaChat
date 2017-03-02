@@ -46,7 +46,6 @@ public class Server implements IServer{
 	public Server(int port, int maxServerSize) {
 		threads = new ClientHandler[maxServerSize];
 		GsonBuilder builder = new GsonBuilder();
-		builder.setPrettyPrinting(); 
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
 		
