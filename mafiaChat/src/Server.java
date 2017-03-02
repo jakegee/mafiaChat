@@ -266,4 +266,16 @@ public class Server implements IServer{
 		
 	}
 
+	@Override
+	public void setChatActive(boolean active) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unMuteAllPlayers() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
