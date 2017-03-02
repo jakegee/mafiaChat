@@ -260,4 +260,10 @@ public class Server implements IServer{
 		Server server = new Server(8000, 20);
 	}
 
+	@Override
+	public void setPlayerMuted(int playerID, boolean muted) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

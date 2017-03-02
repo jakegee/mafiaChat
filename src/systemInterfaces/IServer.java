@@ -28,4 +28,13 @@ public interface IServer {
 	 */
 	public void privateMessage(String message, int[] recipients);
 	
+	/**
+	 * Function for muting or unmuting a player specified by playerID,
+	 * muting prevents any chat entered by the player from being relayed
+	 * but still allows the player to see the chat
+	 * 
+	 * @param playerID Player to be muted
+	 * @param muted True if the player will be muted, false otherwise
+	 */
+	public void setPlayerMuted(int playerID, boolean muted);
 }
