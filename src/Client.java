@@ -11,7 +11,7 @@ import messages.Message;
 import messages.ServerMessage;
 
 /**
- * Client class for sending and receivng messages to and from the Server
+ * Client class for sending and receiving messages to and from the Server
  * 
  * @author Team Nice
  * @version 2-03-2017
