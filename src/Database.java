@@ -10,7 +10,7 @@ import java.util.Set;
 import java.sql.*;
 
 public class Database {
-
+	
 	public static void main(String[] args) {
 		// TODO code application logic here
 
@@ -29,9 +29,6 @@ public class Database {
 			String dbName = "jdbc:postgresql://mod-fund-databases.cs.bham.ac.uk/jgs630";
 
 			Connection dbConn = DriverManager.getConnection(dbName, "jgs630", "bakny4ne83");
-
-			
-			
 			
 			br.close();
 
