@@ -31,10 +31,28 @@ public interface IServer {
 	/**
 	 * Function for muting or unmuting a player specified by playerID,
 	 * muting prevents any chat entered by the player from being relayed
-	 * but still allows the player to see the chat
+	 * but still allows the player to see the chat. This mutes one specific
+	 * player whereas
 	 * 
 	 * @param playerID Player to be muted
 	 * @param muted True if the player will be muted, false otherwise
 	 */
 	public void setPlayerMuted(int playerID, boolean muted);
+	
+	/**
+	 * Function for unmuting all players, resets all muted variables to false
+	 * and allows every client to relay chat, as long as chat is active
+	 */
+	public void unMuteAllPlayers();
+	
+	/**
+	 * Function for setting whether the chat should be active or not. Active
+	 * chat is relayed between users, if it is set to false then no chat will
+	 * be passed between clients
+	 * 
+	 * @param active True if chat is to be relayed between clients, false otherwise
+	 */
+	public void setChatActive(boolean active);
+	
+	
 }
