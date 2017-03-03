@@ -12,12 +12,6 @@ import messages.Message;
 public interface IGame {
 	
 	/**
-	 * @return boolean value which specfies whether chat should be
-	 *  relayed at the current time.
-	 */
-	public boolean getChatRelayed();
-	
-	/**
 	 * Function which is called by the Server whenever a command is
 	 * received from a client
 	 * 
