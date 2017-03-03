@@ -9,7 +9,7 @@ public class Mafia implements IGame {
     private IServer server;
 
     // enum for setting the day/night phases of the game
-    //don't know why eclipse auto-formats it like this
+    // don't know why eclipse auto-formats it like this
     private enum phase {
 	DAY, NIGHT
     };
@@ -43,19 +43,22 @@ public class Mafia implements IGame {
 
 	if (command == "/ready") { // no trailing text after /ready
 	    if (!remText.isEmpty()) {
-		int[] origins = new int[origin];
-		server.privateMessage("The command \"/ready\" cannnot have characters after it", origins);
+		server.privateMessage("The command \"/ready\" cannnot have characters after it", origin);
 	    } else {
 		ready(origin);
 	    }
 
 	} else if (command == "/unready") {
+	    if (!remText.isEmpty()) {
+		server.privateMessage("The command \"/unready\" cannnot have characters after it", origin);
+	    } else {
+		unready(origin);
+	    }
 
 	} else if (command == "/start") {// no trailing text after /start
 
 	    if (!remText.isEmpty()) {
-		int[] origins = new int[origin];
-		server.privateMessage("The command \"/start\" cannnot have characters after it", origins);
+		server.privateMessage("The command \"/start\" cannnot have characters after it", origin);
 	    } else {
 		voteStart(origin);
 	    }
@@ -74,6 +77,32 @@ public class Mafia implements IGame {
 
     }
 
+    private void unready(int origin) {
+	// TODO Auto-generated method stub
+	if (ready.contains(origin)) { // ensures players aren't added more than
+	    // once
+	    ready.remove(origin);
+
+	    server.publicMessage("player: " + origin + "has unreadied, the number of players ready is now: " + ready.size());
+	    // possibly extend to mention which players are ready
+
+	    if (ready.size() == 5) {
+		int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
+
+		server.privateMessage(
+			"There are no longer enough players to start the game, start vote has been reset", readyArray);
+	    }
+	    
+	    if (ready.size() <6){
+		server.publicMessage("There needs to be " + (6 - ready.size()) + " players to ready up before the game of Mafia can be "
+			+ "voted to start");
+	    }
+	} else {
+	    server.privateMessage("you weren't set as ready to begin with", origin);
+	}
+
+    }
+
     public void ready(int origin) {
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
@@ -85,13 +114,13 @@ public class Mafia implements IGame {
 	    if (ready.size() >= 6) {
 		int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
 
+		//not sure if this should be public or private
 		server.privateMessage(
 			"There are enough players to start the game. Use the command" + " \"/start\" to vote to start",
 			readyArray);
 	    }
 	} else {
-	    int[] origins = new int[origin];
-	    server.privateMessage("you are already set as ready", origins);
+	    server.privateMessage("you are already set as ready", origin);
 	}
     }
 
@@ -107,8 +136,7 @@ public class Mafia implements IGame {
 		gameStart();
 	    }
 	} else {
-	    int[] origins = new int[origin];
-	    server.privateMessage("you have already voted to start", origins);
+	    server.privateMessage("you have already voted to start", origin);
 	}
     }
 
