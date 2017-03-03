@@ -23,8 +23,8 @@ public interface IGame {
 	 * 
 	 * @param message String representing the command passed in
 	 * as well as the rest of the text passed in to the client
-	 * @param Origin int representing the user which entered the command
+	 * @param origin int representing the user which entered the command
 	 */
-	public void handleMessage (Message message, int Origin);
+	public void handleMessage (Message message, int origin);
 
 }
