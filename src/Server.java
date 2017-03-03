@@ -1,3 +1,4 @@
+import systemInterfaces.IDatabase;
 import systemInterfaces.IGame;
 import systemInterfaces.IServer;
 
@@ -15,6 +16,10 @@ import messages.ServerMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import exceptions.InvalidInformationException;
+import exceptions.InvalidUserException;
+import exceptions.UserExistsException;
+
 /**
  * Server class encapsulating the code required for the server side
  * of the system. The constructor contains the code which manages connections.
@@ -29,6 +34,8 @@ import com.google.gson.GsonBuilder;
 public class Server implements IServer{
 
 	private IGame game;
+	private IDatabase database;
+	
 	private ServerSocket sSocket;
 	private int port;
 	private Gson sGson;
@@ -49,6 +56,7 @@ public class Server implements IServer{
 		GsonBuilder builder = new GsonBuilder();
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
+		game = new Mafia();
 		
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new ClientHandler(i, this);
@@ -195,14 +203,78 @@ public class Server implements IServer{
 							if (!this.muted) {
 								server.relayChat(message, this.idNumber);
 							}
+							
 						} else if (message.type == Message.messageType.COMMAND){
 							sendGameCommand(message, idNumber);
+							
 						} else if (message.type == Message.messageType.LOGIN) {
-							// Login logic here
+							String[] decode = message.messageText.split(" ");
+							try {
+								database.loginUser(decode[0], decode[1]);
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.SUCCESS, "")));
+							} catch (InvalidUserException e) {
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.ERROR, e.getMessage())));
+							} catch (InvalidInformationException e) {
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.ERROR, e.getMessage())));
+							} catch (ArrayIndexOutOfBoundsException e) {
+								e.printStackTrace();
+								// Invalid Input, therefore it is ignored, should
+								// not happen under standard operation of system
+							}
+							
 						} else if (message.type == Message.messageType.REGISTER) {
-							// Register logic here
+							String[] decode = message.messageText.split(" ");
+							try {
+								database.registerUser(decode[0], decode[1], decode[2], decode[3]);
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.SUCCESS, "")));
+							} catch (UserExistsException e) {
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.ERROR, e.getMessage())));
+							} catch (ArrayIndexOutOfBoundsException e) {
+								e.printStackTrace();
+								// Invalid Input, therefore it is ignored, should
+								// not happen under standard operation of system
+							}
+							
 						} else if (message.type == Message.messageType.LOGOUT) {
-							// Logout logic here
+							break;
+							
+						} else if (message.type == Message.messageType.PASSWORDHINT){
+							String[] decode = message.messageText.split(" ");
+							if (decode.length == 1) {
+								try {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
+								} catch (InvalidUserException e) {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, e.getMessage())));
+								} catch (ArrayIndexOutOfBoundsException e) {
+									e.printStackTrace();
+									// Invalid Input, therefore it is ignored, should
+									// not happen under standard operation of system
+								}
+							} else {
+								try {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.SUCCESS, database.checkQuestionAnswer(
+													decode[0], decode[1]))));
+								} catch (InvalidUserException e) {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, e.getMessage())));
+								} catch (InvalidInformationException e) {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, e.getMessage())));
+								} catch (ArrayIndexOutOfBoundsException e) {
+									e.printStackTrace();
+									// Invalid Input, therefore it is ignored, should
+									// not happen under standard operation of system
+								}
+							}
+							
 						} else {
 							System.out.println("Invalid Message type recieved #Panic");
 						}

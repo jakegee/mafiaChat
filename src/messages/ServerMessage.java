@@ -9,7 +9,14 @@ package messages;
  */
 public class ServerMessage {
 	// Enum for specifying the intention of the message
-	public enum messageType { PRIVATE, PUBLIC, CHAT };
+	//
+	// Success represents if a login, register or retrieve password
+	// is positive, with the text field containing the password in the
+	// final case, and empty otherwise
+	//
+	// Error represents if a login, register or retrive password command
+	// failed, with the text field containing the error message
+	public enum messageType { PRIVATE, PUBLIC, CHAT, SUCCESS, ERROR };
 	
 	// Type of message
 	public messageType type;

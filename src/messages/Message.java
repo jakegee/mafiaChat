@@ -9,7 +9,7 @@ package messages;
  */
 public class Message {
 	// Enum for specifying the intention of the message
-	public enum messageType { MESSAGE, COMMAND, LOGIN, LOGOUT, REGISTER};
+	public enum messageType { MESSAGE, COMMAND, LOGIN, LOGOUT, REGISTER, PASSWORDHINT};
 	
 	// Text of message
 	public messageType type;
