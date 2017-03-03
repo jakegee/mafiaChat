@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -96,6 +97,7 @@ public class Server implements IServer{
 		private Server server;
 		private boolean active;
 		private boolean muted = false;
+		private String username;
 
 		/**
 		 * Constructor for instantiating an object of the ClientHandler class
@@ -111,6 +113,10 @@ public class Server implements IServer{
 			gson = builder.create();
 			this.idNumber = idNumber;
 			this.server = server;
+			
+			// *** TEMPORARY TEST VARIABLES DECLARATION ***
+			this.username = "CoolThread" + idNumber;
+			// *** TEMPORARY TEST VARIABLES DECLARATION ***
 		}
 		
 		/**
@@ -132,10 +138,29 @@ public class Server implements IServer{
 		}
 		
 		/**
-		 * @return ID of the ClientHandler object
+		 * @return True if the thread has a client attached
+		 * false otherwise
 		 */
-		public int getIDNumber() {
-			return this.idNumber;
+		public boolean getActive() {
+			return this.active;
+		}
+		
+		public String getUsername() throws NullPointerException {
+			return this.username;
+		}
+		
+		/**
+		 * Function for checking if a passed in username is 
+		 * equivalent to the username associated with the client
+		 * 
+		 * @param username
+		 * @return
+		 */
+		public boolean isUsernameEqualTo(String username) {
+			if (!active) {
+				return false;
+			}
+			return username.equals(this.username);
 		}
 		
 		/** 
@@ -314,6 +339,38 @@ public class Server implements IServer{
 	
 	public static void main(String[] args) {
 		Server server = new Server(8000, 20);
+	}
+
+	@Override
+	public ArrayList<Integer> getActiveClientIDs() {
+		ArrayList<Integer> returnList = new ArrayList<Integer>();
+		for (int i  = 0; i < threads.length; i++) {
+			if (threads[i].getActive()) {
+				returnList.add(i);
+			}
+		}
+		return returnList;
+	}
+
+	@Override
+	public String getUsername(int ID) {
+		try {
+			return threads[ID].getUsername();
+		} catch (NullPointerException e) {
+			return "Username Not Set in Thread -- Thread may not be active";
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return "ID specified is higher than the number of threads running on the Server";
+		}
+	}
+
+	@Override
+	public int getUserID(String username) {
+		for (int i = 0; i < threads.length; i++ ) {
+			if (threads[i].isUsernameEqualTo(username)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }
