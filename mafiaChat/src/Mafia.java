@@ -22,7 +22,9 @@ public class Mafia implements IGame {
 
     private Random mafiaPicker;
 
-    @Override
+    // NOTE: Sorry I forgot that this has been moved to the Server class,
+    // just call setChatActive(boolean active) if you want to activate or
+    // deactivate this. This function is not used by the Server
     public boolean getChatRelayed() {
 	// TODO Auto-generated method stub
 	return false;

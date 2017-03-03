@@ -19,8 +19,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Server class encapsulating the code required for
- * the server side of the system
+ * Server class encapsulating the code required for the server side
+ * of the system. The constructor contains the code which manages connections.
+ * Connections are managed by the ClientHandler inner class which extends Threads.
+ * The class then contains a suite of functions for interactions with the
+ * CLientHandler Threads
  * 
  * @author Team Nice
  * @version 1-03-2017
@@ -34,6 +37,7 @@ public class Server implements IServer{
 	private Gson sGson;
 	private ClientHandler[] threads;
 	private LinkedBlockingQueue<Socket> connections;
+	private boolean relayChat;
 	
 	/**
 	 * Constructor for instantiating an instance of the Server class
@@ -91,6 +95,7 @@ public class Server implements IServer{
 		private int idNumber;
 		private Server server;
 		private boolean active;
+		private boolean muted = false;
 
 		/**
 		 * Constructor for instantiating an object of the ClientHandler class
@@ -115,8 +120,7 @@ public class Server implements IServer{
 		 * @param JSONText Json representation of a ServerMessage object
 		 */
 		public void sendServerMessage(String JSONText) {
-			if (active == true) {
-				System.out.println("Thread " + idNumber + " Standing by");
+			if (this.active == true) {
 				try {
 					out.writeUTF(JSONText);
 					out.flush();
@@ -134,12 +138,12 @@ public class Server implements IServer{
 			return this.idNumber;
 		}
 		
-		/**
-		 * @return Returns whether the thread has an active connection
-		 * with a client
+		/** 
+		 * @param muted True if the player is to be muted, false
+		 * otherwise
 		 */
-		public boolean isActive() {
-			return this.active;
+		public void setMuted(boolean muted) {
+			this.muted = muted;
 		}
 		
 		/**
@@ -167,7 +171,9 @@ public class Server implements IServer{
 						Message message = gson.fromJson(input, Message.class);
 						System.out.println(message.messageText);
 						if (message.type == Message.messageType.MESSAGE) {
-							server.relayChat(message, this.idNumber);
+							if (!this.muted) {
+								server.relayChat(message, this.idNumber);
+							}
 						} else if (message.type == Message.messageType.COMMAND){
 							sendGameCommand(message, idNumber);
 						} else if (message.type == Message.messageType.LOGIN) {
@@ -280,7 +286,7 @@ public class Server implements IServer{
 	 */
 	@Override
 	public void setPlayerMuted(int playerID, boolean muted) {
-		// TODO Auto-generated method stub
+		this.threads[playerID].setMuted(muted);
 	}
 
 	/**
@@ -289,12 +295,9 @@ public class Server implements IServer{
 	 */
 	@Override
 	public void unMuteAllPlayers() {
-		// TODO Auto-generated method stub	
-	}
-	
-	@Override
-	public void setChatActive(boolean active) {
-		// TODO Auto-generated method stub
+		for (ClientHandler serverThread : this.threads) {
+			serverThread.setMuted(false);
+		}
 	}
 	
 	/**
@@ -304,6 +307,11 @@ public class Server implements IServer{
 	 * 
 	 * @param active True if chat is to be relayed between clients, false otherwise
 	 */
+	@Override
+	public void setChatActive(boolean active) {
+		this.relayChat = active;
+	}
+	
 	public static void main(String[] args) {
 		Server server = new Server(8000, 20);
 	}
