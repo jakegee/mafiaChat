@@ -7,11 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.IntStream;
 
 import messages.Message;
 import messages.ServerMessage;
@@ -336,11 +332,13 @@ public class Server implements IServer{
 	public void setChatActive(boolean active) {
 		this.relayChat = active;
 	}
-	
-	public static void main(String[] args) {
-		Server server = new Server(8000, 20);
-	}
 
+	/**
+	 * Funtion for getting all the ClientIDs which are active and connected to the
+	 * Server
+	 * 
+	 * @return ArrayList containing all active users' ids
+	 */
 	@Override
 	public ArrayList<Integer> getActiveClientIDs() {
 		ArrayList<Integer> returnList = new ArrayList<Integer>();
@@ -352,6 +350,16 @@ public class Server implements IServer{
 		return returnList;
 	}
 
+	/**
+	 * Function for returning the Username associated with a specific id,
+	 * currently returns a String message if the search fails, may be changed
+	 * to IllegalArgumentException if that is preferred
+	 * 
+	 * @param ID id to get the username from
+	 * @return String containing the Username associated with the passed in id,
+	 * or an error message if the client associated with the ID is not active or does
+	 * not exist
+	 */
 	@Override
 	public String getUsername(int ID) {
 		try {
@@ -363,6 +371,14 @@ public class Server implements IServer{
 		}
 	}
 
+	/**
+	 * Function for returning the ID associated with a specific username. Returns -1
+	 * if no users were found with the passed in username
+	 * 
+	 * @param username String containing the username to get the associated client of
+	 * @return int representing the id of the client with the username specifed in the
+	 * username String argument
+	 */
 	@Override
 	public int getUserID(String username) {
 		for (int i = 0; i < threads.length; i++ ) {
@@ -371,6 +387,10 @@ public class Server implements IServer{
 			}
 		}
 		return -1;
+	}
+	
+	public static void main(String[] args) {
+		Server server = new Server(8000, 20);
 	}
 
 }
