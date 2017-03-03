@@ -1,5 +1,7 @@
 package systemInterfaces;
 
+import java.util.ArrayList;
+
 /**
  * IServer Interface for use by a Game object, specifying what every
  * server class must contain,
@@ -65,5 +67,34 @@ public interface IServer {
 	 */
 	public void setChatActive(boolean active);
 	
+	/**
+	 * Funtion for getting all the ClientIDs which are active and connected to the
+	 * Server
+	 * 
+	 * @return ArrayList containing all active users' ids
+	 */
+	public ArrayList<Integer> getActiveClientIDs();
+	
+	/**
+	 * Function for returning the Username associated with a specific id,
+	 * currently returns a String message if the search fails, may be changed
+	 * to IllegalArgumentException if that is preferred
+	 * 
+	 * @param ID id to get the username from
+	 * @return String containing the Username associated with the passed in id,
+	 * or an error message if the client associated with the ID is not active or does
+	 * not exist
+	 */
+	public String getUsername(int ID);
+	
+	/**
+	 * Function for returning the ID associated with a specific username. Returns -1
+	 * if no users were found with the passed in username
+	 * 
+	 * @param username String containing the username to get the associated client of
+	 * @return int representing the id of the client with the username specifed in the
+	 * username String argument
+	 */
+	public int getUserID(String username);
 	
 }
