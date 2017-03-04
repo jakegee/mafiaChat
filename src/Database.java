@@ -23,15 +23,32 @@ public class Database {
 		}
 
 		try {
-
-			BufferedReader br = new BufferedReader(new FileReader("artists-songs-albums-tags.csv"));
-
 			String dbName = "jdbc:postgresql://mod-fund-databases.cs.bham.ac.uk/jgs630";
 
 			Connection dbConn = DriverManager.getConnection(dbName, "jgs630", "bakny4ne83");
 			
-			br.close();
-
+			PreparedStatement createUser = dbConn.prepareStatement("INSERT INTO users VALUES(?,?,?)");
+			PreparedStatement createHint = dbConn.prepareStatement("INSERT INTO passwordhints VALUES(?,?,?,?)");
+			
+			List<String> userinfo = new ArrayList<String>();
+			List<String> hintinfo = new ArrayList<String>();
+		}
+		
+		int userid = 1;
+			createUser.setInt(1, userid);
+			createUser.setString(2, username);
+			createUser.setString(3, password);
+			createUser.executeUpdate();
+			userid++;
+		
+		int hintid = 1;
+		for (String hint : userinfo) {
+			createUser.setInt(1, hintid);
+			createUser.setString(2, question);
+			createUser.setString(3, hint);
+			createUser.setString(4, userid);
+			createUser.executeUpdate();
+			userid++;
 		}
 
 		catch (FileNotFoundException e) {
