@@ -1,6 +1,5 @@
 package GUIs;
 
-
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -58,7 +57,7 @@ public class Frame1 {
 		frmSignup.getContentPane().add(btnSignIn);
 		
 		textField = new JTextField();
-		textField.setBounds(246, 46, 198, 37);
+		textField.setBounds(246, 78, 198, 37);
 		frmSignup.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -66,16 +65,16 @@ public class Frame1 {
 		lblPleaseEnterYour.setFont(new Font("Futura", Font.PLAIN, 13));
 		lblPleaseEnterYour.setBackground(new Color(192, 192, 192));
 		lblPleaseEnterYour.setForeground(new Color(0, 0, 0));
-		lblPleaseEnterYour.setBounds(6, 54, 189, 20);
+		lblPleaseEnterYour.setBounds(6, 86, 189, 20);
 		frmSignup.getContentPane().add(lblPleaseEnterYour);
 		
 		JLabel lblPleaseEnterYour_1 = new JLabel("Enter your Password");
 		lblPleaseEnterYour_1.setFont(new Font("Futura", Font.PLAIN, 13));
-		lblPleaseEnterYour_1.setBounds(6, 95, 189, 20);
+		lblPleaseEnterYour_1.setBounds(6, 126, 189, 20);
 		frmSignup.getContentPane().add(lblPleaseEnterYour_1);
 		
 		textField_1 = new JTextField();
-		textField_1.setBounds(246, 87, 198, 37);
+		textField_1.setBounds(246, 118, 198, 37);
 		frmSignup.getContentPane().add(textField_1);
 		textField_1.setColumns(10);
 		
@@ -83,22 +82,27 @@ public class Frame1 {
 		lblPleaseEnterYour_2.setForeground(Color.BLACK);
 		lblPleaseEnterYour_2.setFont(new Font("Futura", Font.PLAIN, 13));
 		lblPleaseEnterYour_2.setBackground(Color.LIGHT_GRAY);
-		lblPleaseEnterYour_2.setBounds(6, 127, 198, 33);
+		lblPleaseEnterYour_2.setBounds(6, 160, 198, 33);
 		frmSignup.getContentPane().add(lblPleaseEnterYour_2);
 		
 		textField_2 = new JTextField();
 		textField_2.setColumns(10);
-		textField_2.setBounds(246, 125, 198, 37);
+		textField_2.setBounds(246, 158, 198, 37);
 		frmSignup.getContentPane().add(textField_2);
 		
 		JLabel lblPleaseNoteThat = new JLabel("Please note: ");
 		lblPleaseNoteThat.setFont(new Font("Futura", Font.PLAIN, 13));
-		lblPleaseNoteThat.setBounds(9, 161, 79, 37);
+		lblPleaseNoteThat.setBounds(6, 197, 79, 37);
 		frmSignup.getContentPane().add(lblPleaseNoteThat);
 		
 		JLabel lblAllInformationWill = new JLabel("All information will be stored on the Mafia Game Database.");
 		lblAllInformationWill.setFont(new Font("Futura", Font.PLAIN, 13));
-		lblAllInformationWill.setBounds(89, 172, 369, 16);
+		lblAllInformationWill.setBounds(81, 207, 369, 16);
 		frmSignup.getContentPane().add(lblAllInformationWill);
+		
+		JLabel lblMafiaChat = new JLabel("MAFIA CHAT SIGN UP");
+		lblMafiaChat.setFont(new Font("Futura", Font.PLAIN, 35));
+		lblMafiaChat.setBounds(27, 6, 401, 60);
+		frmSignup.getContentPane().add(lblMafiaChat);
 	}
 }
