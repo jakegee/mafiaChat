@@ -194,74 +194,31 @@ public class Server implements IServer{
 					this.in = new DataInputStream(socket.getInputStream());
 					this.out = new DataOutputStream(socket.getOutputStream());
 					this.active = true;
+					String[] decode;
 					
-					while(true) {
+					while(this.active == true) {
 						String input = in.readUTF();
 						Message message = gson.fromJson(input, Message.class);
 						System.out.println(message.messageText);
-						if (message.type == Message.messageType.MESSAGE) {
-							if (!this.muted) {
-								server.relayChat(message, this.idNumber);
-							}
-							
-						} else if (message.type == Message.messageType.COMMAND){
-							sendGameCommand(message, idNumber);
-							
-						} else if (message.type == Message.messageType.LOGIN) {
-							String[] decode = message.messageText.split(" ");
-							try {
-								database.loginUser(decode[0], decode[1]);
-								sendServerMessage(gson.toJson(new ServerMessage(
-										ServerMessage.messageType.SUCCESS, "")));
-							} catch (InvalidUserException e) {
-								sendServerMessage(gson.toJson(new ServerMessage(
-										ServerMessage.messageType.ERROR, e.getMessage())));
-							} catch (InvalidInformationException e) {
-								sendServerMessage(gson.toJson(new ServerMessage(
-										ServerMessage.messageType.ERROR, e.getMessage())));
-							} catch (ArrayIndexOutOfBoundsException e) {
-								e.printStackTrace();
-								// Invalid Input, therefore it is ignored, should
-								// not happen under standard operation of system
-							}
-							
-						} else if (message.type == Message.messageType.REGISTER) {
-							String[] decode = message.messageText.split(" ");
-							try {
-								database.registerUser(decode[0], decode[1], decode[2], decode[3]);
-								sendServerMessage(gson.toJson(new ServerMessage(
-										ServerMessage.messageType.SUCCESS, "")));
-							} catch (UserExistsException e) {
-								sendServerMessage(gson.toJson(new ServerMessage(
-										ServerMessage.messageType.ERROR, e.getMessage())));
-							} catch (ArrayIndexOutOfBoundsException e) {
-								e.printStackTrace();
-								// Invalid Input, therefore it is ignored, should
-								// not happen under standard operation of system
-							}
-							
-						} else if (message.type == Message.messageType.LOGOUT) {
-							break;
-							
-						} else if (message.type == Message.messageType.PASSWORDHINT){
-							String[] decode = message.messageText.split(" ");
-							if (decode.length == 1) {
-								try {
-									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
-								} catch (InvalidUserException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.ERROR, e.getMessage())));
-								} catch (ArrayIndexOutOfBoundsException e) {
-									e.printStackTrace();
-									// Invalid Input, therefore it is ignored, should
-									// not happen under standard operation of system
+						
+						switch (message.type) {
+				
+							case MESSAGE : 
+								if (!this.muted) {
+									server.relayChat(message, this.idNumber);
 								}
-							} else {
+								break;
+								
+							case COMMAND : 
+								sendGameCommand(message, idNumber);
+								break;
+								
+							case LOGIN :
+								decode = message.messageText.split(" ");
 								try {
+									database.loginUser(decode[0], decode[1]);
 									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, database.checkQuestionAnswer(
-													decode[0], decode[1]))));
+											ServerMessage.messageType.SUCCESS, "")));
 								} catch (InvalidUserException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
@@ -273,10 +230,65 @@ public class Server implements IServer{
 									// Invalid Input, therefore it is ignored, should
 									// not happen under standard operation of system
 								}
-							}
+								break;
+								
+							case REGISTER :
+								decode = message.messageText.split(" ");
+								try {
+									database.registerUser(decode[0], decode[1], decode[2], decode[3]);
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.SUCCESS, "")));
+								} catch (UserExistsException e) {
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, e.getMessage())));
+								} catch (ArrayIndexOutOfBoundsException e) {
+									e.printStackTrace();
+									// Invalid Input, therefore it is ignored, should
+									// not happen under standard operation of system
+								}
+								break;
+								 
+							case LOGOUT :
+								this.active = false;
+								break;
+								
+							case PASSWORDHINT :
+								decode = message.messageText.split(" ");
+								if (decode.length == 1) {
+									try {
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
+									} catch (InvalidUserException e) {
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, e.getMessage())));
+									} catch (ArrayIndexOutOfBoundsException e) {
+										e.printStackTrace();
+										// Invalid Input, therefore it is ignored, should
+										// not happen under standard operation of system
+									}
+								} else {
+									try {
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.SUCCESS, database.checkQuestionAnswer(
+														decode[0], decode[1]))));
+									} catch (InvalidUserException e) {
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, e.getMessage())));
+									} catch (InvalidInformationException e) {
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, e.getMessage())));
+									} catch (ArrayIndexOutOfBoundsException e) {
+										e.printStackTrace();
+										// Invalid Input, therefore it is ignored, should
+										// not happen under standard operation of system
+									}
+								}
+								break;
 							
-						} else {
-							System.out.println("Invalid Message type recieved #Panic");
+							default : 
+								System.out.println("Invalid Message type recieved #Panic");
+								break;
+								
 						}
 					}
 				}
