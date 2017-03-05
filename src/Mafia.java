@@ -17,17 +17,23 @@ public class Mafia implements IGame {
     // };
 
     private boolean day = true;
+    
+    private boolean voteInProgress = false;  //not yet used
 
     // array list containing the players who have used /ready
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
     private ArrayList<String> mafia; // might make type map
+    private int[] mafiaID; //placeholder
     private ArrayList<String> innocent; // might make type map
-    private ArrayList<Integer> elim;
-    private ArrayList<Integer> save;
+    private ArrayList<String> elimDay;
+    private ArrayList<String> elimNight;
+    private ArrayList<String> save;
     private ArrayList<String> players;
     private TreeMap<String, Integer> eliminate;
-    private String suscipiousPlayer;
+    private ArrayList<String> dayVote;
+    private ArrayList<String> nightVote;
+    private String suspiciousPlayer;
     private Random mafiaPicker;
 
     // NOTE: Sorry I forgot that this has been moved to the Server class,
@@ -74,7 +80,7 @@ public class Mafia implements IGame {
 	} else if (command == "/elim") {
 	    if (remText.isEmpty() || remText.contains(" ")) {
 		server.privateMessage(
-			"The command \"/elim\" needs to be followed by a players name with no spaces/characters after",
+			"The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
 			origin);
 	    } else {
 
@@ -88,14 +94,98 @@ public class Mafia implements IGame {
 
 	} else if (command == "/save") {
 
+	    if (remText.isEmpty() || remText.contains(" ")) {
+		server.privateMessage(
+			"The command \"/save\" needs to be followed by a player's name with no spaces/characters thereafter",
+			origin);
+	    } else {
+		save(remText, origin);
+	    }
+
 	} else if (command == "/night") {
 
+	    if (!remText.isEmpty()) {
+		server.privateMessage("The command \"/night\" cannnot have characters after it", origin);
+	    } else {
+		voteNight(origin);
+	    }
+
 	} else if (command == "/day") {
+
+	    if (!remText.isEmpty()) {
+		server.privateMessage("The command \"/day\" cannnot have characters after it", origin);
+	    } else {
+		voteDay(origin);
+	    }
 
 	} else {
 
 	}
 
+    }
+
+    private void voteDay(int origin) {
+	// TODO Auto-generated method stub
+	String user = server.getUsername(origin);
+
+	if (day == false) {
+	    server.privateMessage("cannot vote for this during night", origin);
+	} else if (nightVote.isEmpty()) {
+	    server.privateMessage("cannot use this command when there isn't a vote to change to night", origin);
+	} else {
+	    if (nightVote.contains(user)) {
+		nightVote.remove(user);
+	    }
+
+	    dayVote.add(user);
+	    checkDay(origin);
+	}
+    }
+
+    private void checkDay(int origin) {
+	// TODO Auto-generated method stub
+
+	server.publicMessage(server.getUsername(origin) + " has voted for it to remain day");
+
+	if (dayVote.size() > players.size() / 2) {
+	    dayVote.clear();
+	    nightVote.clear();
+	    server.publicMessage("Majority vote reached for it to remain day");
+	}
+    }
+
+    private void voteNight(int origin) {
+	// TODO Auto-generated method stub
+	String user = server.getUsername(origin);
+
+	if (day == false) {
+	    server.privateMessage("it is already night", origin);
+	} else if (nightVote.contains(user)) {
+	    server.privateMessage("you have already voted to change the game to night", origin);
+	} else {
+	    if (dayVote.contains(user)) {
+		dayVote.remove(user);
+	    }
+
+	    nightVote.add(user);
+	    checkNight(origin);
+	}
+    }
+
+    private void checkNight(int origin) {
+	// TODO Auto-generated method stub
+
+	server.publicMessage(server.getUsername(origin) + " has voted for it to remain night");
+
+	if (nightVote.size() > players.size() / 2) {
+	    nightVote.clear();
+	    dayVote.clear();
+	    server.publicMessage("Majority vote reached for it to change to night, all players now muted");
+	    // need to make sure that muting all the players doesn't stop the
+	    // mafia from voting
+	    day = false;
+	    server.setChatActive(false);
+	}
     }
 
     /**
@@ -107,28 +197,35 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    private void elimDay(String player, int origin) { 
-	
+    private void elimDay(String player, int origin) {
+
 	// not sure whether to allow player to vote eliminate themselves
 	// TODO create check for if someone has voted to save the player
-	
+	String user = server.getUsername(origin);
+
 	if (!players.contains(player)) {
-	    server.privateMessage(player + " is not in this game", origin);
-	} else if (suscipiousPlayer == null) {
-	    suscipiousPlayer = player;
-	    elim.add(origin); // not checked if this will eliminate because
-			      // assumed that 1 vote is not enough.
-			      // there could be a deadlock when two players are
-			      // left (might change the mafia win condition to
-			      // address this)
+	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
+	} else if (player == user) {
+	    server.privateMessage("you cannot vote for yourself", origin);
+	} else if (suspiciousPlayer == null) {
+	    suspiciousPlayer = player;
+	    elimDay.add(user); // not checked if this will eliminate because
+			    // assumed that 1 vote is not enough.
+			    // there could be a deadlock when two players are
+			    // left (might change the mafia win condition to
+			    // address this)
 
 	} else {
-	    if (suscipiousPlayer != player) {
+	    if (suspiciousPlayer != player) {
 		server.privateMessage(
-			"cannot vote for " + player + " while the vote for " + suscipiousPlayer + " is in progress",
+			"cannot vote for " + player + " while the vote for " + suspiciousPlayer + " is in progress",
 			origin);
 	    } else {
-		elim.add(origin);
+		if (save.contains(user)) {
+		    save.remove(user);
+		}
+
+		elimDay.add(user);
 		checkElim(origin);
 	    }
 	}
@@ -137,54 +234,124 @@ public class Mafia implements IGame {
 
     /**
      * The checkElim method checks to see if there are enough votes to eliminate
-     * the suscipiousPlayer. If the number of elim votes has passed half the number
-     * of players left, then the suscipiousPlayer is eliminated. If this is not the case
-     * then the method sends a public message stating who has voted for the suscipiousPlayer.
+     * the suscipiousPlayer. If the number of elim votes has passed half the
+     * number of players left, then the suscipiousPlayer is eliminated. If this
+     * is not the case then the method sends a public message stating who has
+     * voted for the suscipiousPlayer.
+     * 
      * @param origin
      */
     private void checkElim(int origin) { // does this need to be synchronized?
 	// TODO Auto-generated method stub
-	if (elim.size() > players.size() / 2) {
-	    eliminate();
+	if (elimDay.size() > players.size() / 2) {
+	    eliminateDay();
 	} else {
-	    server.publicMessage(server.getUsername(origin) + " has voted to eliminate " + suscipiousPlayer);
+	    server.publicMessage(server.getUsername(origin) + " has voted to eliminate " + suspiciousPlayer);
 	}
 
     }
 
-    /**The eliminate method removes the player whose username matches the
-     * suscipiousPlayer field variable from the game. This involves 
-     * clearing the elim and save voting lists, removing the player from the list
-     * of active players,removing them from the list of innocent/mafia and 
-     * muting the player in chat.
-     * 
+    /**
+     * The eliminate method removes the player whose username matches the
+     * suscipiousPlayer field variable from the game. This involves clearing the
+     * elim and save voting lists, removing the player from the list of active
+     * players,removing them from the list of innocent/mafia and muting the
+     * player in chat. 
      */
-    private void eliminate() {
+    private void eliminateDay() {
 
-	elim.clear();
+	elimDay.clear();
 	save.clear();
 
-	players.remove(suscipiousPlayer);
+	players.remove(suspiciousPlayer);
 
-	if (mafia.contains(suscipiousPlayer)) {
-	    mafia.remove(suscipiousPlayer);
+	if (mafia.contains(suspiciousPlayer)) {
+	    mafia.remove(suspiciousPlayer);
 	} else {
-	    innocent.remove(suscipiousPlayer);
+	    innocent.remove(suspiciousPlayer);
 	}
-	int elimID = server.getUserID(suscipiousPlayer);
-	
+	int elimID = server.getUserID(suspiciousPlayer);
+
 	server.setPlayerMuted(elimID, true);
-	suscipiousPlayer = null;
+	suspiciousPlayer = null;
 
     }
 
-    private void save() {// not sure whether to allow player to vote save
-			 // themselves
+    private void save(String player, int origin) {// suspicious player doesn't
+						  // need to vote for themselves
+
+	String user = server.getUsername(origin);
+
+	if (!players.contains(player)) {
+	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
+	} else if (player == user) {
+	    server.privateMessage("you don't need to vote to save yourself", origin);
+	} else if (suspiciousPlayer == null) {
+	    suspiciousPlayer = player;
+	    save.add(user); // not checked if this will eliminate because
+			    // assumed that 1 vote is not enough.
+			    // there could be a deadlock when two players are
+			    // left (might change the mafia win condition to
+			    // address this)
+
+	} else {
+	    if (suspiciousPlayer != player) {
+		server.privateMessage(
+			"cannot vote for " + player + " while the vote for " + suspiciousPlayer + " is in progress",
+			origin);
+	    } else {
+		if (elimDay.contains(user)) {
+		    elimDay.remove(user);
+		}
+
+		save.add(user);
+		checkElim(origin);
+	    }
+	}
 
     }
 
     public void elimNight(String player, int origin) {
+	String user = server.getUsername(origin);
+	
+	if (innocent.contains(user)){
+	    server.privateMessage(player + "As an innocent you are not active during the night", origin);
+	    
+    	} else if (!players.contains(player)) {
+	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
+	    
+	} else if (player == user) {
+	    server.privateMessage("you cannot vote for yourself", origin);
+	    
+	} else if (mafia.contains(player)){	    
+	    server.privateMessage("you cannot vote for another mafia player", origin); //not sure if will keep this
+	
+	}else {
+	   //TODO figure out how to handle the elimination vote during the night
+	    eliminate.put(player, origin);
+	    checkElimNight();
+	}
+    }
 
+    private void checkElimNight() {
+	// TODO Auto-generated method stub
+	if (eliminate.size() == 1){
+	   String victim = eliminate.firstKey();
+	   
+	   players.remove(victim);
+	   innocent.remove(victim);
+	   server.privateMessage("you have been killed in the night", server.getUserID(victim));
+	   server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");	    
+	    
+	}else {
+	    server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
+	    server.privateMessage("In order to kill an innocent during the night, the same person needs"
+	    	+ " to be chosen by all the mafia players", mafiaID);
+	}
+	eliminate.clear();
+	
+	day = true;
+	server.setChatActive(true);
     }
 
     private void unready(int origin) {
