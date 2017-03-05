@@ -13,6 +13,7 @@ implements WindowListener, MouseListener, KeyListener
 	private TextField sendArea = null;
 	private String userName = null;
 	
+	
 	ChatClient (String s)
 	{
 		super(s);
