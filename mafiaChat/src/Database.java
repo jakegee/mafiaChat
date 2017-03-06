@@ -33,13 +33,19 @@ public class Database implements IDatabase {
 			List<String> userinfo = new ArrayList<String>();
 			List<String> hintinfo = new ArrayList<String>();
 		}
+		public final void registerUser(String username, String password, String securityQuestion,
+				String questionAnswer) {
+			super(username, password, securityQuestion, questionAnswer);
 		
+			
 		int userid = 1;
 			createUser.setInt(1, userid);
-			createUser.setString(2, username);
-			createUser.setString(3, password);
+			createUser.setString(2, get.username);
+			createUser.setString(3, );
 			createUser.executeUpdate();
 			userid++;
+		
+		}
 		
 		int hintid = 1;
 		for (String hint : userinfo) {
