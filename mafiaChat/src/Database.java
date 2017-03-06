@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.sql.*;
 
-public class Database {
+public class Database implements IDatabase {
 	
 	public static void main(String[] args) {
 		// TODO code application logic here
@@ -48,7 +48,7 @@ public class Database {
 			createUser.setString(3, hint);
 			createUser.setString(4, userid);
 			createUser.executeUpdate();
-			userid++;
+			hintid++;
 		}
 
 		catch (FileNotFoundException e) {
