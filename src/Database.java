@@ -30,12 +30,13 @@ public class Database implements IDatabase {
 			PreparedStatement createUser = dbConn.prepareStatement("INSERT INTO users VALUES(?,?,?)");
 			PreparedStatement createHint = dbConn.prepareStatement("INSERT INTO passwordhints VALUES(?,?,?,?)");
 			
-			List<String> userinfo = new ArrayList<String>();
-			List<String> hintinfo = new ArrayList<String>();
+//			List<String> userinfo = new ArrayList<String>();
+//			List<String> hintinfo = new ArrayList<String>();
+
 		}
-		public final void registerUser(String username, String password, String securityQuestion,
+		public void registerUser(String username, String password, String securityQuestion,
 				String questionAnswer) {
-			super(username, password, securityQuestion, questionAnswer);
+			super(username, password, securityQuestion, questionAnswer)
 		
 			
 		int userid = 1;
