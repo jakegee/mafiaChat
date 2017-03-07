@@ -92,6 +92,7 @@ public class chatGame {
 		Welcome.add(lblDareToPlay);
 		
 		JButton btnEnter = new JButton("ENTER");
+		btnEnter.setToolTipText("Press to enter game");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Welcome.setVisible(false);
@@ -126,12 +127,14 @@ public class chatGame {
 			label.setFont(new Font("Futura", Font.PLAIN, 18));
 			
 			JButton button = new JButton("Log In");
+			button.setToolTipText("Press to login to game");
 			button.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 			button.setBounds(172, 168, 92, 29);
 			button.setForeground(Color.BLUE);
 			Login.add(button);
 			
 			JButton button_1 = new JButton("Sign Up");
+			button_1.setToolTipText("Press to register new user");
 			button_1.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 			button_1.setBounds(172, 209, 92, 29);
 			button_1.addActionListener(new ActionListener() {
@@ -151,7 +154,7 @@ public class chatGame {
 			
 					
 					JLabel panel = new JLabel("");
-					panel.setBounds(22, 22, 404, 47);
+					panel.setBounds(17, 16, 404, 64);
 					Image logo = img.getScaledInstance(panel.getWidth(),panel.getHeight(), Image.SCALE_SMOOTH);
 					panel.setIcon(new ImageIcon(logo));
 					Login.add(panel);
@@ -185,6 +188,7 @@ public class chatGame {
 		SignIn.add(textField_3);
 		
 		JButton btnRegister = new JButton("Register");
+		btnRegister.setToolTipText("Submit registration");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SignIn.setVisible(false);
@@ -194,13 +198,13 @@ public class chatGame {
 		});
 		btnRegister.setForeground(Color.BLUE);
 		btnRegister.setFont(new Font("Futura", Font.PLAIN, 14));
-		btnRegister.setBounds(155, 190, 117, 29);
+		btnRegister.setBounds(42, 208, 117, 29);
 		SignIn.add(btnRegister);
 		
 		
 		
 		JLabel label_2 = new JLabel("");
-		label_2.setBounds(28, 19, 399, 60);
+		label_2.setBounds(17, 16, 404, 64);
 		Image newimg = img.getScaledInstance(label_2.getWidth(),label_2.getHeight(), Image.SCALE_SMOOTH);
 		label_2.setIcon(new ImageIcon(newimg));
 		SignIn.add(label_2);
@@ -217,6 +221,7 @@ public class chatGame {
 		textField_1.setColumns(10);
 		
 		JButton btnBack = new JButton("Back");
+		btnBack.setToolTipText("To login screen");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SignIn.setVisible(false);
