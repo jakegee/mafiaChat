@@ -60,7 +60,7 @@ public class chatGame {
 		GAME.setBounds(100, 100, 450, 300);
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GAME.getContentPane().setLayout(new CardLayout(0, 0));
-		Image img = new ImageIcon(this.getClass().getResource("logo.png")).getImage();
+		Image img = new ImageIcon(this.getClass().getResource("/LOGO.png")).getImage();
 		
 		JPanel Welcome = new JPanel();
 		Welcome.setBackground(Color.BLACK);
