@@ -61,6 +61,7 @@ public class chatGame {
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GAME.getContentPane().setLayout(new CardLayout(0, 0));
 		Image img = new ImageIcon(this.getClass().getResource("/LOGO.png")).getImage();
+		Image img2 = new ImageIcon(this.getClass().getResource("/chat.png")).getImage();
 		
 		JPanel Welcome = new JPanel();
 		Welcome.setBackground(Color.BLACK);
@@ -106,7 +107,7 @@ public class chatGame {
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setForeground(Color.WHITE);
 		Image imgage = new ImageIcon(this.getClass().getResource("/chat.png")).getImage();
-		Image logo2 = img.getScaledInstance(lblNewLabel.getWidth(),lblNewLabel.getHeight(), Image.SCALE_SMOOTH);
+	//	Image logo2 = img.getScaledInstance(lblNewLabel.getWidth(),lblNewLabel.getHeight(), Image.SCALE_SMOOTH);
 		lblNewLabel.setIcon(new ImageIcon (imgage));
 		lblNewLabel.setBounds(147, 120, 128, 111);
 		Welcome.add(lblNewLabel);
