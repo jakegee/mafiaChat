@@ -17,6 +17,12 @@ public class Mafia implements IGame {
 
     private boolean voteInProgress = false; // not yet used
 
+    /*
+     * could change the voting ArrayList to sets instead as these don't allow
+     * duplicates. Note: hashset returns boolean based on whether the insertion
+     * is successful
+     */
+
     // array list containing the players who have used /ready
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
@@ -140,11 +146,12 @@ public class Mafia implements IGame {
     }
 
     /**
-     * The voteDay method is used to vote against the vote to change the game to night.
-     * The method takes the origin of the message and checks whether the player it corresponds
-     * to has already voted to keep it day (in which case doesn't add their vote) and checks
-     * if they have already voted for night (in which case it removes their vote from night and 
-     * adds their vote to day.
+     * The voteDay method is used to vote against the vote to change the game to
+     * night. The method takes the origin of the message and checks whether the
+     * player it corresponds to has already voted to keep it day (in which case
+     * doesn't add their vote) and checks if they have already voted for night
+     * (in which case it removes their vote from night and adds their vote to
+     * day).
      * 
      * @param origin
      *            is the userID of type int for the person who sent the command
@@ -154,10 +161,10 @@ public class Mafia implements IGame {
 	if (nightVote.isEmpty()) {
 	    server.privateMessage("cannot use this command when there isn't a vote to change to night", origin);
 
-	} else if (dayVote.contains(origin)){
+	} else if (dayVote.contains(origin)) {
 	    server.privateMessage("you have already voted to keep the game in the day phase", origin);
-	    
-    	}else {
+
+	} else {
 	    if (nightVote.contains(origin)) {
 		nightVote.remove(origin);
 	    }
@@ -167,6 +174,15 @@ public class Mafia implements IGame {
 	}
     }
 
+    /**
+     * The checkDay method checks if the votes for to keep the game as day, are
+     * in the majority. If so then the vote for night is unsuccessful and the
+     * votes cleared.
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     private void checkDay(int origin) {
 	server.publicMessage(server.getUsername(origin) + " has voted for it to remain day");
 
@@ -177,6 +193,18 @@ public class Mafia implements IGame {
 	}
     }
 
+    /**
+     * The voteNight method either starts the vote to change the game to night
+     * or adds subsequent votes to the total number of night votes. It also
+     * takes the origin of the message and checks whether the player it
+     * corresponds to has already voted to change to night (in which case
+     * doesn't add their vote) and checks if they have already voted for day (in
+     * which case it removes their vote from night and adds their vote to night).
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     private void voteNight(int origin) {
 	if (playerOnTrialID != null) {
 	    server.privateMessage("you cannot start a vote for it to be night when there is a vote in progress "
@@ -195,6 +223,15 @@ public class Mafia implements IGame {
 	}
     }
 
+    /**
+     * The checkNight method checks if the votes to change the game to night,
+     * are in the majority. If so then the vote for night is successful, the
+     * votes cleared, game changed to night and chat set to inactive.
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     private void checkNight(int origin) {
 	server.publicMessage(server.getUsername(origin) + " has voted for it to remain night");
 
@@ -211,7 +248,13 @@ public class Mafia implements IGame {
     }
 
     /**
-     * The elimDay method is for elimination votes during the day
+     * The elimDay method either starts the vote to eliminate a player during
+     * the day or adds subsequent votes to the total number of votes for the
+     * player on trial. It also takes the origin of the message and checks
+     * whether the player it corresponds to has already voted to eliminate said
+     * player (in which case doesn't add their vote) and checks if they have
+     * already voted to save said payer (in which case it removes their vote
+     * from the save vote and adds their vote to the eliminate vote).
      * 
      * @param player
      *            is the name of the player being voted to be eliminated as type
@@ -223,8 +266,9 @@ public class Mafia implements IGame {
 	int playerID = server.getUserID(player);
 
 	if (nightVote.size() > 0) {
-	    server.privateMessage(
-		    "cannot vote to eliminate a player while there is a vote to change " + "the game to night", origin);
+	    server.privateMessage("cannot vote to eliminate a player while there is a vote to change the game to night",
+		    origin);
+
 	} else if (!playerIDs.contains(playerID)) {
 	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
 
@@ -263,10 +307,13 @@ public class Mafia implements IGame {
      * voted for the suscipiousPlayer.
      * 
      * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
      */
     private void checkElim(int origin) { // does this need to be synchronized?
 	if (elimDay.size() > playerIDs.size() / 2) {
 	    eliminateDay();
+
 	} else {
 	    server.publicMessage(
 		    server.getUsername(origin) + " has voted to eliminate " + server.getUsername(playerOnTrialID));
@@ -290,24 +337,41 @@ public class Mafia implements IGame {
 
 	if (mafia.contains(playerOnTrialID)) {
 	    mafia.remove(playerOnTrialID);
+
 	} else {
 	    innocentsID.remove(playerOnTrialID);
 	}
+
 	server.setPlayerMuted(playerOnTrialID, true);
 	playerOnTrialID = null;
 
     }
 
+    /**
+     * The save method is used to vote against eliminating the current player on
+     * trial. The method takes the origin of the message and checks whether the
+     * player it corresponds to has already voted (in which case doesn't add
+     * their vote) and checks if they had previously voted to eliminate said
+     * player (in which case it removes their vote to eliminate the player and
+     * adds their vote to save the player).
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     private void save(String player, int origin) {// suspicious player doesn't
 						  // need to vote for themselves
 	int playerID = server.getUserID(player);
 
 	if (playerOnTrialID == null) {
 	    server.privateMessage("you cannot vote to save someone when there is no-one on trial", origin);
+
 	} else if (!playerIDs.contains(playerID)) {
 	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
+
 	} else if (playerID == origin) {
 	    server.privateMessage("you don't need to vote to save yourself", origin);
+
 	} else {
 	    if (playerOnTrialID != playerID) {
 		server.privateMessage("cannot vote for " + player + " while the vote for "
@@ -324,6 +388,14 @@ public class Mafia implements IGame {
 
     }
 
+    /**
+     * 
+     * @param player
+     *            is the name of the player being voted to be eliminated as type
+     *            String
+     * @param origin
+     *            is the id of the player making the vote
+     */
     public void elimNight(String player, int origin) {
 	int playerID = server.getUserID(player);
 
@@ -394,6 +466,12 @@ public class Mafia implements IGame {
 
     }
 
+    /**
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     public void ready(int origin) {
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
@@ -415,6 +493,12 @@ public class Mafia implements IGame {
 	}
     }
 
+    /**
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     public void voteStart(int origin) {
 	if (!votedStart.contains(origin)) { // ensures players aren't added more
 					    // than once
