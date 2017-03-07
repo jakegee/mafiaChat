@@ -101,7 +101,7 @@ public class chatGame {
 			}
 		});
 		btnEnter.setForeground(Color.BLUE);
-		btnEnter.setBounds(147, 243, 117, 29);
+		btnEnter.setBounds(158, 243, 117, 29);
 		Welcome.add(btnEnter);
 		
 		JLabel lblNewLabel = new JLabel("");
@@ -109,7 +109,7 @@ public class chatGame {
 		Image imgage = new ImageIcon(this.getClass().getResource("/chat.png")).getImage();
 	//	Image logo2 = img.getScaledInstance(lblNewLabel.getWidth(),lblNewLabel.getHeight(), Image.SCALE_SMOOTH);
 		lblNewLabel.setIcon(new ImageIcon (imgage));
-		lblNewLabel.setBounds(147, 120, 128, 111);
+		lblNewLabel.setBounds(158, 120, 128, 111);
 		Welcome.add(lblNewLabel);
 		
 		
