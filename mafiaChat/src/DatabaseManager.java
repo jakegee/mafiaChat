@@ -1,9 +1,16 @@
-package mafiaChat;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import exceptions.InvalidInformationException;
+import exceptions.InvalidUserException;
+import exceptions.UserExistsException;
+import systemInterfaces.IDatabase;
 
 public class DatabaseManager implements IDatabase {
 
@@ -11,23 +18,27 @@ public class DatabaseManager implements IDatabase {
 	private Connection dbConn;
 	private PreparedStatement createUser;
 	
-	public Manager() {
+	public DatabaseManager() {
 		
 		System.setProperty("jdbc.drivers", "org.postgresql.Driver");
 
 		try {
 			Class.forName("org.postgresql.Driver");
+			dbName = "jdbc:postgresql://mod-fund-databases.cs.bham.ac.uk/jgs630";
+			dbConn = DriverManager.getConnection(dbName, "jgs630", "bakny4ne83");
+		} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 		} catch (ClassNotFoundException ex) {
 			System.out.println("Driver not found");
 		}
-
-		try {
-			dbName = "jdbc:postgresql://mod-fund-databases.cs.bham.ac.uk/jgs630";
-			dbConn = DriverManager.getConnection(dbName, "jgs630", "bakny4ne83");
-		}
-			
-		public void registerUser(String username, String password, String securityQuestion, String questionAnswer)  {
 		
+	}
+			
+	public void registerUser(String username, String password, String securityQuestion, String questionAnswer)  
+		throws UserExistsException{
+		
+	try {
 		PreparedStatement sameUser = dbConn.prepareStatement("SELECT username FROM users WHERE username LIKE ?");
 		sameUser.setString(1, username);
 		ResultSet rs = sameUser.executeQuery();
@@ -44,15 +55,33 @@ public class DatabaseManager implements IDatabase {
 			createUser.setString(4, questionAnswer);
 			createUser.executeUpdate();
 //			userid++;
-		}
-	
-	
-		catch (FileNotFoundException e) {
-			System.out.println("File not found");
+			
+			
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage() + "Error reading file");
 		}
+	}
+
+	@Override
+	public void loginUser(String username, String password) throws InvalidUserException, InvalidInformationException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getSecurityQuestion(String username) throws InvalidUserException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String checkQuestionAnswer(String username, String hintAnswer)
+			throws InvalidUserException, InvalidInformationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("HELLO!!!!!");
 	}
 }
