@@ -80,7 +80,7 @@ public class chatGame {
 		
 		
 		JLabel logoWelcome = new JLabel("");
-		logoWelcome.setBounds(23, 46, 404, 64);
+		logoWelcome.setBounds(17, 16, 404, 64);
 		Image logoW = img.getScaledInstance(logoWelcome.getWidth(),logoWelcome.getHeight(), Image.SCALE_SMOOTH);
 		logoWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(logoWelcome);
@@ -88,7 +88,7 @@ public class chatGame {
 		JLabel lblDareToPlay = new JLabel("Dare to play...");
 		lblDareToPlay.setFont(new Font("Futura", Font.PLAIN, 16));
 		lblDareToPlay.setForeground(Color.WHITE);
-		lblDareToPlay.setBounds(157, 136, 222, 16);
+		lblDareToPlay.setBounds(158, 92, 117, 16);
 		Welcome.add(lblDareToPlay);
 		
 		JButton btnEnter = new JButton("ENTER");
@@ -99,8 +99,16 @@ public class chatGame {
 			}
 		});
 		btnEnter.setForeground(Color.BLUE);
-		btnEnter.setBounds(159, 186, 117, 29);
+		btnEnter.setBounds(147, 243, 117, 29);
 		Welcome.add(btnEnter);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setForeground(Color.WHITE);
+		Image imgage = new ImageIcon(this.getClass().getResource("/chat.png")).getImage();
+		Image logo2 = img.getScaledInstance(lblNewLabel.getWidth(),lblNewLabel.getHeight(), Image.SCALE_SMOOTH);
+		lblNewLabel.setIcon(new ImageIcon (imgage));
+		lblNewLabel.setBounds(147, 120, 128, 111);
+		Welcome.add(lblNewLabel);
 		
 		
 		
