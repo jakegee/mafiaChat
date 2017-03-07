@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JPasswordField;
 
-public class Game {
+public class chatGame {
 
 	private JFrame GAME;
 	private JTextField textField;
@@ -35,7 +35,7 @@ public class Game {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Game window = new Game();
+					chatGame window = new chatGame();
 					window.GAME.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -47,7 +47,7 @@ public class Game {
 	/**
 	 * Create the application.
 	 */
-	public Game() {
+	public chatGame() {
 		initialize();
 	}
 
