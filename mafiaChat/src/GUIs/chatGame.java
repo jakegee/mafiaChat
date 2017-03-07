@@ -27,6 +27,7 @@ public class chatGame {
 	private JTextField textField_3;
 	private JPasswordField passwordField;
 	private JTextField textField_1;
+	private JTextField textField_4;
 
 	/**
 	 * Launch the application.
@@ -169,23 +170,23 @@ public class chatGame {
 		JLabel lblEnterName = new JLabel("Enter Name");
 		lblEnterName.setForeground(Color.WHITE);
 		lblEnterName.setFont(new Font("Futura", Font.PLAIN, 14));
-		lblEnterName.setBounds(28, 86, 116, 22);
+		lblEnterName.setBounds(17, 86, 116, 22);
 		SignIn.add(lblEnterName);
 		
 		JLabel lblEnterPassword = new JLabel("Enter Password");
 		lblEnterPassword.setForeground(Color.WHITE);
 		lblEnterPassword.setFont(new Font("Futura", Font.PLAIN, 14));
-		lblEnterPassword.setBounds(28, 120, 127, 22);
+		lblEnterPassword.setBounds(17, 120, 127, 22);
 		SignIn.add(lblEnterPassword);
 		
 		textField_2 = new JTextField();
-		textField_2.setBounds(191, 86, 174, 22);
+		textField_2.setBounds(258, 86, 174, 22);
 		SignIn.add(textField_2);
 		textField_2.setColumns(10);
 		
 		textField_3 = new JTextField();
 		textField_3.setColumns(10);
-		textField_3.setBounds(191, 120, 174, 22);
+		textField_3.setBounds(258, 120, 174, 22);
 		SignIn.add(textField_3);
 		
 		JButton btnRegister = new JButton("Register");
@@ -199,7 +200,7 @@ public class chatGame {
 		});
 		btnRegister.setForeground(Color.BLUE);
 		btnRegister.setFont(new Font("Futura", Font.PLAIN, 14));
-		btnRegister.setBounds(42, 208, 117, 29);
+		btnRegister.setBounds(170, 229, 117, 29);
 		SignIn.add(btnRegister);
 		
 		
@@ -210,14 +211,14 @@ public class chatGame {
 		label_2.setIcon(new ImageIcon(newimg));
 		SignIn.add(label_2);
 		
-		JLabel lblEnterPasswordHint = new JLabel("Enter Password Hint");
+		JLabel lblEnterPasswordHint = new JLabel("Enter your security question");
 		lblEnterPasswordHint.setFont(new Font("Futura", Font.PLAIN, 14));
 		lblEnterPasswordHint.setForeground(Color.WHITE);
-		lblEnterPasswordHint.setBounds(28, 158, 156, 16);
+		lblEnterPasswordHint.setBounds(17, 154, 229, 26);
 		SignIn.add(lblEnterPasswordHint);
 		
 		textField_1 = new JTextField();
-		textField_1.setBounds(191, 153, 174, 26);
+		textField_1.setBounds(258, 154, 174, 22);
 		SignIn.add(textField_1);
 		textField_1.setColumns(10);
 		
@@ -233,6 +234,17 @@ public class chatGame {
 		btnBack.setForeground(Color.BLUE);
 		btnBack.setBounds(6, 249, 46, 29);
 		SignIn.add(btnBack);
+		
+		JLabel lblEnterHint = new JLabel("Enter your answer");
+		lblEnterHint.setFont(new Font("Futura", Font.PLAIN, 14));
+		lblEnterHint.setForeground(Color.WHITE);
+		lblEnterHint.setBounds(17, 186, 229, 26);
+		SignIn.add(lblEnterHint);
+		
+		textField_4 = new JTextField();
+		textField_4.setColumns(10);
+		textField_4.setBounds(258, 188, 174, 22);
+		SignIn.add(textField_4);
 		
 	
 		
