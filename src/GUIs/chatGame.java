@@ -209,6 +209,12 @@ public class chatGame {
 		textField_1.setColumns(10);
 		
 		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SignIn.setVisible(false);
+				Login.setVisible(true);
+			}
+		});
 		btnBack.setFont(new Font("Futura", Font.PLAIN, 10));
 		btnBack.setForeground(Color.BLUE);
 		btnBack.setBounds(6, 249, 46, 29);
