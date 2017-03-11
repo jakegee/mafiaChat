@@ -116,33 +116,22 @@ public class chatGame {
 		logo.setBounds(0, 6, 188, 79);
 
 
-
-
-
-		JScrollPane scr = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);// Add your text area to scroll pane 
-		scr.setBounds(30, 102, 327, 448);// You have to set bounds for all the controls and containers incas eof null layout
-		Game.add(scr);// Add you scroll pane to container
-
-		JLabel panel = new JLabel("");
-		scr.setRowHeaderView(panel);
-		Image imageG = img.getScaledInstance(panel.getWidth(),panel.getHeight(), Image.SCALE_SMOOTH);
-		panel.setIcon(new ImageIcon(imageG));
-
-
-
+		JScrollPane scrollPane1 = new JScrollPane();
+		scrollPane1.setBounds(28,105,339,445);
+		scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		Game.add(scrollPane1);
 
 
 		JTextArea serverText = new JTextArea();
 		serverText.setEditable(false);
 		serverText.setLineWrap(true);
-		serverText.setBounds(369, 365, 160, 185);
+		serverText.setBounds(379, 365, 160, 185);
 		Game.add(serverText);
 
 		JTextArea onlineUsers = new JTextArea();
 		onlineUsers.setEditable(false);
 		onlineUsers.setLineWrap(true);
-		onlineUsers.setBounds(371, 105, 158, 229);
+		onlineUsers.setBounds(379, 107, 158, 229);
 		Game.add(onlineUsers);
 
 		JLabel lblOnlineUsers = new JLabel("ONLINE USERS");
@@ -163,14 +152,12 @@ public class chatGame {
 		Send.setForeground(Color.BLUE);
 		Send.setBounds(442, 562, 87, 60);
 		Game.add(Send);
+		
+		
 		JScrollPane scrollPane = new JScrollPane();
-
 		scrollPane.setBounds(28,562,402,60);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
-
-
-
 		JTextArea textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		textArea.setLineWrap(true);
@@ -178,11 +165,10 @@ public class chatGame {
 		JMenuItem mntmMenu = new JMenuItem("Menu");
 		mntmMenu.setBounds(391, 6, 153, 19);
 		Game.add(mntmMenu);
-
-
-
-
-
+		JTextArea textArea12 = new JTextArea();
+		textArea12.setBounds(28, 107, 310, 441);
+		Game.add(textArea12);
+		textArea12.setLineWrap(true);
 
 		JLabel logoWelcome = new JLabel("");
 		logoWelcome.setBounds(22, 20, 500, 90);
@@ -214,9 +200,6 @@ public class chatGame {
 		Image imgage = img2.getScaledInstance(msn.getWidth(),msn.getHeight(), Image.SCALE_SMOOTH);
 		msn.setIcon(new ImageIcon (imgage));
 		Welcome.add(msn);
-
-
-
 
 		JLabel label_1 = new JLabel("Enter Password");
 		label_1.setBounds(56, 272, 165, 47);
@@ -365,9 +348,6 @@ public class chatGame {
 		passwordField_1 = new JPasswordField();
 		passwordField_1.setBounds(280, 246, 215, 50);
 		SignIn.add(passwordField_1);
-
-
-
 
 
 	}
