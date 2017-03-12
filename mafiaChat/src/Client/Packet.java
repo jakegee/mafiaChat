@@ -26,32 +26,32 @@ public class Packet {
 		return message;
 	}
 
-	public Packet setCommandMsg(){
+	public Message setCommandMsg(){
 		for (int i=0; i<message.length(); i++){
 			if (message.charAt(0) == '/'){
-				return new Packet(Message.messageType.COMMAND, message);
+				return new Message(Message.messageType.COMMAND, message);
 			} 	
 		}
-		return new Packet(Message.messageType.MESSAGE, message);
+		return new Message(Message.messageType.MESSAGE, message);
 		
 	}
-	public static Packet createLoginPacket(String username, String password, String secQuestion, String ans) {
+	public static Message createLoginPacket(String username, String password, String secQuestion, String ans) {
 		String msg = username + " " + password + " " + secQuestion + " " + ans;
-		return new Packet(Message.messageType.LOGIN, msg);
+		return new Message(Message.messageType.LOGIN, msg);
 	}
 
-	public static Packet createAccountPacket(String username, String password, String secQuestion, String ans) {
+	public static Message createAccountPacket(String username, String password, String secQuestion, String ans) {
 		String msg = username + " " + password + " " + secQuestion + " " + ans;
-		return new Packet(Message.messageType.REGISTER, msg);
+		return new Message(Message.messageType.REGISTER, msg);
 	}
 
-	public Packet createLogoutPacket() {
-		return new Packet(Message.messageType.LOGOUT, null);
+	public Message createLogoutPacket() {
+		return new Message(Message.messageType.LOGOUT, null);
 	}
 
 	
-	public static Packet createPassHintPacket(String hint) {
-		return new Packet(Message.messageType.PASSWORDHINT, hint);
+	public static Message createPassHintPacket(String hint) {
+		return new Message(Message.messageType.PASSWORDHINT, hint);
 	}
 
 	

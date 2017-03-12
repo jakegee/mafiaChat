@@ -1,6 +1,8 @@
 package Client;
 
 
+import messages.*;
+import messages.Message.messageType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,7 +80,7 @@ public abstract class SocketOrganiser implements Runnable{
 			setConnected(true);
 			while (!disconnected){
 				if (!socket.isClosed()){
-					Message msg = (Message) inputStream.readObject();
+					ServerMessage msg = (ServerMessage) inputStream.readObject();
 					acceptMsg(msg);
 				} else {
 					try{
@@ -102,7 +104,7 @@ public abstract class SocketOrganiser implements Runnable{
 	 * @param msg
 	 */
 	public  void sendMsg(String msg){
-		Message temp = new Message(MsgType.MSG, new String[]{msg});
+		Message temp = new Message(messageType.MESSAGE, msg);
 		sendData(temp);
 	}
 	
@@ -158,7 +160,7 @@ public abstract class SocketOrganiser implements Runnable{
 	 * method that logs clients out.
 	 */
 	public void sendLogout(){
-		sendData(Message.logoutMsg());
+		sendData(new Message(messageType.LOGOUT, null));
 	}
 	
 	/**
@@ -170,8 +172,9 @@ public abstract class SocketOrganiser implements Runnable{
 	 * this method handles each line of messsage received
 	 * @param msg
 	 */
-	public abstract void acceptMsg(Message msg);
-	
+	public abstract void acceptMsg(ServerMessage msg);
+
+
 }
 
 
