@@ -164,7 +164,7 @@ public class chatGame {
 		Game.add(scrlAllMess);
 
 		//text areas to view all users messages
-		JTextArea txtServerMess = new JTextArea();
+		//JTextArea txtServerMess = new JTextArea();
 		txtServerMess.setToolTipText("Messages received from Server");
 		txtServerMess.setEditable(false);
 		txtServerMess.setLineWrap(true);
