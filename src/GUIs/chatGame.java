@@ -52,6 +52,7 @@ public class chatGame {
 	public JComboBox cmbMessageList;
 	public JTextArea txtServerMess;
 	public JTextArea txtEnterMess;
+	public JTextArea txtEnterMess1;
 
 	/**
 	 * Launch the application.
