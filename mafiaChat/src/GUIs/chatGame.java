@@ -50,6 +50,7 @@ public class chatGame {
 	public JTextField securityAnswer;
 	public String[] messageStrings;
 	public JComboBox cmbMessageList;
+	public JTextArea txtServerMess;
 
 	/**
 	 * Launch the application.
@@ -78,6 +79,7 @@ public class chatGame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
