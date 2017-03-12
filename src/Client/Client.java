@@ -2,7 +2,7 @@ package Client;
 
 
 import messages.*;
-
+import GUIs.chatGame;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,7 +27,7 @@ public class Client {
 	private String ip;
 	private int port=8000;
 	private boolean online;
-	
+	private chatGame window;
 
 	public Client(int port) throws UnknownHostException, IOException{
 		GsonBuilder builder = new GsonBuilder();
@@ -53,15 +53,15 @@ public class Client {
 					switch (message.type) {
 			
 						case PRIVATE : 
-							getResponse();
+							serverMsgPrint(message);
 							break;
 							
 						case PUBLIC : 
-							getResponse();
+							printMessage(message);
 							break;
 							
 						case CHAT :
-							getResponse();
+							printMessage(message);
 							break;
 						
 						default : 
@@ -79,18 +79,7 @@ public class Client {
 	}
 	
 
-	public void setCommandMsg(String message){
-		for (int i=0; i<message.length(); i++){
-			if (message.charAt(0) == '/'){
-				String jsonText=  cGson.toJson(new Message(Message.messageType.COMMAND, message));
-				sendClientMessage(jsonText);
-			} else {
-				String jsonText = cGson.toJson(new Message(Message.messageType.MESSAGE, message));
-				sendClientMessage(jsonText);
-			}
-		}
-		
-	}
+	
 	
 	public ServerMessage getResponse(){
 		try {
@@ -102,70 +91,18 @@ public class Client {
 		return null;
 	}
 	
-	
-	public void createLoginPacket(String username, String password, String secQuestion, String ans) throws IOException {
-		String msg = username + " " + password + " " + secQuestion + " " + ans;
-		String jsonText = cGson.toJson(new Message(Message.messageType.LOGIN, msg));
-		
-		outputStream.writeUTF(jsonText);
-		outputStream.flush();
-		
-		String input = inputStream.readUTF();
-		ServerMessage response = this.getResponse();
-		if(response.type.equals("SUCCESS")){
-			System.out.println("Sign-in successful");
-		}else if (response.type.equals("ERROR")){
-			System.out.println("Try again loser");
-		}
-		
-	}
 
-	public void createAccountPacket(String username, String password, String secQuestion, String ans) {
-		String msg = username + " " + password + " " + secQuestion + " " + ans;
-		String jsonText = cGson.toJson(new Message(Message.messageType.REGISTER, msg));
+	public void printMessage(ServerMessage message){
 		try {
-			outputStream.writeUTF(jsonText);
-			outputStream.flush();
-
+			message = decodeServerMessage(inputStream.readUTF());
 			
-			ServerMessage response = this.getResponse();
-			if (response.type.equals("SUCCESS")) {
-				System.out.println("Sign-in successful");
-			} else if (response.type.equals("ERROR")) {
-				
-				System.out.println("Sorry mate username taken. Try again");
-			}
-
-		} catch (IOException ie) {
-
+			window.txtEnterMess.setText(message.messageText);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	public void createLogoutPacket() {
-		String jsonText = cGson.toJson(new Message(Message.messageType.LOGOUT, null));
-		sendClientMessage(jsonText);
-	}
-
-	
-	public void createPassHintPacket(String username, String question, String answer) {
-		String msg = username + " " + question + " " + answer;
-		String jsonText= cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
-		try{
-			outputStream.writeUTF(jsonText);
-			outputStream.flush();
-			
-			
-			ServerMessage response = this.getResponse();
-			if (response.type.equals("SUCCESS")){
-				System.out.println(response);
-			} else if (response.type.equals("SUCCESS")){
-				System.out.println("Sorry question and answer don't match");
-			}
-		}catch (IOException ie){
-			
-		}
-	}
-	
 	public boolean getOnline(){
 		return this.online;
 	}
@@ -184,12 +121,109 @@ public class Client {
 		
 	}
 	
-	public void acceptMsg(){
+	public void serverMsgPrint(ServerMessage message){
+		try {
+			message = decodeServerMessage(inputStream.readUTF());
+			
+			window.txtServerMess.setText(message.messageText);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
 	public ServerMessage decodeServerMessage(String jsonText) {
 		return cGson.fromJson(jsonText, ServerMessage.class);
+	}
+	
+	public void createLoginPacket(String username, String password) throws IOException {
+		String msg = username + " " + password;
+		window.txtUsername.setText(username);
+		window.txtPassword.setText(password);
+		String jsonText = cGson.toJson(new Message(Message.messageType.LOGIN, msg));
+		
+		outputStream.writeUTF(jsonText);
+		outputStream.flush();
+		
+		String input = inputStream.readUTF();
+		ServerMessage response = this.getResponse();
+		if(response.type.equals("SUCCESS")){
+			System.out.println("Sign-in successful");
+		}else if (response.type.equals("ERROR")){
+			System.out.println("Try again loser");
+		}
+		
+	}
+	
+	public void createAccountPacket(String username, String password, String secQuestion, String ans) {
+		String msg = username + " " + password + " " + secQuestion + " " + ans;
+		window.textUsername.setText(username);
+		window.textPassword.setText(password);
+		window.txtSecurityQ.setText(secQuestion);
+		window.txtSecurityA.setText(ans);
+		String jsonText = cGson.toJson(new Message(Message.messageType.REGISTER, msg));
+		try {
+			outputStream.writeUTF(jsonText);
+			outputStream.flush();
+
+			
+			ServerMessage response = this.getResponse();
+			if (response.type.equals("SUCCESS")) {
+				
+			} else if (response.type.equals("ERROR")) {
+				
+				System.out.println("Sorry mate username taken. Try again");
+			}
+
+		} catch (IOException ie) {
+
+		}
+	}
+
+	public void createLogoutPacket() throws IOException {
+		String jsonText = cGson.toJson(new Message(Message.messageType.LOGOUT, null));
+		sendClientMessage(jsonText);
+		socket.close();
+	}
+
+	
+	public void forgottenPassword(String username, String question, String answer) {
+		String msg = username + " " + question + " " + answer;
+		String jsonText= cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
+		window.usernameEntry.setText(username);
+		window.securityQ.setText(question);
+		window.securityAnswer.setText(answer);
+		
+		try{
+			outputStream.writeUTF(jsonText);
+			outputStream.flush();
+			
+			
+			ServerMessage response = this.getResponse();
+			if (response.type.equals("SUCCESS")){
+				window.password.createDialog(response.messageText);
+			} else if (response.type.equals("ERROR")){
+				window.password.createDialog("Sorry question and answer don't match");
+			}
+		}catch (IOException ie){
+			
+		}
+	}
+	
+	public void setCommandMsg(String message){
+		for (int i=0; i<message.length(); i++){
+			if (message.charAt(0) == '/'){
+				String jsonText=  cGson.toJson(new Message(Message.messageType.COMMAND, message));
+				sendClientMessage(jsonText);
+				window.txtEnterMess1.setText(message);
+			} else {
+				String jsonText = cGson.toJson(new Message(Message.messageType.MESSAGE, message));
+				sendClientMessage(jsonText);
+				window.txtEnterMess1.setText(message);
+			}
+		}
+		
 	}
 
 	public static void main(String[] args) throws UnknownHostException, IOException{
