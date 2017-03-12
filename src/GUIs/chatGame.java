@@ -35,21 +35,21 @@ import javax.swing.JComboBox;
  *
  */
 public class chatGame {
-	private javax.swing.JScrollPane jScrollPane1;
-	private JFrame GAME;
-	private JTextField usernameEntry;
-	private JTextField txtUsername;
-	private JTextField textUsername;
-	private JPasswordField txtPassword;
-	private JTextField txtSecurityQ;
-	private JTextField txtSecurityA;
-	private JPasswordField textPassword;
-	private JScrollPane scrollB;
-	private JScrollBar Scroll;
-	private JTextField securityQ;
-	private JTextField securityAnswer;
-	private String[] messageStrings;
-	private JComboBox cmbMessageList;
+	public javax.swing.JScrollPane jScrollPane1;
+	public JFrame GAME;
+	public JTextField usernameEntry;
+	public JTextField txtUsername;
+	public JTextField textUsername;
+	public JPasswordField txtPassword;
+	public JTextField txtSecurityQ;
+	public JTextField txtSecurityA;
+	public JPasswordField textPassword;
+	public JScrollPane scrollB;
+	public JScrollBar Scroll;
+	public JTextField securityQ;
+	public JTextField securityAnswer;
+	public String[] messageStrings;
+	public JComboBox cmbMessageList;
 
 	/**
 	 * Launch the application.
