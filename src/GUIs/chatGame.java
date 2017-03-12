@@ -51,6 +51,7 @@ public class chatGame {
 	public String[] messageStrings;
 	public JComboBox cmbMessageList;
 	public JTextArea txtServerMess;
+	public JTextArea txtEnterMess;
 
 	/**
 	 * Launch the application.
@@ -79,7 +80,7 @@ public class chatGame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
+
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
@@ -92,9 +93,9 @@ public class chatGame {
 		Image img3 = new ImageIcon(this.getClass().getResource("/dare-to-play.png")).getImage();
 		//layout
 		GAME.getContentPane().setLayout(new CardLayout(0, 0));
-		
-		
-///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		//welcome screen panel
 		JPanel Welcome = new JPanel();
 		Welcome.setBackground(Color.BLACK);
@@ -127,10 +128,10 @@ public class chatGame {
 		GAME.getContentPane().add(ForgotPassword, "name_124435419567369");
 		ForgotPassword.setLayout(null);
 
-/////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////
 
 		//GAME PANEL COMPONENTS
-		
+
 		//drop down menu
 		messageStrings  = new String [] {"Options","Rules", "Highest Scrores", "Quit Chat", "Log out"};
 		cmbMessageList = new JComboBox(messageStrings);
@@ -153,15 +154,44 @@ public class chatGame {
 		Image SigninLogo2 = img2.getScaledInstance(logoSignIn2.getWidth(),logoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn2.setIcon(new ImageIcon(SigninLogo2));
 		SignIn.add(logoSignIn2);
-		
-//		JLabel logo = new JLabel("New label");
-//		logo.setBounds(0, 6, 188, 79);
-		
-		//scroll bar to scroll through all users messages
-		JScrollPane scrlAllMess = new JScrollPane();
-		scrlAllMess.setBounds(28,105,339,445);
-		scrlAllMess.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		Game.add(scrlAllMess);
+
+		//		JLabel logo = new JLabel("New label");
+		//		logo.setBounds(0, 6, 188, 79);
+
+//		//scroll bar to scroll through all users messages
+//		JScrollPane scrlAllMess = new JScrollPane();
+//		scrlAllMess.setBounds(28,105,339,445);
+//		scrlAllMess.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+//		Game.add(scrlAllMess);
+
+		//scroll bar for input text with text box
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(28,105,339,445);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		Game.add(scrollPane);
+		JTextArea txtEnterMess = new JTextArea();
+		scrollPane.setViewportView(txtEnterMess);
+		txtEnterMess.setLineWrap(true);
+		//JTextArea textArea12 = new JTextArea();
+		//textArea12.setBounds(28, 107, 310, 441);
+		//Game.add(textArea12);
+		//textArea12.setLineWrap(true);
+
+		//scroll bar for input text with text box
+		JScrollPane scrollPane1 = new JScrollPane();
+		scrollPane1.setBounds(28,562,402,60);
+		scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		Game.add(scrollPane1);
+		JTextArea txtEnterMess1 = new JTextArea();
+		scrollPane1.setViewportView(txtEnterMess1);
+		txtEnterMess1.setLineWrap(true);
+		//JTextArea textArea12 = new JTextArea();
+		//textArea12.setBounds(28, 107, 310, 441);
+		//Game.add(textArea12);
+		//textArea12.setLineWrap(true);
+
+
+
 
 		//text areas to view all users messages
 		//JTextArea txtServerMess = new JTextArea();
@@ -202,20 +232,9 @@ public class chatGame {
 		Send.setBounds(442, 562, 87, 60);
 		Game.add(Send);
 
-		
-		//scroll bar for input text with text box
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(28,562,402,60);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		Game.add(scrollPane);
-		JTextArea txtEnterMess = new JTextArea();
-		scrollPane.setViewportView(txtEnterMess);
-		txtEnterMess.setLineWrap(true);
-		//JTextArea textArea12 = new JTextArea();
-		//textArea12.setBounds(28, 107, 310, 441);
-		//Game.add(textArea12);
-		//textArea12.setLineWrap(true);
-		
+
+
+
 		//WELCOME SCREEN COMPONENTS
 		//title 
 		JLabel titleWelcome = new JLabel("");
@@ -223,8 +242,8 @@ public class chatGame {
 		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),titleWelcome.getHeight(), Image.SCALE_SMOOTH);
 		titleWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(titleWelcome);
-		
-		
+
+
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
 		dareTxt.setBounds(133, 425, 271, 76);
