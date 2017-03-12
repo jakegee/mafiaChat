@@ -53,6 +53,7 @@ public class chatGame {
 	public JTextArea txtServerMess;
 	public JTextArea txtEnterMess;
 	public JTextArea txtEnterMess1;
+	public JOptionPane password;
 
 	/**
 	 * Launch the application.
@@ -134,7 +135,7 @@ public class chatGame {
 		//GAME PANEL COMPONENTS
 
 		//drop down menu
-		messageStrings  = new String [] {"Options","Rules", "Highest Scrores", "Quit Chat", "Log out"};
+		messageStrings  = new String [] {"Options","Rules", "Highest Scrores", "Log out"};
 		cmbMessageList = new JComboBox(messageStrings);
 		cmbMessageList.setToolTipText("click drop down to view options");
 		cmbMessageList.setBounds(415, -11, 135, 50);
@@ -463,7 +464,7 @@ public class chatGame {
 		lblUser.setFont(new Font("Silom", Font.PLAIN, 13));
 
 		usernameEntry = new JTextField();
-		usernameEntry.setBounds(256, 186, 288, 45);
+		usernameEntry.setBounds(256, 189, 288, 45);
 		usernameEntry.setFont(new Font("Futura", Font.PLAIN, 13));
 		usernameEntry.setColumns(10);
 		ForgotPassword.add(usernameEntry);
@@ -493,6 +494,13 @@ public class chatGame {
 		ForgotPassword.add(lblEnterTheSet);
 
 		JButton btnDisplayPassword = new JButton("Display Password");
+		btnDisplayPassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane password = new JOptionPane();
+				password.showMessageDialog(null, "Your password is: " + "xxx");
+				
+			}
+		});
 		btnDisplayPassword.setToolTipText("Click here to display password");
 		btnDisplayPassword.setForeground(Color.BLUE);
 		btnDisplayPassword.setFont(new Font("Silom", Font.PLAIN, 16));
