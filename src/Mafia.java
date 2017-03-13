@@ -15,14 +15,6 @@ public class Mafia implements IGame {
 
     private boolean day = true;
 
-    private boolean voteInProgress = false; // not yet used
-
-    /*
-     * could change the voting ArrayList to sets instead as these don't allow
-     * duplicates. Note: hashset returns boolean based on whether the insertion
-     * is successful
-     */
-
     // array list containing the players who have used /ready
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
@@ -30,7 +22,6 @@ public class Mafia implements IGame {
     private int[] mafiaID; // placeholder
     private ArrayList<Integer> innocentsID; // might make type map
     private ArrayList<Integer> elimDay;
-    private ArrayList<Integer> elimNight;
     private ArrayList<Integer> save;
     private ArrayList<Integer> playerIDs;
     private TreeMap<String, Integer> eliminate;
@@ -38,14 +29,6 @@ public class Mafia implements IGame {
     private ArrayList<Integer> nightVote;
     private Integer playerOnTrialID = null;
     private Random mafiaPicker;
-
-    // NOTE: Sorry I forgot that this has been moved to the Server class,
-    // just call setChatActive(boolean active) if you want to activate or
-    // deactivate this. This function is not used by the Server
-    public boolean getChatRelayed() {
-	// TODO Auto-generated method stub
-	return false;
-    }
 
     /**
      * The handleMessage method takes in the message and processes the command
@@ -90,7 +73,7 @@ public class Mafia implements IGame {
 		    voteStart(origin);
 		}
 
-	    } else if (command == "/elim") {
+	    } else if (command == "/elim") { //space between /elim and player name, no trailing text after player name
 		if (remText.isEmpty() || remText.contains(" ")) {
 		    server.privateMessage(
 			    "The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
