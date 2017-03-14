@@ -55,6 +55,7 @@ public class chatGame implements ActionListener {
 	public JTextArea txtEnterMess1;
 	public JOptionPane password;
 	public JButton btnLogIn;
+	public JPanel Game;
 
 	/**
 	 * Launch the application.
