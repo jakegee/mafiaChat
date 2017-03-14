@@ -16,10 +16,16 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * this is the client class. this class sends messages to the server and to other clients
+ * @author vishnu
+ *
+ */
+public class Client implements Runnable{
 
-
-public class Client {
-
+	/**
+	 * private variables of the client class
+	 */
 	private Gson cGson;
 	private Socket socket;
 	private DataOutputStream outputStream;
@@ -29,6 +35,12 @@ public class Client {
 	private boolean online;
 	private chatGame window;
 
+	/**
+	 * this is the constructor for instantiating the instance of the client class
+	 * @param port port of the server
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
 	public Client(int port) throws UnknownHostException, IOException{
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
@@ -38,16 +50,19 @@ public class Client {
 		
 	}
 
-	
-	public void start() {
+	/**
+	 * this method initializes reading the input stream from the server upon connecting.
+	 */
+	@Override
+	public void run() {
 		try {
 			while(true) {
 			
 				this.online = true;
 				
 				while(this.online == true) {
-					String input = inputStream.readUTF();
-					ServerMessage message = cGson.fromJson(input, ServerMessage.class);
+					
+					ServerMessage message = this.getResponse();
 					System.out.println(message.messageText);
 					
 					switch (message.type) {
@@ -71,16 +86,17 @@ public class Client {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			this.online = false;
 			e.printStackTrace();
 		}
 	}
 	
-
-	
-	
+	/**
+	 * this method returns messages from the server.
+	 * @return
+	 */
 	public ServerMessage getResponse(){
 		try {
 			return decodeServerMessage(inputStream.readUTF());
@@ -91,7 +107,10 @@ public class Client {
 		return null;
 	}
 	
-
+	/**
+	 * this method prints the message on the gui. 
+	 * @param message
+	 */
 	public void printMessage(ServerMessage message){
 		try {
 			message = decodeServerMessage(inputStream.readUTF());
@@ -103,11 +122,18 @@ public class Client {
 		}
 	}
 
+	/**
+	 * boolean true if online
+	 * @return boolean true if online
+	 */
 	public boolean getOnline(){
 		return this.online;
 	}
 	
-	
+	/**
+	 * This method sends out the client message.
+	 * @param jsonText
+	 */
 	public void sendClientMessage(String jsonText){
 		if (this.online == true) {
 			try {
@@ -121,6 +147,10 @@ public class Client {
 		
 	}
 	
+	/**
+	 * This method prints messages from server
+	 * @param message from server
+	 */
 	public void serverMsgPrint(ServerMessage message){
 		try {
 			message = decodeServerMessage(inputStream.readUTF());
@@ -146,7 +176,6 @@ public class Client {
 		outputStream.writeUTF(jsonText);
 		outputStream.flush();
 		
-		String input = inputStream.readUTF();
 		ServerMessage response = this.getResponse();
 		if(response.type.equals("SUCCESS")){
 			System.out.println("Sign-in successful");
@@ -235,7 +264,7 @@ public class Client {
 		DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 		DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
 		Client client = new Client(8000);
-		client.start();
+		client.run();
 		
 	}
 }
