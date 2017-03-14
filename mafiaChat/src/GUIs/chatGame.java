@@ -86,7 +86,7 @@ public class chatGame { //implements ActionListener {
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
-		GAME.setBounds(100, 100, 550, 650);
+		GAME.setBounds(100, 100, 550, 670);
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//images
