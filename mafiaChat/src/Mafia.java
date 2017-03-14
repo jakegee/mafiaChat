@@ -66,7 +66,7 @@ public class Mafia implements IGame {
      *            message.
      */
     @Override
-    public void handleMessage(Message message, int origin) {
+    public synchronized void handleMessage(Message message, int origin) {
 	String text = message.messageText;
 	String command = text.substring(0, text.indexOf(' '));
 	String remText = text.substring(text.indexOf(' ') + 1);
@@ -158,9 +158,11 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public void ready(int origin) { // enforce a max amount of players?, 16 seemed to be the maximum allowed in original game
+    public synchronized void ready(int origin) { // enforce a max amount of players?, 16 seemed to be the maximum allowed in original game
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
+	  
+	    if(ready.size() < 16){
 	    ready.add(origin);
 
 	    server.publicMessage("number of players ready: " + ready.size());
@@ -174,12 +176,20 @@ public class Mafia implements IGame {
 			"There are enough players to start the game. Use the command" + " \"/start\" to vote to start",
 			readyArray);
 	    }
+	    
+	    if(ready.size() == 15) {
+		server.publicMessage("The maximum amount of players for mafia has been reached");
+	    }
+	    
+	    } else{
+		server.privateMessage("The maximum amount of players has already been reached.", origin);
+	    }
 	} else {
 	    server.privateMessage("you are already set as ready", origin);
 	}
     }
 
-    private void unready(int origin) {
+    private synchronized void unready(int origin) {
 	if (ready.contains(origin)) { // ensures players aren't added more than
 	    // once
 	    ready.remove(origin);
@@ -211,8 +221,8 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public void voteStart(int origin) {
-	if (!votedStart.contains(origin)) { // ensures players aren't added more
+    public synchronized void voteStart(int origin) {
+	if (!votedStart.contains(origin) && ready.contains(origin)) { // ensures players aren't added more
 					    // than once
 	    votedStart.add(origin);
 	    if (votedStart.size() < ready.size()) {
@@ -221,12 +231,14 @@ public class Mafia implements IGame {
 	    } else {
 		gameStart();
 	    }
-	} else {
+	} else if (votedStart.contains(origin)){
 	    server.privateMessage("you have already voted to start", origin);
+	} else {
+	    server.privateMessage("you need to be set to ready before you can vote to start", origin);
 	}
     }
 
-    private void gameStart() { // TODO: implement muting players that are not in
+    private synchronized void gameStart() { // TODO: implement muting players that are not in
 			       // the game
 	ready.clear();
 
@@ -289,7 +301,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    private void elimDay(String player, int origin) {
+    private synchronized void elimDay(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -343,7 +355,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void checkElim(int origin) { // does this need to be synchronized?
+    private synchronized void checkElim(int origin) { // does this need to be synchronized?
 
 	// if (elimDay.size() > playerIDs.size() / 2) {
 	if (elimDay.size() > players.size() / 2) {
@@ -363,7 +375,7 @@ public class Mafia implements IGame {
      * players,removing them from the list of innocent/mafia and muting the
      * player in chat.
      */
-    private void eliminateDay() {
+    private synchronized void eliminateDay() {
 
 	// playerIDs.remove(playerOnTrialID);
 	players.remove(playerOnTrialID);
@@ -398,7 +410,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void save(String player, int origin) {// suspicious player doesn't
+    private synchronized void save(String player, int origin) {// suspicious player doesn't
 						  // need to vote for themselves
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
@@ -443,7 +455,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void voteNight(int origin) {
+    private synchronized void voteNight(int origin) {
 	// if (playerOnTrialID != null) {
 	if (elimDayVoteInProgress) {
 	    server.privateMessage("you cannot start a vote for it to be night when there is a vote in progress "
@@ -476,7 +488,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void voteDay(int origin) {
+    private synchronized void voteDay(int origin) {
 	if (!nightVoteInProgress) {
 	    server.privateMessage("cannot use this command when there isn't a vote to change to night", origin);
 
@@ -502,7 +514,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void checkDay(int origin) {
+    private synchronized void checkDay(int origin) {
 	server.publicMessage(players.get(origin) + " has voted for it to remain day");
 
 	// if (dayVote.size() > playerIDs.size() / 2) {
@@ -522,7 +534,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void checkNight(int origin) {
+    private synchronized void checkNight(int origin) {
 	server.publicMessage(players.get(origin) + " has voted for it to remain night");
 
 	// if (nightVote.size() > playerIDs.size() / 2) {
@@ -547,7 +559,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    public void elimNight(String player, int origin) {
+    public synchronized void elimNight(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -576,7 +588,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    private void checkElimNight(int origin) {
+    private synchronized void checkElimNight(int origin) {
 	String[] votes = (String[]) eliminate.values().toArray();
 
 	if (eliminate.size() < mafia.size()) {
@@ -617,7 +629,7 @@ public class Mafia implements IGame {
 
     }
     
-    public void checkWin(){
+    public synchronized void checkWin(){
 	if (mafia.size() == innocentsID.size()){
 	    server.publicMessage("The Mafia win");
 	} else if (mafia.size() == 0){
@@ -627,7 +639,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    public void assignPoints() { // only assign points to the survivors?
+    public synchronized void assignPoints() { // only assign points to the survivors?
 
     }
 }
