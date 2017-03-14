@@ -158,7 +158,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public synchronized void ready(int origin) { // enforce a max amount of players?, 16 seemed to be the maximum allowed in original game
+    public void ready(int origin) { // enforce a max amount of players?, 16 seemed to be the maximum allowed in original game
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
 	  
@@ -189,7 +189,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    private synchronized void unready(int origin) {
+    private void unready(int origin) {
 	if (ready.contains(origin)) { // ensures players aren't added more than
 	    // once
 	    ready.remove(origin);
@@ -221,7 +221,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public synchronized void voteStart(int origin) {
+    public void voteStart(int origin) {
 	if (!votedStart.contains(origin) && ready.contains(origin)) { // ensures players aren't added more
 					    // than once
 	    votedStart.add(origin);
@@ -238,7 +238,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    private synchronized void gameStart() { // TODO: implement muting players that are not in
+    private void gameStart() { // TODO: implement muting players that are not in
 			       // the game
 	ready.clear();
 
@@ -301,7 +301,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    private synchronized void elimDay(String player, int origin) {
+    private void elimDay(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -355,7 +355,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void checkElim(int origin) { // does this need to be synchronized?
+    private void checkElim(int origin) { // does this need to be synchronized?
 
 	// if (elimDay.size() > playerIDs.size() / 2) {
 	if (elimDay.size() > players.size() / 2) {
@@ -375,7 +375,7 @@ public class Mafia implements IGame {
      * players,removing them from the list of innocent/mafia and muting the
      * player in chat.
      */
-    private synchronized void eliminateDay() {
+    private void eliminateDay() {
 
 	// playerIDs.remove(playerOnTrialID);
 	players.remove(playerOnTrialID);
@@ -410,7 +410,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void save(String player, int origin) {// suspicious player doesn't
+    private void save(String player, int origin) {// suspicious player doesn't
 						  // need to vote for themselves
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
@@ -455,7 +455,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void voteNight(int origin) {
+    private void voteNight(int origin) {
 	// if (playerOnTrialID != null) {
 	if (elimDayVoteInProgress) {
 	    server.privateMessage("you cannot start a vote for it to be night when there is a vote in progress "
@@ -488,7 +488,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void voteDay(int origin) {
+    private void voteDay(int origin) {
 	if (!nightVoteInProgress) {
 	    server.privateMessage("cannot use this command when there isn't a vote to change to night", origin);
 
@@ -514,7 +514,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void checkDay(int origin) {
+    private void checkDay(int origin) {
 	server.publicMessage(players.get(origin) + " has voted for it to remain day");
 
 	// if (dayVote.size() > playerIDs.size() / 2) {
@@ -534,7 +534,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private synchronized void checkNight(int origin) {
+    private void checkNight(int origin) {
 	server.publicMessage(players.get(origin) + " has voted for it to remain night");
 
 	// if (nightVote.size() > playerIDs.size() / 2) {
@@ -559,7 +559,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    public synchronized void elimNight(String player, int origin) {
+    public void elimNight(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -588,7 +588,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    private synchronized void checkElimNight(int origin) {
+    private void checkElimNight(int origin) {
 	String[] votes = (String[]) eliminate.values().toArray();
 
 	if (eliminate.size() < mafia.size()) {
@@ -629,7 +629,7 @@ public class Mafia implements IGame {
 
     }
     
-    public synchronized void checkWin(){
+    public void checkWin(){
 	if (mafia.size() == innocentsID.size()){
 	    server.publicMessage("The Mafia win");
 	} else if (mafia.size() == 0){
@@ -639,7 +639,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    public synchronized void assignPoints() { // only assign points to the survivors?
+    public void assignPoints() { // only assign points to the survivors?
 
     }
 }
