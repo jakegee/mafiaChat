@@ -179,6 +179,8 @@ public class Client implements Runnable{
 		ServerMessage response = this.getResponse();
 		if(response.type.equals("SUCCESS")){
 			System.out.println("Sign-in successful");
+			window.btnLogIn.setVisible(false);
+			window.Game.setVisible(true);
 		}else if (response.type.equals("ERROR")){
 			System.out.println("Try again loser");
 		}
@@ -217,28 +219,28 @@ public class Client implements Runnable{
 	}
 
 	
-	public void forgottenPassword(String username, String question, String answer) {
-		String msg = username + " " + question + " " + answer;
-		String jsonText= cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
-		window.usernameEntry.setText(username);
-		window.securityQ.setText(question);
-		window.securityAnswer.setText(answer);
-		
-		try{
-			outputStream.writeUTF(jsonText);
-			outputStream.flush();
-			
-			
-			ServerMessage response = this.getResponse();
-			if (response.type.equals("SUCCESS")){
-				window.password.createDialog(response.messageText);
-			} else if (response.type.equals("ERROR")){
-				window.password.createDialog("Sorry question and answer don't match");
-			}
-		}catch (IOException ie){
-			
-		}
-	}
+//	public void forgottenPassword(String username, String question, String answer) {
+//		String msg = username + " " + question + " " + answer;
+//		String jsonText= cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
+//		window.usernameEntry.setText(username);
+//		window.securityQ.setText(question);
+//		window.securityAnswer.setText(answer);
+//		
+//		try{
+//			outputStream.writeUTF(jsonText);
+//			outputStream.flush();
+//			
+//			
+//			ServerMessage response = this.getResponse();
+//			if (response.type.equals("SUCCESS")){
+//				window.password.createDialog(response.messageText);
+//			} else if (response.type.equals("ERROR")){
+//				window.password.createDialog("Sorry question and answer don't match");
+//			}
+//		}catch (IOException ie){
+//			
+//		}
+//	}
 	
 	public void setCommandMsg(String message){
 		for (int i=0; i<message.length(); i++){
