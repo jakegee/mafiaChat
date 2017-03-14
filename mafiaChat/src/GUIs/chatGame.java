@@ -35,7 +35,7 @@ import javax.swing.JComboBox;
  * @author Fozia Mehboob
  *
  */
-public class chatGame { //implements ActionListener {
+public class chatGame implements ActionListener {
 	public javax.swing.JScrollPane jScrollPane1;
 	public JFrame GAME;
 	public JTextField usernameEntry;
@@ -54,6 +54,7 @@ public class chatGame { //implements ActionListener {
 	public JTextArea txtEnterMess;
 	public JTextArea txtEnterMess1;
 	public JOptionPane password;
+	public JButton btnEnter;
 
 	/**
 	 * Launch the application.
@@ -561,6 +562,12 @@ public class chatGame { //implements ActionListener {
 		
 
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
