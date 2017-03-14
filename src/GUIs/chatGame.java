@@ -318,8 +318,8 @@ public class chatGame implements ActionListener {
 				catch(Exception e1){
 					JOptionPane.showMessageDialog(null, e1);					
 				}
-				Login.setVisible(false);
-				Game.setVisible(true);
+				Login.setVisible(true);
+				Game.setVisible(false);
 
 			}
 		});
