@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JPasswordField;
@@ -34,7 +35,7 @@ import javax.swing.JComboBox;
  * @author Fozia Mehboob
  *
  */
-public class chatGame {
+public class chatGame { //implements ActionListener {
 	public javax.swing.JScrollPane jScrollPane1;
 	public JFrame GAME;
 	public JTextField usernameEntry;
@@ -46,7 +47,6 @@ public class chatGame {
 	public JPasswordField textPassword;
 	public JScrollPane scrollB;
 	public JScrollBar Scroll;
-	public JTextField securityQ;
 	public JTextField securityAnswer;
 	public String[] messageStrings;
 	public JComboBox cmbMessageList;
@@ -135,13 +135,38 @@ public class chatGame {
 		//GAME PANEL COMPONENTS
 
 		//drop down menu
-		messageStrings  = new String [] {"Options","Rules", "Highest Scrores", "Log out"};
+		messageStrings  = new String [] {"Options","Rules", "Highest Scores", "Log out"};
 		cmbMessageList = new JComboBox(messageStrings);
 		cmbMessageList.setToolTipText("click drop down to view options");
 		cmbMessageList.setBounds(415, -11, 135, 50);
 		JLabel lblDropDown =  new JLabel();
+		cmbMessageList.setSelectedIndex(0);
+		//cmbMessageList.addActionListener(this);
+
+//		public void actionPerformed(ActionEvent e) 
+//		{
+//			if(e.getSource() == cmbMessageList) {
+//				JComboBox cb == (JComboBox)e.getSource();
+//				String msg = (String)cb.getSelectedItem();
+//				switch (msg) {
+//					case "Rules" : lblText.setText("The rules are: xxx");
+//					break;
+//					case "Highest Scores":  lblText.setText("The rules are: xxx");
+//					break;
+//					case "Log out":  lblText.setText("The rules are: xxx");
+//					break;
+		
+//					default : lbl.setText("you must make a selection");
+				
+//
+//				}
+//			}
+//
+//		}
+
 		Game.add(lblDropDown);
 		Game.add(cmbMessageList);
+
 
 		//logo image bottom of screen
 		JLabel logoSignIn1 = new JLabel("");
@@ -157,14 +182,7 @@ public class chatGame {
 		logoSignIn2.setIcon(new ImageIcon(SigninLogo2));
 		SignIn.add(logoSignIn2);
 
-		//		JLabel logo = new JLabel("New label");
-		//		logo.setBounds(0, 6, 188, 79);
 
-//		//scroll bar to scroll through all users messages
-//		JScrollPane scrlAllMess = new JScrollPane();
-//		scrlAllMess.setBounds(28,105,339,445);
-//		scrlAllMess.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-//		Game.add(scrlAllMess);
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane = new JScrollPane();
@@ -174,10 +192,7 @@ public class chatGame {
 		JTextArea txtEnterMess = new JTextArea();
 		scrollPane.setViewportView(txtEnterMess);
 		txtEnterMess.setLineWrap(true);
-		//JTextArea textArea12 = new JTextArea();
-		//textArea12.setBounds(28, 107, 310, 441);
-		//Game.add(textArea12);
-		//textArea12.setLineWrap(true);
+
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane1 = new JScrollPane();
@@ -187,12 +202,6 @@ public class chatGame {
 		JTextArea txtEnterMess1 = new JTextArea();
 		scrollPane1.setViewportView(txtEnterMess1);
 		txtEnterMess1.setLineWrap(true);
-		//JTextArea textArea12 = new JTextArea();
-		//textArea12.setBounds(28, 107, 310, 441);
-		//Game.add(textArea12);
-		//textArea12.setLineWrap(true);
-
-
 
 
 		//text areas to view all users messages
@@ -234,8 +243,14 @@ public class chatGame {
 		Send.setBounds(442, 562, 87, 60);
 		Game.add(Send);
 
+		JLabel titleGame = new JLabel("");
+		titleGame.setBounds(22, 20, 500, 90);
+		Image a = img.getScaledInstance(titleGame.getWidth(),titleGame.getHeight(), Image.SCALE_SMOOTH);
+		titleGame.setIcon(new ImageIcon(a));
+		Game.add(titleGame);
 
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//WELCOME SCREEN COMPONENTS
 		//title 
@@ -275,6 +290,8 @@ public class chatGame {
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
 
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		//LOGIN SCREEN COMPONENTS
 		//label for password text
 		JLabel lblPassword = new JLabel("Enter Password");
@@ -294,6 +311,12 @@ public class chatGame {
 		JButton btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+
+				}
+				catch(Exception e1){
+					JOptionPane.showMessageDialog(null, e1);					
+				}
 				Login.setVisible(false);
 				Game.setVisible(true);
 
@@ -365,6 +388,9 @@ public class chatGame {
 		btnForgottonPassword.setBounds(175, 584, 179, 38);
 		Login.add(btnForgottonPassword);
 
+		///////////////////////////////////////////////////////////////////////////////////
+
+		//Sign-in Panel
 
 		JLabel lblEnterName = new JLabel("Enter Name");
 		lblEnterName.setForeground(Color.WHITE);
@@ -389,20 +415,12 @@ public class chatGame {
 			public void actionPerformed(ActionEvent e) {
 				SignIn.setVisible(false);
 				Login.setVisible(true);
-
 			}
 		});
 		btnRegister.setForeground(Color.BLUE);
 		btnRegister.setFont(new Font("Silom", Font.PLAIN, 20));
 		btnRegister.setBounds(214, 524, 142, 44);
 		SignIn.add(btnRegister);
-
-		JLabel titleGame = new JLabel("");
-		titleGame.setBounds(22, 20, 500, 90);
-		Image a = img.getScaledInstance(titleGame.getWidth(),titleGame.getHeight(), Image.SCALE_SMOOTH);
-		titleGame.setIcon(new ImageIcon(a));
-		Game.add(titleGame);
-
 
 		JLabel titleSignIn = new JLabel("");
 		titleSignIn.setBounds(22, 20, 500, 90);
@@ -448,7 +466,8 @@ public class chatGame {
 		textPassword = new JPasswordField();
 		textPassword.setBounds(280, 246, 215, 50);
 		SignIn.add(textPassword);
-
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+		//ForgottenPassword Panel
 
 		JLabel titleForgotten = new JLabel("");
 		titleForgotten.setBounds(22, 20, 500, 90);
@@ -472,40 +491,20 @@ public class chatGame {
 		JLabel lblSecurityQuestion = new JLabel("Security question");
 		lblSecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 13));
 		lblSecurityQuestion.setForeground(Color.WHITE);
-		lblSecurityQuestion.setBounds(6, 283, 265, 35);
+		lblSecurityQuestion.setBounds(201, 325, 265, 35);
 		ForgotPassword.add(lblSecurityQuestion);
-
-		securityQ = new JTextField();
-		securityQ.setFont(new Font("Futura", Font.PLAIN, 13));
-		securityQ.setColumns(10);
-		securityQ.setBounds(256, 269, 288, 50);
-		ForgotPassword.add(securityQ);
 
 		securityAnswer = new JTextField();
 		securityAnswer.setFont(new Font("Futura", Font.PLAIN, 13));
 		securityAnswer.setColumns(10);
-		securityAnswer.setBounds(256, 359, 288, 50);
+		securityAnswer.setBounds(256, 372, 288, 50);
 		ForgotPassword.add(securityAnswer);
 
 		JLabel lblEnterTheSet = new JLabel("Enter the set security answer");
 		lblEnterTheSet.setForeground(Color.WHITE);
 		lblEnterTheSet.setFont(new Font("Silom", Font.PLAIN, 13));
-		lblEnterTheSet.setBounds(6, 376, 265, 35);
+		lblEnterTheSet.setBounds(6, 381, 265, 35);
 		ForgotPassword.add(lblEnterTheSet);
-
-		JButton btnDisplayPassword = new JButton("Display Password");
-		btnDisplayPassword.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane password = new JOptionPane();
-				password.showMessageDialog(null, "Your password is: " + "xxx");
-				
-			}
-		});
-		btnDisplayPassword.setToolTipText("Click here to display password");
-		btnDisplayPassword.setForeground(Color.BLUE);
-		btnDisplayPassword.setFont(new Font("Silom", Font.PLAIN, 16));
-		btnDisplayPassword.setBounds(156, 461, 233, 44);
-		ForgotPassword.add(btnDisplayPassword);
 
 		JLabel msnForgotten1 = new JLabel("");
 		msnForgotten1.setBounds(6, 558, 88, 64);
@@ -532,5 +531,36 @@ public class chatGame {
 		btnReturnToLogin.setFont(new Font("Silom", Font.PLAIN, 16));
 		btnReturnToLogin.setBounds(156, 517, 233, 44);
 		ForgotPassword.add(btnReturnToLogin);
+
+		JButton btnDisplaySecurityQuestion = new JButton("Submit Username");
+		btnDisplaySecurityQuestion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnDisplaySecurityQuestion.setToolTipText("Click here to display password");
+		btnDisplaySecurityQuestion.setForeground(Color.BLUE);
+		btnDisplaySecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 12));
+		btnDisplaySecurityQuestion.setBounds(340, 237, 204, 38);
+		ForgotPassword.add(btnDisplaySecurityQuestion);
+
+		JButton btnSubmitSecurityAnswer = new JButton("Submit Security Answer");
+		btnSubmitSecurityAnswer.setToolTipText("Click here to display password");
+		btnSubmitSecurityAnswer.setForeground(Color.BLUE);
+		btnSubmitSecurityAnswer.setFont(new Font("Silom", Font.PLAIN, 12));
+		btnSubmitSecurityAnswer.setBounds(340, 446, 204, 38);
+		ForgotPassword.add(btnSubmitSecurityAnswer);
 	}
+
+	private class theHandler implements ActionListener 
+	{
+		
+	
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		String string = "";
+		
+
+		}
+	}
+	
 }
