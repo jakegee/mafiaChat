@@ -64,13 +64,13 @@ public class DatabaseManager implements IDatabase {
 
 	@Override
 	public void loginUser(String username, String password) throws InvalidUserException, InvalidInformationException {
-		// TODO Auto-generated method stub
+
 		try {
 			PreparedStatement userLogin = dbConn.prepareStatement("SELECT userid, username, password FROM users WHERE userid = ?");
 			ResultSet rs = userLogin.executeQuery();
 			while (rs.next()) {
-				String username = rs.getString("username");
-				String userpassword = rs.getString("password");
+				String usersName = rs.getString("username");
+				String userPassword = rs.getString("password");
 
 				System.out.println("username : " + username);
 				System.out.println("password : " + password);
@@ -87,7 +87,7 @@ public class DatabaseManager implements IDatabase {
 
 	@Override
 	public String getSecurityQuestion(String username) throws InvalidUserException {
-		
+		/*	
 		try {
 			PreparedStatement exUser = dbConn.prepareStatement("SELECT username FROM users WHERE username LIKE ?");
 			invalidUser.setString(1, username);
@@ -98,9 +98,9 @@ public class DatabaseManager implements IDatabase {
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
-		}
+		}	**/
 	}
-	
+
 	
 
 	@Override
