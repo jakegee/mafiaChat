@@ -33,9 +33,10 @@ public class Client implements Runnable {
 	private DataOutputStream outputStream;
 	private DataInputStream inputStream;
 	private String ip;
-	private int port = 8000;
+	private int port;
 	private boolean online;
 	private chatGame window;
+	public static Client client;
 
 	/**
 	 * this is the constructor for instantiating the instance of the client
@@ -50,7 +51,7 @@ public class Client implements Runnable {
 	public Client(int port) throws UnknownHostException, IOException {
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
-		
+
 		Socket socket = new Socket(ip, port);
 		inputStream = new DataInputStream(socket.getInputStream());
 		outputStream = new DataOutputStream(socket.getOutputStream());
@@ -177,10 +178,10 @@ public class Client implements Runnable {
 		return cGson.fromJson(jsonText, ServerMessage.class);
 	}
 
-	public void createLoginPacket(String username, String password) throws IOException {
-		String msg = username + " " + password;
-		window.txtUsername.setText(username);
-		window.txtPassword.setText(password);
+	public ServerMessage createLoginPacket(String username, String password) throws IOException {
+		String msg = username + "/" + password;
+//		window.txtUsername.setText(username);
+//		window.txtPassword.setText(password);
 		String jsonText = cGson.toJson(new Message(Message.messageType.LOGIN, msg));
 
 		outputStream.writeUTF(jsonText);
@@ -189,35 +190,31 @@ public class Client implements Runnable {
 		ServerMessage response = this.getResponse();
 		if (response.type.equals("SUCCESS")) {
 			System.out.println("Sign-in successful");
-			window.btnLogIn.setVisible(false);
-			window.Game.setVisible(true);
+//			window.btnLogIn.setVisible(false);
+//			window.Game.setVisible(true);
 		} else if (response.type.equals("ERROR")) {
 			System.out.println("Try again loser");
 		}
+		return response;
 
 	}
 
-	public void createAccountPacket(String username, String password, String secQuestion, String ans) {
-		String msg = username + " " + password + " " + secQuestion + " " + ans;
-		window.textUsername.setText(username);
-		window.textPassword.setText(password);
-		window.txtSecurityQ.setText(secQuestion);
-		window.txtSecurityA.setText(ans);
+	public ServerMessage createAccountPacket(String username, String password, String secQuestion, String ans) {
+		String msg = username + "/" + password + "/" + secQuestion + "/" + ans;
+//		window.textUsername.setText(username);
+//		window.textPassword.setText(password);
+//		window.txtSecurityQ.setText(secQuestion);
+//		window.txtSecurityA.setText(ans);
 		String jsonText = cGson.toJson(new Message(Message.messageType.REGISTER, msg));
 		try {
 			outputStream.writeUTF(jsonText);
 			outputStream.flush();
 
 			ServerMessage response = this.getResponse();
-			if (response.type.equals("SUCCESS")) {
-
-			} else if (response.type.equals("ERROR")) {
-
-				System.out.println("Sorry mate username taken. Try again");
-			}
+			return response;
 
 		} catch (IOException ie) {
-
+			return null;
 		}
 	}
 
@@ -274,24 +271,6 @@ public class Client implements Runnable {
 
 	}
 
-	public static void main(String[] args) throws UnknownHostException, IOException {
-
 	
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					chatGame window = new chatGame();
-					window.GAME.setVisible(true);
-					int port = 8000;
-					Client client = new Client(port);
-					//client.run();
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 }
