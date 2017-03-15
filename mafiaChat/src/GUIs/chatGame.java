@@ -553,17 +553,17 @@ public class chatGame implements ActionListener {
 		ForgotPassword.add(btnSubmitSecurityAnswer);
 	}
 
-	private class theHandler implements ActionListener 
-	{
-		
-	
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		String string = "";
-		
-
-		}
-	}
+//	private class theHandler implements ActionListener 
+//	{
+//		
+//	
+//	@Override
+//	public void actionPerformed(ActionEvent event) {
+//		String string = "";
+//		
+//
+//		}
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
