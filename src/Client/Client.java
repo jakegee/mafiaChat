@@ -45,9 +45,11 @@ public class Client implements Runnable {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("resource")
 	public Client(int port) throws UnknownHostException, IOException {
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
+		
 		Socket socket = new Socket(ip, port);
 		inputStream = new DataInputStream(socket.getInputStream());
 		outputStream = new DataOutputStream(socket.getOutputStream());
