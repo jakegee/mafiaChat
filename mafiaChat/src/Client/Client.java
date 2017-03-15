@@ -278,11 +278,12 @@ public class Client implements Runnable {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					int port = 8000;
-					Client client = new Client(port);
-					client.run();
 					chatGame window = new chatGame();
 					window.GAME.setVisible(true);
+					int port = 8000;
+					Client client = new Client(port);
+					//client.run();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
