@@ -214,7 +214,7 @@ public class Server implements IServer{
 								break;
 								
 							case LOGIN :
-								decode = message.messageText.split(" ");
+								decode = message.messageText.split("/");
 								try {
 									database.loginUser(decode[0], decode[1]);
 									sendServerMessage(gson.toJson(new ServerMessage(
@@ -233,7 +233,7 @@ public class Server implements IServer{
 								break;
 								
 							case REGISTER :
-								decode = message.messageText.split(" ");
+								decode = message.messageText.split("/");
 								try {
 									database.registerUser(decode[0], decode[1], decode[2], decode[3]);
 									sendServerMessage(gson.toJson(new ServerMessage(
@@ -253,7 +253,7 @@ public class Server implements IServer{
 								break;
 								
 							case PASSWORDHINT :
-								decode = message.messageText.split(" ");
+								decode = message.messageText.split("/");
 								if (decode.length == 1) {
 									try {
 										sendServerMessage(gson.toJson(new ServerMessage(
