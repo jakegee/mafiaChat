@@ -1,13 +1,12 @@
 package Client;
 
-
 import messages.*;
 import GUIs.chatGame;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
+import java.awt.EventQueue;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,11 +16,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * this is the client class. this class sends messages to the server and to other clients
+ * this is the client class. this class sends messages to the server and to
+ * other clients
+ * 
  * @author vishnu
  *
  */
-public class Client implements Runnable{
+public class Client implements Runnable {
 
 	/**
 	 * private variables of the client class
@@ -31,73 +32,74 @@ public class Client implements Runnable{
 	private DataOutputStream outputStream;
 	private DataInputStream inputStream;
 	private String ip;
-	private int port=8000;
+	private int port = 8000;
 	private boolean online;
 	private chatGame window;
 
 	/**
-	 * this is the constructor for instantiating the instance of the client class
-	 * @param port port of the server
+	 * this is the constructor for instantiating the instance of the client
+	 * class
+	 * 
+	 * @param port
+	 *            port of the server
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public Client(int port) throws UnknownHostException, IOException{
+	public Client(int port) throws UnknownHostException, IOException {
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
-		Socket socket = new Socket (ip, port);
+		Socket socket = new Socket(ip, port);
 		inputStream = new DataInputStream(socket.getInputStream());
 		outputStream = new DataOutputStream(socket.getOutputStream());
-		
+
 	}
 
 	/**
-	 * this method initializes reading the input stream from the server upon connecting.
+	 * this method initializes reading the input stream from the server upon
+	 * connecting.
 	 */
 	@Override
 	public void run() {
 		try {
-			while(true) {
-			
-				this.online = true;
-				
-				while(this.online == true) {
-					
-					ServerMessage message = this.getResponse();
-					System.out.println(message.messageText);
-					
-					switch (message.type) {
-			
-						case PRIVATE : 
-							serverMsgPrint(message);
-							break;
-							
-						case PUBLIC : 
-							printMessage(message);
-							break;
-							
-						case CHAT :
-							printMessage(message);
-							break;
-						
-						default : 
-							
-							break;
-							
-					}
+			while (true) {
+
+				ServerMessage message = this.getResponse();
+				System.out.println(message.messageText);
+
+				switch (message.type) {
+
+				case PRIVATE:
+					serverMsgPrint(message);
+					break;
+
+				case PUBLIC:
+					printMessage(message);
+					break;
+
+				case CHAT:
+					printMessage(message);
+					break;
+
+				default:
+
+					break;
+
 				}
 			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			this.online = false;
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * this method returns messages from the server.
+	 * 
 	 * @return
 	 */
-	public ServerMessage getResponse(){
+	public ServerMessage getResponse() {
 		try {
 			return decodeServerMessage(inputStream.readUTF());
 		} catch (IOException e) {
@@ -106,15 +108,16 @@ public class Client implements Runnable{
 		}
 		return null;
 	}
-	
+
 	/**
-	 * this method prints the message on the gui. 
+	 * this method prints the message on the gui.
+	 * 
 	 * @param message
 	 */
-	public void printMessage(ServerMessage message){
+	public void printMessage(ServerMessage message) {
 		try {
 			message = decodeServerMessage(inputStream.readUTF());
-			
+
 			window.txtEnterMess.setText(message.messageText);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -124,17 +127,19 @@ public class Client implements Runnable{
 
 	/**
 	 * boolean true if online
+	 * 
 	 * @return boolean true if online
 	 */
-	public boolean getOnline(){
+	public boolean getOnline() {
 		return this.online;
 	}
-	
+
 	/**
 	 * This method sends out the client message.
+	 * 
 	 * @param jsonText
 	 */
-	public void sendClientMessage(String jsonText){
+	public void sendClientMessage(String jsonText) {
 		if (this.online == true) {
 			try {
 				outputStream.writeUTF(jsonText);
@@ -144,49 +149,51 @@ public class Client implements Runnable{
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * This method prints messages from server
-	 * @param message from server
+	 * 
+	 * @param message
+	 *            from server
 	 */
-	public void serverMsgPrint(ServerMessage message){
+	public void serverMsgPrint(ServerMessage message) {
 		try {
 			message = decodeServerMessage(inputStream.readUTF());
-			
+
 			window.txtServerMess.setText(message.messageText);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public ServerMessage decodeServerMessage(String jsonText) {
 		return cGson.fromJson(jsonText, ServerMessage.class);
 	}
-	
+
 	public void createLoginPacket(String username, String password) throws IOException {
 		String msg = username + " " + password;
 		window.txtUsername.setText(username);
 		window.txtPassword.setText(password);
 		String jsonText = cGson.toJson(new Message(Message.messageType.LOGIN, msg));
-		
+
 		outputStream.writeUTF(jsonText);
 		outputStream.flush();
-		
+
 		ServerMessage response = this.getResponse();
-		if(response.type.equals("SUCCESS")){
+		if (response.type.equals("SUCCESS")) {
 			System.out.println("Sign-in successful");
 			window.btnLogIn.setVisible(false);
 			window.Game.setVisible(true);
-		}else if (response.type.equals("ERROR")){
+		} else if (response.type.equals("ERROR")) {
 			System.out.println("Try again loser");
 		}
-		
+
 	}
-	
+
 	public void createAccountPacket(String username, String password, String secQuestion, String ans) {
 		String msg = username + " " + password + " " + secQuestion + " " + ans;
 		window.textUsername.setText(username);
@@ -198,12 +205,11 @@ public class Client implements Runnable{
 			outputStream.writeUTF(jsonText);
 			outputStream.flush();
 
-			
 			ServerMessage response = this.getResponse();
 			if (response.type.equals("SUCCESS")) {
-				
+
 			} else if (response.type.equals("ERROR")) {
-				
+
 				System.out.println("Sorry mate username taken. Try again");
 			}
 
@@ -218,34 +224,42 @@ public class Client implements Runnable{
 		socket.close();
 	}
 
-	
-//	public void forgottenPassword(String username, String question, String answer) {
-//		String msg = username + " " + question + " " + answer;
-//		String jsonText= cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
-//		window.usernameEntry.setText(username);
-//		window.securityQ.setText(question);
-//		window.securityAnswer.setText(answer);
-//		
-//		try{
-//			outputStream.writeUTF(jsonText);
-//			outputStream.flush();
-//			
-//			
-//			ServerMessage response = this.getResponse();
-//			if (response.type.equals("SUCCESS")){
-//				window.password.createDialog(response.messageText);
-//			} else if (response.type.equals("ERROR")){
-//				window.password.createDialog("Sorry question and answer don't match");
-//			}
-//		}catch (IOException ie){
-//			
-//		}
-//	}
-	
-	public void setCommandMsg(String message){
-		for (int i=0; i<message.length(); i++){
-			if (message.charAt(0) == '/'){
-				String jsonText=  cGson.toJson(new Message(Message.messageType.COMMAND, message));
+	public void forgottenPassword(String username, String answer) {
+		String msg = username;
+		String jsonText = cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
+		window.usernameEntry.setText(username);
+
+		try {
+			outputStream.writeUTF(jsonText);
+			outputStream.flush();
+
+			ServerMessage response = this.getResponse();
+			// print out on gui
+
+			String request = cGson.toJson(new Message(Message.messageType.PASSWORDHINT, answer));
+			try {
+				outputStream.writeUTF(request);
+				outputStream.flush();
+				if (this.getResponse().type.equals("SUCCESS")) {
+
+					window.password.createDialog(response.messageText);
+				} else if (this.getResponse().type.equals("ERROR")) {
+					window.password.createDialog("Sorry question and answer don't match");
+				}
+
+			} catch (IOException ie) {
+
+			}
+
+		} catch (IOException ie) {
+
+		}
+	}
+
+	public void setCommandMsg(String message) {
+		for (int i = 0; i < message.length(); i++) {
+			if (message.charAt(0) == '/') {
+				String jsonText = cGson.toJson(new Message(Message.messageType.COMMAND, message));
 				sendClientMessage(jsonText);
 				window.txtEnterMess1.setText(message);
 			} else {
@@ -254,19 +268,26 @@ public class Client implements Runnable{
 				window.txtEnterMess1.setText(message);
 			}
 		}
-		
+
 	}
 
-	public static void main(String[] args) throws UnknownHostException, IOException{
-		GsonBuilder builder = new GsonBuilder();
+	public static void main(String[] args) throws UnknownHostException, IOException {
+
 		String ip = "10.20.216.120";
-		int port = 8000;
-		Gson cGson = builder.create();
-		Socket socket = new Socket (ip, port);
-		DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-		DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-		Client client = new Client(8000);
-		client.run();
-		
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					int port = 8000;
+					Client client = new Client(port);
+					client.run();
+					chatGame window = new chatGame();
+					window.GAME.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
+
 }
