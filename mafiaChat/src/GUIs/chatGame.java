@@ -1,5 +1,7 @@
 package GUIs;
 
+import Client.*;
+import messages.*;
 
 import java.awt.EventQueue;
 
@@ -60,18 +62,18 @@ public class chatGame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					chatGame window = new chatGame();
-					window.GAME.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					chatGame window = new chatGame();
+//					window.GAME.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -312,9 +314,21 @@ public class chatGame implements ActionListener {
 		//login button
 		JButton btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				try {
-
+					ChatClientApp.client.run();
+					String username = txtUsername.getText();
+					String password = new String(txtPassword.getPassword());
+					ServerMessage response = ChatClientApp.client.createLoginPacket(username, password);
+					if (response.type.equals("SUCCESS")) {
+						Login.setVisible(false);
+						Game.setVisible(true);
+					} else if (response.type.equals("ERROR")) {
+						Login.setVisible(true);
+						Game.setVisible(false);
+						System.out.println("password dont match");
+					}
 				}
 				catch(Exception e1){
 					JOptionPane.showMessageDialog(null, e1);					
@@ -337,8 +351,27 @@ public class chatGame implements ActionListener {
 		btnSignUp.setBounds(212, 430, 116, 44);
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try{
+					
+					String username = textUsername.getText();
+					String password = new String (textPassword.getPassword());
+					String question = txtSecurityQ.getText();
+					String answer = txtSecurityA.getText();
+					ServerMessage response = Client.client.createAccountPacket(username, password, question, answer);
+					if (response.type.equals("SUCCESS")) {
+						JOptionPane.showInputDialog("Sorry try again");
+						Login.setVisible(true);
+						SignIn.setVisible(false);
+					} else if (response.type.equals("ERROR")) {
+						JOptionPane.showInputDialog("Sorry try again");
+					}	
+				
+				}catch(Exception e1){
+					JOptionPane.showMessageDialog(null, e1);
+				}
 				Login.setVisible(false);
 				SignIn.setVisible(true);
+				
 			}
 		});
 		btnSignUp.setForeground(Color.BLUE);
