@@ -36,7 +36,7 @@ public class Client implements Runnable {
 	private int port;
 	private boolean online;
 	private chatGame window;
-	public static Client client;
+	
 
 	/**
 	 * this is the constructor for instantiating the instance of the client
