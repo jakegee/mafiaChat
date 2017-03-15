@@ -70,8 +70,18 @@ public class DatabaseManager implements IDatabase {
 
 	@Override
 	public String getSecurityQuestion(String username) throws InvalidUserException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		try {
+			PreparedStatement invalidUser = dbConn.prepareStatement("SELECT username FROM users WHERE username LIKE ?");
+			invalidUser.setString(1, username);
+			ResultSet rs = invalidUser.executeQuery();
+			if (rs.next()) {
+				throw new InvalidUserException(username);
+				
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	@Override
