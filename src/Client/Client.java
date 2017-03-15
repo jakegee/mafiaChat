@@ -275,7 +275,7 @@ public class Client implements Runnable {
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
 
-		String ip = "10.20.216.120";
+	
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
