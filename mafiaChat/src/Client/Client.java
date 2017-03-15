@@ -1,6 +1,7 @@
 package Client;
 
 import messages.*;
+
 import GUIs.chatGame;
 
 import com.google.gson.Gson;
