@@ -180,8 +180,7 @@ public class Client implements Runnable {
 
 	public ServerMessage createLoginPacket(String username, String password) throws IOException {
 		String msg = username + "/" + password;
-//		window.txtUsername.setText(username);
-//		window.txtPassword.setText(password);
+
 		String jsonText = cGson.toJson(new Message(Message.messageType.LOGIN, msg));
 
 		outputStream.writeUTF(jsonText);
@@ -194,10 +193,7 @@ public class Client implements Runnable {
 
 	public ServerMessage createAccountPacket(String username, String password, String secQuestion, String ans) {
 		String msg = username + "/" + password + "/" + secQuestion + "/" + ans;
-//		window.textUsername.setText(username);
-//		window.textPassword.setText(password);
-//		window.txtSecurityQ.setText(secQuestion);
-//		window.txtSecurityA.setText(ans);
+
 		String jsonText = cGson.toJson(new Message(Message.messageType.REGISTER, msg));
 		try {
 			outputStream.writeUTF(jsonText);
