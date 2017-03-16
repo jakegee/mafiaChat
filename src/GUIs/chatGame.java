@@ -18,6 +18,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
@@ -99,6 +100,7 @@ public class chatGame {
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
 		GAME.setBounds(100, 100, 550, 670);
+		GAME.setMinimumSize(new Dimension(400, 400));
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//images
