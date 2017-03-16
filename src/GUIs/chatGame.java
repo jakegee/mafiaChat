@@ -100,7 +100,7 @@ public class chatGame {
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
 		GAME.setBounds(100, 100, 550, 670);
-		GAME.setMinimumSize(new Dimension(400, 400));
+		GAME.setMinimumSize(new Dimension(550, 670));
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//images
