@@ -298,7 +298,7 @@ public class Server implements IServer{
 									System.out.println("Executing Security Question Guess");
 									try {
 										sendServerMessage(gson.toJson(new ServerMessage(
-												ServerMessage.messageType.SUCCESS, database.checkQuestionAnswer(
+												ServerMessage.messageType.SUCCESS, "Password: " + database.checkQuestionAnswer(
 														decode[0], decode[1]))));
 									} catch (InvalidUserException e) {
 										sendServerMessage(gson.toJson(new ServerMessage(
@@ -322,6 +322,11 @@ public class Server implements IServer{
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				server.currentUsers.remove(this.username);
+				String JSONText = sGson.toJson(new ServerMessage(
+						ServerMessage.messageType.REMOVELIVEUSER,
+						this.username));
+				server.relayChat(JSONText);
 				this.active = false;
 			}
 		}
