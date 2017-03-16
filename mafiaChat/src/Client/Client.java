@@ -16,6 +16,8 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.DefaultListModel;
+
 /**
  * this is the client class. this class sends messages to the server and to
  * other clients
@@ -66,7 +68,9 @@ public class Client {
 		}
 		
 		public void printMessage(ServerMessage message) {
-			window.txtEnterMess.setText(message.messageText);
+			DefaultListModel<String> model = (DefaultListModel<String>) window.listChat.getModel();
+			model.addElement(message.messageText);
+			//window.txtEnterMess.setText(message.messageText);
 		}
 		
 		/**
@@ -235,14 +239,15 @@ public class Client {
 	}
 
 	public void setCommandMsg(String message) {
-		for (int i = 0; i < message.length(); i++) {
-			if (message.charAt(0) == '/') {
-				String jsonText = cGson.toJson(new Message(Message.messageType.COMMAND, message));
-				sendClientMessage(jsonText);
-			} else {
-				String jsonText = cGson.toJson(new Message(Message.messageType.MESSAGE, message));
-				sendClientMessage(jsonText);
-			}
+		if (message == "" || message == null) {
+			return;
+		}
+		if (message.charAt(0) == '/') {
+			String jsonText = cGson.toJson(new Message(Message.messageType.COMMAND, message));
+			sendClientMessage(jsonText);
+		} else {
+			String jsonText = cGson.toJson(new Message(Message.messageType.MESSAGE, message));
+			sendClientMessage(jsonText);
 		}
 
 	}
