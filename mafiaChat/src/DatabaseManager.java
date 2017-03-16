@@ -47,14 +47,13 @@ public class DatabaseManager implements IDatabase {
 			}
 
 			createUser = dbConn.prepareStatement("INSERT INTO users (username, password, question, answer) VALUES (?,?,?,?)");
-			// int userid = 1;
-			// createUser.setInt(userid);
+
 			createUser.setString(1, username);
 			createUser.setString(2, password);
 			createUser.setString(3, securityQuestion);
 			createUser.setString(4, questionAnswer);
 			createUser.executeUpdate();
-			// userid++;
+
 
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -110,7 +109,27 @@ public class DatabaseManager implements IDatabase {
 	@Override
 	public String checkQuestionAnswer(String username, String hintAnswer)
 			throws InvalidUserException, InvalidInformationException {
-		// TODO Auto-generated method stub
+		
+		try {
+			PreparedStatement getPassword = dbConn
+					.prepareStatement("SELECT password, answer FROM users WHERE username = ?");
+			getPassword.setString(1, username);
+			ResultSet rs = getPassword.executeQuery();
+			
+			if (rs.next()) {
+				String secretAnswer = rs.getString("answer");
+				String password = rs.getString("password");
+				if (!hintAnswer.equals(secretAnswer)) {
+					throw new InvalidInformationException("answer");
+				} 
+				return password;
+			} else {
+				throw new InvalidUserException(username);
+			}
+				
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}		
 		return null;
 	}
 
