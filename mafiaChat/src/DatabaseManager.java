@@ -46,8 +46,7 @@ public class DatabaseManager implements IDatabase {
 				throw new UserExistsException(username);
 			}
 
-			createUser = dbConn.prepareStatement(
-					"INSERT INTO users (username, password, securityQuestion, questionAnswer) VALUES (?,?,?,?)");
+			createUser = dbConn.prepareStatement("INSERT INTO users (username, password, securityQuestion, questionAnswer) VALUES (?,?,?,?)");
 			// int userid = 1;
 			// createUser.setInt(userid);
 			createUser.setString(1, username);
@@ -70,6 +69,7 @@ public class DatabaseManager implements IDatabase {
 					.prepareStatement("SELECT userid, username, password FROM users WHERE userid = ?");
 			ResultSet rs = userLogin.executeQuery();
 			while (rs.next()) {
+				String userId = rs.getString("uiserid");
 				String usersName = rs.getString("username");
 				String userPassword = rs.getString("password");
 
