@@ -259,6 +259,7 @@ public class chatGame {
 		Send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				client.setCommandMsg(txtEnterMess1.getText());
+				txtEnterMess1.setText("");
 			}
 		});
 		Send.setForeground(Color.BLUE);
