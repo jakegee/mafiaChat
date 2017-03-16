@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import messages.Message;
 import systemInterfaces.IGame;
@@ -42,14 +44,16 @@ public class Mafia implements IGame {
     private Integer playerOnTrialID = null;
     private Random mafiaPicker;
     
-    //how timer was used in the GuiChatroom for OperatingSystemsAndNetworksEx2
-//	timer = new Timer();
-//	timer.scheduleAtFixedRate(new TimerTask() {
-//		@Override
-//		public void run() {
-//			ChatClientApp.frame.client.get_message();
-//		}
-//	}, 1000, 2000);
+    private Timer dayElimTimer;
+
+    // how timer was used in the GuiChatroom for OperatingSystemsAndNetworksEx2
+    // timer = new Timer();
+    // timer.scheduleAtFixedRate(new TimerTask() {
+    // @Override
+    // public void run() {
+    // ChatClientApp.frame.client.get_message();
+    // }
+    // }, 1000, 2000);
 
     /**
      * The handleMessage method takes in the message and processes the command
@@ -157,31 +161,32 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public void ready(int origin) { // enforce a max amount of players?, 16 seemed to be the maximum allowed in original game
+    public void ready(int origin) { // enforce a max amount of players?, 16
+				    // seemed to be the maximum allowed in
+				    // original game
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
-	  
-	    if(ready.size() < 16){
-	    ready.add(origin);
 
-	    server.publicMessage("number of players ready: " + ready.size());
-	    // possibly extend to mention which players are ready
+	    if (ready.size() < 17) {
+		ready.add(origin);
 
-	    if (ready.size() >= 6) {
-		int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
+		server.publicMessage("number of players ready: " + ready.size());
+		// possibly extend to mention which players are ready
 
-		// not sure if this should be public or private
-		server.privateMessage(
-			"There are enough players to start the game. Use the command" + " \"/start\" to vote to start",
-			readyArray);
-	    }
-	    
-	    if(ready.size() == 15) {
-		server.publicMessage("The maximum amount of players for mafia has been reached");
-	    }
-	    
-	    } else{
-		server.privateMessage("The maximum amount of players has already been reached.", origin);
+		if (ready.size() >= 6) {
+		    int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
+
+		    // not sure if this should be public or private
+		    server.privateMessage("There are enough players to start the game. Use the command"
+			    + " \"/start\" to vote to start", readyArray);
+		}
+
+		if (ready.size() == 16) {
+		    server.publicMessage("The maximum amount of players for mafia has been reached");
+		}
+
+	    } else {
+		server.privateMessage("The maximum amount of players (16) has already been reached.", origin);
 	    }
 	} else {
 	    server.privateMessage("you are already set as ready", origin);
@@ -221,8 +226,12 @@ public class Mafia implements IGame {
      *            message.
      */
     public void voteStart(int origin) {
-	if (!votedStart.contains(origin) && ready.contains(origin)) { // ensures players aren't added more
-					    // than once
+	if (!votedStart.contains(origin) && ready.contains(origin)) { // ensures
+								      // players
+								      // aren't
+								      // added
+								      // more
+	    // than once
 	    votedStart.add(origin);
 	    if (votedStart.size() < ready.size()) {
 		server.publicMessage("number of players that want to start: " + ready.size());
@@ -230,7 +239,7 @@ public class Mafia implements IGame {
 	    } else {
 		gameStart();
 	    }
-	} else if (votedStart.contains(origin)){
+	} else if (votedStart.contains(origin)) {
 	    server.privateMessage("you have already voted to start", origin);
 	} else {
 	    server.privateMessage("you need to be set to ready before you can vote to start", origin);
@@ -305,7 +314,7 @@ public class Mafia implements IGame {
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
 
-	//if (nightVote.size() > 0) {
+	// if (nightVote.size() > 0) {
 	if (nightVoteInProgress) {
 	    server.privateMessage("cannot vote to eliminate a player while there is a vote to change the game to night",
 		    origin);
@@ -326,6 +335,25 @@ public class Mafia implements IGame {
 	    // there could be a deadlock when two players are
 	    // left (might change the mafia win condition to
 	    // address this)
+
+	    TimerTask dayElimVoteTimeout = new TimerTask() { // not sure if this
+							     // will work
+							     // properly (method
+							     // should continue
+							     // without
+							     // waiting for it
+							     // to finish
+
+		@Override
+		public void run() {
+		    dayElimVoteTimeout(); //this might need a catch
+
+		}
+	    };
+
+	    dayElimTimer = new Timer();
+
+	    dayElimTimer.schedule(dayElimVoteTimeout, 20000);
 
 	} else {
 	    if (playerOnTrialID != playerID) {
@@ -354,15 +382,13 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void checkElim(int origin) { // does this need to be synchronized?
+    private void checkElim(int origin) {
 
 	// if (elimDay.size() > playerIDs.size() / 2) {
+	server.publicMessage(players.get(origin) + " has voted to eliminate " + server.getUsername(playerOnTrialID));
+
 	if (elimDay.size() > players.size() / 2) {
 	    eliminateDay();
-
-	} else {
-	    server.publicMessage(
-		    players.get(origin) + " has voted to eliminate " + server.getUsername(playerOnTrialID));
 	}
 
     }
@@ -375,6 +401,8 @@ public class Mafia implements IGame {
      * player in chat.
      */
     private void eliminateDay() {
+	dayElimTimer.cancel();
+	dayElimTimer.purge();
 
 	// playerIDs.remove(playerOnTrialID);
 	players.remove(playerOnTrialID);
@@ -385,14 +413,16 @@ public class Mafia implements IGame {
 	} else {
 	    innocentsID.remove(playerOnTrialID);
 	}
-	
+
 	server.setPlayerMuted(playerOnTrialID, true);
-	
-	playerOnTrialID = null;	
+
+	playerOnTrialID = null;
 	elimDay.clear();
 	save.clear();
 	elimDayVoteInProgress = false;
 	
+	server.publicMessage(server.getUsername(playerOnTrialID) + " has been eliminated");
+
 	checkWin();
 
     }
@@ -435,11 +465,36 @@ public class Mafia implements IGame {
 		}
 
 		save.add(origin);
-		checkElim(origin);
+		checkSave(origin);
 	    }
 	}
 
     }
+    
+    private void checkSave(int origin) { // does this need to be synchronized?
+
+	// if (elimDay.size() > playerIDs.size() / 2) {
+	server.publicMessage(players.get(origin) + " has voted to save " + server.getUsername(playerOnTrialID));
+
+	if (save.size() > players.size() / 2) {
+	    saved();
+	}
+
+    }
+    
+    public void saved(){
+	// playerIDs.remove(playerOnTrialID);
+	
+	dayElimTimer.cancel();
+	dayElimTimer.purge();
+	
+	playerOnTrialID = null;	
+	elimDay.clear();
+	save.clear();
+	elimDayVoteInProgress = false;
+	
+	server.publicMessage(server.getUsername(playerOnTrialID) + " has been saved");
+}
 
     /**
      * The voteNight method either starts the vote to change the game to night
@@ -545,7 +600,7 @@ public class Mafia implements IGame {
 	    // mafia from voting
 
 	    server.setChatActive(false); // wondering if it matters what order
-	    day = false; 		// these are in
+	    day = false; // these are in
 	    nightVoteInProgress = false;
 	}
     }
@@ -615,10 +670,10 @@ public class Mafia implements IGame {
 		server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");
 	    } else {
 		server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
-		
-		int [] mafiaArray = new int[mafia.size()];
-		
-		for (int i = 0; i < mafiaArray.length; i++ ){
+
+		int[] mafiaArray = new int[mafia.size()];
+
+		for (int i = 0; i < mafiaArray.length; i++) {
 		    mafiaArray[i] = mafia.get(i);
 		}
 		server.privateMessage("In order to kill an innocent during the night, the same person needs"
@@ -633,18 +688,32 @@ public class Mafia implements IGame {
 	}
 
     }
-    
-    public void checkWin(){
-	if (mafia.size() == innocentsID.size()){
+
+    public void checkWin() {
+	if (mafia.size() == innocentsID.size()) {
 	    server.publicMessage("The Mafia win");
-	} else if (mafia.size() == 0){
+	} else if (mafia.size() == 0) {
 	    server.publicMessage("The innocents win");
 	} else {
-	    
+
 	}
     }
 
     public void assignPoints() { // only assign points to the survivors?
 
     }
+
+    public synchronized void dayElimVoteTimeout() {
+	if (playerOnTrialID == null) {
+
+	} else {
+	    if (elimDay.size() > save.size()) {
+		eliminateDay();
+	    } else {
+		saved();
+	    }
+
+	}
+    }
+
 }
