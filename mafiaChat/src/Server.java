@@ -7,7 +7,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import messages.Message;
@@ -103,6 +106,7 @@ public class Server implements IServer{
 		private boolean active;
 		private boolean muted = false;
 		private String username;
+		private DateFormat df;
 
 		/**
 		 * Constructor for instantiating an object of the ClientHandler class
@@ -119,6 +123,7 @@ public class Server implements IServer{
 			this.idNumber = idNumber;
 			this.server = server;
 			this.username = "DefaultUsername";
+			this.df = new SimpleDateFormat("HH:mm:ss");
 		}
 		
 		/**
@@ -205,7 +210,7 @@ public class Server implements IServer{
 								if (!this.muted) {
 									String JSONText = sGson.toJson(new ServerMessage(
 											ServerMessage.messageType.CHAT,
-											" " +
+											df.format(new Date()) + " " +
 											"<" + username + "> " + message.messageText));
 									server.relayChat(JSONText);
 								}
@@ -469,7 +474,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		Server server = new Server(8001, 20);
+		Server server = new Server(8000, 20);
 	}
 
 }
