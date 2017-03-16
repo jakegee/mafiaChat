@@ -225,7 +225,7 @@ public class Mafia implements IGame {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    public void voteStart(int origin) {
+    private void voteStart(int origin) {
 	if (!votedStart.contains(origin) && ready.contains(origin)) { // ensures
 								      // players
 								      // aren't
@@ -482,7 +482,7 @@ public class Mafia implements IGame {
 
     }
     
-    public void saved(){
+    private void saved(){
 	// playerIDs.remove(playerOnTrialID);
 	
 	dayElimTimer.cancel();
@@ -613,7 +613,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    public void elimNight(String player, int origin) {
+    private void elimNight(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -689,7 +689,7 @@ public class Mafia implements IGame {
 
     }
 
-    public void checkWin() {
+    private void checkWin() {
 	if (mafia.size() == innocentsID.size()) {
 	    server.publicMessage("The Mafia win");
 	} else if (mafia.size() == 0) {
@@ -699,7 +699,7 @@ public class Mafia implements IGame {
 	}
     }
 
-    public void assignPoints() { // only assign points to the survivors?
+    private void assignPoints() { // only assign points to the survivors?
 
     }
 
