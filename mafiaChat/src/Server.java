@@ -230,13 +230,20 @@ public class Server implements IServer{
 									this.username = decode[0];
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
-									server.currentUsers.add(this.username);
+									
+									String JSONText = sGson.toJson(new ServerMessage(
+											ServerMessage.messageType.ADDLIVEUSER,
+											this.username));
+									server.relayChat(JSONText);
+									
 									for (String element : currentUsers) {
-										String JSONText = sGson.toJson(new ServerMessage(
+										JSONText = sGson.toJson(new ServerMessage(
 												ServerMessage.messageType.ADDLIVEUSER,
 												element));
-										server.relayChat(JSONText);
+										sendServerMessage(JSONText);
 									}
+									server.currentUsers.add(this.username);
+									
 								} catch (InvalidUserException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
