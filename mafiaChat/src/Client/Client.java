@@ -48,7 +48,7 @@ public class Client implements Runnable {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("resource")
-	public Client(int port) throws UnknownHostException, IOException {
+	public Client(int port, String ip) throws UnknownHostException, IOException {
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
 
@@ -188,13 +188,6 @@ public class Client implements Runnable {
 		outputStream.flush();
 
 		ServerMessage response = this.getResponse();
-		if (response.type.equals("SUCCESS")) {
-			System.out.println("Sign-in successful");
-//			window.btnLogIn.setVisible(false);
-//			window.Game.setVisible(true);
-		} else if (response.type.equals("ERROR")) {
-			System.out.println("Try again loser");
-		}
 		return response;
 
 	}
@@ -240,10 +233,10 @@ public class Client implements Runnable {
 			try {
 				outputStream.writeUTF(request);
 				outputStream.flush();
-				if (this.getResponse().type.equals("SUCCESS")) {
+				if (this.getResponse().type == ServerMessage.messageType.SUCCESS) {
 
 					window.password.createDialog(response.messageText);
-				} else if (this.getResponse().type.equals("ERROR")) {
+				} else if (this.getResponse().type == ServerMessage.messageType.ERROR) {
 					window.password.createDialog("Sorry question and answer don't match");
 				}
 

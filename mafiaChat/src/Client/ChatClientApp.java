@@ -7,17 +7,16 @@ import java.net.UnknownHostException;
 import GUIs.*;
 
 public class ChatClientApp {
-	public static Client client;
+	public Client client;
 	public int port;
+	public String host;
 	public chatGame window;
 
 	
 	public ChatClientApp(){
 		try {
-			
-			window = new chatGame();
-			client = new Client(port);
-			
+			client = new Client(port, host);
+			window = new chatGame(client);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -34,9 +33,10 @@ public class ChatClientApp {
 			public void run() {
 				try {
 					
-					int port = 8000;
-					Client client = new Client(port);
-					chatGame window = new chatGame();
+					int port = 8001;
+					String host = "localhost";
+					Client client = new Client(port, host);
+					chatGame window = new chatGame(client);
 					window.GAME.setVisible(true);
 					
 				} catch (Exception e) {
