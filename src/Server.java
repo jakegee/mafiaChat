@@ -45,6 +45,7 @@ public class Server implements IServer{
 	private ClientHandler[] threads;
 	private LinkedBlockingQueue<Socket> connections;
 	private boolean relayChat;
+	private ArrayList<String> currentUsers;
 	
 	/**
 	 * Constructor for instantiating an instance of the Server class
@@ -61,6 +62,7 @@ public class Server implements IServer{
 		connections = new LinkedBlockingQueue<Socket>(5);
 		game = new Mafia();
 		database = new DatabaseManager();
+		this.currentUsers = new ArrayList<String>();
 		
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new ClientHandler(i, this);
@@ -228,10 +230,13 @@ public class Server implements IServer{
 									this.username = decode[0];
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
-									String JSONText = sGson.toJson(new ServerMessage(
-											ServerMessage.messageType.ADDLIVEUSER,
-											this.username));
-									server.relayChat(JSONText);
+									server.currentUsers.add(this.username);
+									for (String element : currentUsers) {
+										String JSONText = sGson.toJson(new ServerMessage(
+												ServerMessage.messageType.ADDLIVEUSER,
+												element));
+										server.relayChat(JSONText);
+									}
 								} catch (InvalidUserException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
@@ -265,6 +270,7 @@ public class Server implements IServer{
 										ServerMessage.messageType.REMOVELIVEUSER,
 										this.username));
 								server.relayChat(JSONText);
+								server.currentUsers.remove(this.username);
 								break;
 								
 							case PASSWORDHINT :
