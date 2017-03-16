@@ -262,6 +262,7 @@ public class Server implements IServer{
 							case PASSWORDHINT :
 								decode = message.messageText.split("/");
 								if (decode.length == 1) {
+									System.out.println("Executing Password Hint Retrieval");
 									try {
 										sendServerMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
@@ -273,6 +274,7 @@ public class Server implements IServer{
 												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								} else {
+									System.out.println("Executing Security Question Guess");
 									try {
 										sendServerMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, database.checkQuestionAnswer(

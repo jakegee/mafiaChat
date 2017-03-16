@@ -95,17 +95,16 @@ public class DatabaseManager implements IDatabase {
 			getQuestion.setString(1, username);
 			ResultSet rs = getQuestion.executeQuery();
 			if (rs.next()) {
-				String userName = rs.getString("username");
-				
-				if (!username.equals(userName)) {
+				String question = rs.getString("question");
+				return question;
+			} else {
 					throw new InvalidUserException("username");
-				}
-			} 
+			}
 
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
-		return username;
+		return null;
 	}
 
 	@Override
