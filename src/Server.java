@@ -118,10 +118,7 @@ public class Server implements IServer{
 			gson = builder.create();
 			this.idNumber = idNumber;
 			this.server = server;
-			
-			// *** TEMPORARY TEST VARIABLES DECLARATION ***
-			this.username = "CoolThread" + idNumber;
-			// *** TEMPORARY TEST VARIABLES DECLARATION ***
+			this.username = "DefaultUsername";
 		}
 		
 		/**
@@ -206,7 +203,11 @@ public class Server implements IServer{
 				
 							case MESSAGE : 
 								if (!this.muted) {
-									server.relayChat(message, this.idNumber);
+									String JSONText = sGson.toJson(new ServerMessage(
+											ServerMessage.messageType.CHAT,
+											" " +
+											"<" + username + "> " + message.messageText));
+									server.relayChat(JSONText);
 								}
 								break;
 								
@@ -315,13 +316,9 @@ public class Server implements IServer{
 	 * @param message Message to be transmitted
 	 * @param Origin ID of the ClientHandler which passed on the command
 	 */
-	public void relayChat(Message message, int Origin) {
+	public void relayChat(String JSONText) {
 		
 		// TODO: Add userName support to specify which user sent the message
-		
-		String JSONText = sGson.toJson(new ServerMessage(
-							ServerMessage.messageType.CHAT,
-							message.messageText));
 
 		for (ClientHandler serverThread : threads) {
 			serverThread.sendServerMessage(JSONText);

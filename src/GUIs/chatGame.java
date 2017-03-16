@@ -13,6 +13,8 @@ import java.awt.Image;
 import java.awt.ScrollPane;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
@@ -37,7 +39,7 @@ import javax.swing.JComboBox;
  * @author Fozia Mehboob
  *
  */
-public class chatGame implements ActionListener {
+public class chatGame {
 	public javax.swing.JScrollPane jScrollPane1;
 	public JFrame GAME;
 	public JTextField usernameEntry;
@@ -61,6 +63,7 @@ public class chatGame implements ActionListener {
 	public Client client;
 	public chatGame reference;
 	public ScrollPane scrollPane;
+	public JList listChat;
 
 	/**
 	 * Launch the application.
@@ -194,13 +197,17 @@ public class chatGame implements ActionListener {
 
 
 		//scroll bar for input text with text box
-		JScrollPane scrollPane = new JScrollPane();
+		listChat = new JList<String>();
+		//listChat.setValueIsAdjusting(true);
+		listChat.setModel(new DefaultListModel<String>());
+		
+		JScrollPane scrollPane = new JScrollPane(listChat);
 		scrollPane.setBounds(28,105,339,445);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
-		this.txtEnterMess = new JTextArea();
-		scrollPane.setViewportView(txtEnterMess);
-		txtEnterMess.setLineWrap(true);
+		//this.txtEnterMess = new JTextArea();
+		//scrollPane.setViewportView(txtEnterMess);
+		//txtEnterMess.setLineWrap(true);
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane1 = new JScrollPane();
@@ -621,11 +628,4 @@ public class chatGame implements ActionListener {
 //
 //		}
 //	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }
