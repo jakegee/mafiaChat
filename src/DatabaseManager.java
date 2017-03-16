@@ -46,7 +46,7 @@ public class DatabaseManager implements IDatabase {
 				throw new UserExistsException(username);
 			}
 
-			createUser = dbConn.prepareStatement("INSERT INTO users (username, password, securityQuestion, questionAnswer) VALUES (?,?,?,?)");
+			createUser = dbConn.prepareStatement("INSERT INTO users (username, password, question, questionAnswer) VALUES (?,?,?,?)");
 			// int userid = 1;
 			// createUser.setInt(userid);
 			createUser.setString(1, username);
