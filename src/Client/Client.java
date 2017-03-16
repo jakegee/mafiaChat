@@ -57,30 +57,33 @@ public class Client {
 		Socket socket = new Socket(ip, port);
 		inputStream = new DataInputStream(socket.getInputStream());
 		outputStream = new DataOutputStream(socket.getOutputStream());
+		
 
 	}
 	
 	public class ListenerThread extends Thread {
 		private chatGame window;
+		private DefaultListModel<String> modelMessage;
+		private DefaultListModel<String> modelUser;
+		private DefaultListModel<String> modelPrivate;
 		
 		public ListenerThread(chatGame window) {
 			this.window = window;
+			modelMessage = (DefaultListModel<String>) window.listChat.getModel();
+			modelUser = (DefaultListModel<String>) window.listUsers.getModel();
+			modelPrivate = (DefaultListModel<String>) window.listPrivate.getModel();
 		}
 		
 		public void addUser(ServerMessage message) {
-			DefaultListModel<String> modelUser = (DefaultListModel<String>) window.listUsers.getModel();
 			modelUser.addElement(message.messageText);			
 		}
 		
 		public void removeUser(ServerMessage message) {
-			DefaultListModel<String> modelUser = (DefaultListModel<String>) window.listUsers.getModel();
 			modelUser.removeElement(message.messageText);			
 		}
 		
 		public void printMessage(ServerMessage message) {
-			DefaultListModel<String> modelMessage = (DefaultListModel<String>) window.listChat.getModel();
 			modelMessage.addElement(message.messageText);
-			//window.txtEnterMess.setText(message.messageText);
 		}
 		
 		/**
@@ -90,7 +93,7 @@ public class Client {
 		 *            from server
 		 */
 		public void serverMsgPrint(ServerMessage message) {
-			window.txtServerMess.setText(message.messageText);
+			modelPrivate.addElement(message.messageText);
 		}
 		
 		/**

@@ -46,6 +46,7 @@ public class Server implements IServer{
 	private LinkedBlockingQueue<Socket> connections;
 	private boolean relayChat;
 	private ArrayList<String> currentUsers;
+	private DateFormat df;
 	
 	/**
 	 * Constructor for instantiating an instance of the Server class
@@ -63,6 +64,7 @@ public class Server implements IServer{
 		game = new Mafia();
 		database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
+		this.df = new SimpleDateFormat("HH:mm:ss");
 		
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new ClientHandler(i, this);
@@ -109,6 +111,7 @@ public class Server implements IServer{
 		private boolean muted = false;
 		private String username;
 		private DateFormat df;
+		private boolean inChat;
 
 		/**
 		 * Constructor for instantiating an object of the ClientHandler class
@@ -124,7 +127,7 @@ public class Server implements IServer{
 			gson = builder.create();
 			this.idNumber = idNumber;
 			this.server = server;
-			this.username = "DefaultUsername";
+			this.username = null;
 			this.df = new SimpleDateFormat("HH:mm:ss");
 		}
 		
@@ -135,6 +138,18 @@ public class Server implements IServer{
 		 * @param JSONText Json representation of a ServerMessage object
 		 */
 		public void sendServerMessage(String JSONText) {
+			if (this.active == true && this.inChat == true) {
+				try {
+					out.writeUTF(JSONText);
+					out.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void sendLoginMessage(String JSONText) { 
 			if (this.active == true) {
 				try {
 					out.writeUTF(JSONText);
@@ -199,6 +214,7 @@ public class Server implements IServer{
 					this.in = new DataInputStream(socket.getInputStream());
 					this.out = new DataOutputStream(socket.getOutputStream());
 					this.active = true;
+					this.inChat = false;
 					String[] decode;
 					
 					while(this.active == true) {
@@ -228,9 +244,10 @@ public class Server implements IServer{
 								try {
 									database.loginUser(decode[0], decode[1]);
 									this.username = decode[0];
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									
+									this.inChat = true;
 									String JSONText = sGson.toJson(new ServerMessage(
 											ServerMessage.messageType.ADDLIVEUSER,
 											this.username));
@@ -245,13 +262,13 @@ public class Server implements IServer{
 									server.currentUsers.add(this.username);
 									
 								} catch (InvalidUserException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
 								} catch (InvalidInformationException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
 								} catch (ArrayIndexOutOfBoundsException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, "All fields must contain text")));
 								}
 								break;
@@ -260,13 +277,13 @@ public class Server implements IServer{
 								decode = message.messageText.split("/");
 								try {
 									database.registerUser(decode[0], decode[1], decode[2], decode[3]);
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Register Successful")));
 								} catch (UserExistsException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
 								} catch (ArrayIndexOutOfBoundsException e) {
-									sendServerMessage(gson.toJson(new ServerMessage(
+									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, "All fields must contain text")));
 								}
 								break;
@@ -285,29 +302,29 @@ public class Server implements IServer{
 								if (decode.length == 1) {
 									System.out.println("Executing Password Hint Retrieval");
 									try {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
 									} catch (InvalidUserException e) {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, e.getMessage())));
 									} catch (ArrayIndexOutOfBoundsException e) {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								} else {
 									System.out.println("Executing Security Question Guess");
 									try {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, "Password: " + database.checkQuestionAnswer(
 														decode[0], decode[1]))));
 									} catch (InvalidUserException e) {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, e.getMessage())));
 									} catch (InvalidInformationException e) {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, e.getMessage())));
 									} catch (ArrayIndexOutOfBoundsException e) {
-										sendServerMessage(gson.toJson(new ServerMessage(
+										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								}
@@ -322,12 +339,15 @@ public class Server implements IServer{
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				server.currentUsers.remove(this.username);
-				String JSONText = sGson.toJson(new ServerMessage(
-						ServerMessage.messageType.REMOVELIVEUSER,
-						this.username));
-				server.relayChat(JSONText);
-				this.active = false;
+				if (this.username != null) {
+					server.currentUsers.remove(this.username);
+					String JSONText = sGson.toJson(new ServerMessage(
+							ServerMessage.messageType.REMOVELIVEUSER,
+							this.username));
+					server.relayChat(JSONText);
+					this.active = false;
+					this.username = null;
+				}
 			}
 		}
 	}
@@ -364,11 +384,15 @@ public class Server implements IServer{
 	 * 
 	 * @param message String to be sent to the chat window of all
 	 * clients, will be marked as being from the Server
+	 * 
+	 * 											df.format(new Date()) + " " +
+											"<" + username + "> " + message.messageText));
+	 * 
 	 */
 	@Override
 	public void publicMessage(String message) {
 		String JSONText = sGson.toJson(new ServerMessage(
-				ServerMessage.messageType.PUBLIC, message));
+				ServerMessage.messageType.PUBLIC, df.format(new Date()) + " Server : " + message));
 		for (ClientHandler serverThread : threads) {
 			serverThread.sendServerMessage(JSONText);
 		}
@@ -386,7 +410,7 @@ public class Server implements IServer{
 	@Override
 	public void privateMessage(String message, int recipient) {
 		String JSONText = sGson.toJson(new ServerMessage(
-				ServerMessage.messageType.PRIVATE, message));
+				ServerMessage.messageType.PRIVATE, df.format(new Date()) + " Private : " + message));
 			threads[recipient].sendServerMessage(JSONText);
 	}
 
