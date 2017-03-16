@@ -16,7 +16,7 @@ import messages.ServerMessage;
  * @author Team Nice
  * @version 2-03-2017
  */
-public class Client {
+public class ExampleClient {
 	private Gson cGson;
 	private Socket socket;
 	private DataOutputStream out;
@@ -27,7 +27,7 @@ public class Client {
 	/**
 	 * Constructor for instantiating an object of the Client class
 	 */
-	public Client() {
+	public ExampleClient() {
 		GsonBuilder builder = new GsonBuilder();
 		cGson = builder.create();
 		try {
