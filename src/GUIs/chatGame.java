@@ -355,19 +355,16 @@ public class chatGame implements ActionListener {
 					String answer = txtSecurityA.getText();
 					ServerMessage response = client.createAccountPacket(username, password, question, answer);
 					if (response.type == ServerMessage.messageType.SUCCESS) {
-						JOptionPane.showInputDialog("Sorry try again");
+						
 						Login.setVisible(true);
 						SignIn.setVisible(false);
 					} else if (response.type == ServerMessage.messageType.ERROR) {
-						JOptionPane.showInputDialog("Sorry try again");
+						JOptionPane.showInputDialog(null, response.messageText);
 					}	
 				
 				}catch(Exception e1){
 					JOptionPane.showMessageDialog(null, e1);
 				}
-				Login.setVisible(false);
-				SignIn.setVisible(true);
-				
 			}
 		});
 		btnSignUp.setForeground(Color.BLUE);
