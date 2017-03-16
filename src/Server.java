@@ -263,9 +263,8 @@ public class Server implements IServer{
 										sendServerMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, e.getMessage())));
 									} catch (ArrayIndexOutOfBoundsException e) {
-										e.printStackTrace();
-										// Invalid Input, therefore it is ignored, should
-										// not happen under standard operation of system
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								} else {
 									try {
@@ -279,9 +278,8 @@ public class Server implements IServer{
 										sendServerMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.ERROR, e.getMessage())));
 									} catch (ArrayIndexOutOfBoundsException e) {
-										e.printStackTrace();
-										// Invalid Input, therefore it is ignored, should
-										// not happen under standard operation of system
+										sendServerMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								}
 								break;
@@ -474,7 +472,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		Server server = new Server(8000, 20);
+		Server server = new Server(8001, 20);
 	}
 
 }

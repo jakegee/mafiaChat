@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
  * @author vishnu
  *
  */
-public class Client implements Runnable {
+public class Client {
 
 	/**
 	 * private variables of the client class
@@ -35,7 +35,7 @@ public class Client implements Runnable {
 	private String ip;
 	private int port;
 	private boolean online;
-	private chatGame window;
+	private ListenerThread listener;
 	
 
 	/**
@@ -57,44 +57,76 @@ public class Client implements Runnable {
 		outputStream = new DataOutputStream(socket.getOutputStream());
 
 	}
+	
+	public class ListenerThread extends Thread {
+		private chatGame window;
+		
+		public ListenerThread(chatGame window) {
+			this.window = window;
+		}
+		
+		public void printMessage(ServerMessage message) {
+			window.txtEnterMess.setText(message.messageText);
+		}
+		
+		/**
+		 * This method prints messages from server
+		 * 
+		 * @param message
+		 *            from server
+		 */
+		public void serverMsgPrint(ServerMessage message) {
+			window.txtServerMess.setText(message.messageText);
+		}
+		
+		/**
+		 * this method initializes reading the input stream from the server upon
+		 * connecting.
+		 */
+		public void run() {
+			try {
+				while (true) {
 
-	/**
-	 * this method initializes reading the input stream from the server upon
-	 * connecting.
-	 */
-	@Override
-	public void run() {
-		try {
-			while (true) {
+					ServerMessage message = getResponse();
+					System.out.println(message.messageText);
 
-				ServerMessage message = this.getResponse();
-				System.out.println(message.messageText);
+					switch (message.type) {
 
-				switch (message.type) {
+					case PRIVATE:
+						serverMsgPrint(message);
+						break;
 
-				case PRIVATE:
-					serverMsgPrint(message);
-					break;
+					case PUBLIC:
+						printMessage(message);
+						break;
 
-				case PUBLIC:
-					printMessage(message);
-					break;
+					case CHAT:
+						printMessage(message);
+						break;
 
-				case CHAT:
-					printMessage(message);
-					break;
+					default:
 
-				default:
+						break;
 
-					break;
-
+					}
 				}
-			}
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			this.online = false;
-			e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	public void spawnListenerThread(chatGame window) {
+		this.listener = new ListenerThread(window);
+		listener.start();
+	}
+	
+	public void killListenerThread() {
+		if (this.listener != null) {
+			listener.interrupt();
 		}
 	}
 
@@ -114,22 +146,6 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * this method prints the message on the gui.
-	 * 
-	 * @param message
-	 */
-	public void printMessage(ServerMessage message) {
-		try {
-			message = decodeServerMessage(inputStream.readUTF());
-
-			window.txtEnterMess.setText(message.messageText);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * boolean true if online
 	 * 
 	 * @return boolean true if online
@@ -144,7 +160,7 @@ public class Client implements Runnable {
 	 * @param jsonText
 	 */
 	public void sendClientMessage(String jsonText) {
-		if (this.online == true) {
+		//if (this.online == true) {
 			try {
 				outputStream.writeUTF(jsonText);
 				outputStream.flush();
@@ -152,25 +168,7 @@ public class Client implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-
-	}
-
-	/**
-	 * This method prints messages from server
-	 * 
-	 * @param message
-	 *            from server
-	 */
-	public void serverMsgPrint(ServerMessage message) {
-		try {
-			message = decodeServerMessage(inputStream.readUTF());
-
-			window.txtServerMess.setText(message.messageText);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//}
 
 	}
 
@@ -213,36 +211,27 @@ public class Client implements Runnable {
 		socket.close();
 	}
 
-	public void forgottenPassword(String username, String answer) {
-		String msg = username;
+	public ServerMessage forgottenPassword(String username, String answer) {
+		String msg;
+		if (answer == null) {
+			msg = username;
+		} else {
+			msg = username + "/" + answer;
+		}
+		
 		String jsonText = cGson.toJson(new Message(Message.messageType.PASSWORDHINT, msg));
-		window.usernameEntry.setText(username);
 
 		try {
 			outputStream.writeUTF(jsonText);
 			outputStream.flush();
 
-			ServerMessage response = this.getResponse();
+			return this.getResponse();
 			// print out on gui
-
-			String request = cGson.toJson(new Message(Message.messageType.PASSWORDHINT, answer));
-			try {
-				outputStream.writeUTF(request);
-				outputStream.flush();
-				if (this.getResponse().type == ServerMessage.messageType.SUCCESS) {
-
-					window.password.createDialog(response.messageText);
-				} else if (this.getResponse().type == ServerMessage.messageType.ERROR) {
-					window.password.createDialog("Sorry question and answer don't match");
-				}
-
-			} catch (IOException ie) {
-
-			}
 
 		} catch (IOException ie) {
 
 		}
+		return null;
 	}
 
 	public void setCommandMsg(String message) {
@@ -250,11 +239,9 @@ public class Client implements Runnable {
 			if (message.charAt(0) == '/') {
 				String jsonText = cGson.toJson(new Message(Message.messageType.COMMAND, message));
 				sendClientMessage(jsonText);
-				window.txtEnterMess1.setText(message);
 			} else {
 				String jsonText = cGson.toJson(new Message(Message.messageType.MESSAGE, message));
 				sendClientMessage(jsonText);
-				window.txtEnterMess1.setText(message);
 			}
 		}
 

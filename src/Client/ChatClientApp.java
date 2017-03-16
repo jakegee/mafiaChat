@@ -33,7 +33,7 @@ public class ChatClientApp {
 			public void run() {
 				try {
 					
-					int port = 8000;
+					int port = 8001;
 					String host = "localhost";
 					Client client = new Client(port, host);
 					chatGame window = new chatGame(client);
