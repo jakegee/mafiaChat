@@ -229,9 +229,8 @@ public class Server implements IServer{
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
 								} catch (ArrayIndexOutOfBoundsException e) {
-									e.printStackTrace();
-									// Invalid Input, therefore it is ignored, should
-									// not happen under standard operation of system
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, "All fields must contain text")));
 								}
 								break;
 								
@@ -240,14 +239,13 @@ public class Server implements IServer{
 								try {
 									database.registerUser(decode[0], decode[1], decode[2], decode[3]);
 									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, "")));
+											ServerMessage.messageType.SUCCESS, "Register Successful")));
 								} catch (UserExistsException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
 								} catch (ArrayIndexOutOfBoundsException e) {
-									e.printStackTrace();
-									// Invalid Input, therefore it is ignored, should
-									// not happen under standard operation of system
+									sendServerMessage(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.ERROR, "All fields must contain text")));
 								}
 								break;
 								 

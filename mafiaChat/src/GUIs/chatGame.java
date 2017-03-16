@@ -347,24 +347,8 @@ public class chatGame implements ActionListener {
 		btnSignUp.setBounds(212, 430, 116, 44);
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try{
-					
-					String username = textUsername.getText();
-					String password = new String (textPassword.getPassword());
-					String question = txtSecurityQ.getText();
-					String answer = txtSecurityA.getText();
-					ServerMessage response = client.createAccountPacket(username, password, question, answer);
-					if (response.type == ServerMessage.messageType.SUCCESS) {
-						
-						Login.setVisible(true);
-						SignIn.setVisible(false);
-					} else if (response.type == ServerMessage.messageType.ERROR) {
-						JOptionPane.showInputDialog(null, response.messageText);
-					}	
-				
-				}catch(Exception e1){
-					JOptionPane.showMessageDialog(null, e1);
-				}
+					Login.setVisible(false);
+					SignIn.setVisible(true);
 			}
 		});
 		btnSignUp.setForeground(Color.BLUE);
@@ -420,7 +404,7 @@ public class chatGame implements ActionListener {
 
 		//Sign-in Panel
 
-		JLabel lblEnterName = new JLabel("Enter Name");
+		JLabel lblEnterName = new JLabel("Enter Username");
 		lblEnterName.setForeground(Color.WHITE);
 		lblEnterName.setFont(new Font("Silom", Font.PLAIN, 18));
 		lblEnterName.setBounds(19, 178, 189, 29);
@@ -441,8 +425,22 @@ public class chatGame implements ActionListener {
 		btnRegister.setToolTipText("Submit registration");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SignIn.setVisible(false);
-				Login.setVisible(true);
+				try{
+					System.out.println("Entering Action Event");
+					String username = textUsername.getText();
+					String password = new String (textPassword.getPassword());
+					String question = txtSecurityQ.getText();
+					String answer = txtSecurityA.getText();
+					ServerMessage response = client.createAccountPacket(username, password, question, answer);
+					if (response.type == ServerMessage.messageType.SUCCESS) {
+						Login.setVisible(true);
+						SignIn.setVisible(false);
+					}
+					JOptionPane.showMessageDialog(null, response.messageText);
+				
+				}catch(Exception e1){
+					JOptionPane.showMessageDialog(null, e1);
+				}
 			}
 		});
 		btnRegister.setForeground(Color.BLUE);
