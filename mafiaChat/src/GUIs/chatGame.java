@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import java.awt.Image;
-
+import java.awt.ScrollPane;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -59,6 +59,8 @@ public class chatGame implements ActionListener {
 	public JButton btnLogIn;
 	public JPanel Game;
 	public Client client;
+	public chatGame reference;
+	public ScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -82,6 +84,7 @@ public class chatGame implements ActionListener {
 	public chatGame(Client client) {
 		initialize();
 		this.client = client;
+		this.reference = this;
 	}
 
 	/**
@@ -195,10 +198,9 @@ public class chatGame implements ActionListener {
 		scrollPane.setBounds(28,105,339,445);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
-		JTextArea txtEnterMess = new JTextArea();
+		this.txtEnterMess = new JTextArea();
 		scrollPane.setViewportView(txtEnterMess);
 		txtEnterMess.setLineWrap(true);
-
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane1 = new JScrollPane();
@@ -211,7 +213,7 @@ public class chatGame implements ActionListener {
 
 
 		//text areas to view all users messages
-		JTextArea txtServerMess = new JTextArea();
+		this.txtServerMess = new JTextArea();
 		txtServerMess.setToolTipText("Messages received from Server");
 		txtServerMess.setEditable(false);
 		txtServerMess.setLineWrap(true);
@@ -245,6 +247,11 @@ public class chatGame implements ActionListener {
 		Send.setToolTipText("Click to send message");
 		Send.setBackground(Color.GRAY);
 		Send.setFont(new Font("Silom", Font.PLAIN, 13));
+		Send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.setCommandMsg(txtEnterMess1.getText());
+			}
+		});
 		Send.setForeground(Color.BLUE);
 		Send.setBounds(442, 562, 87, 60);
 		Game.add(Send);
@@ -326,6 +333,7 @@ public class chatGame implements ActionListener {
 					if (response.type == ServerMessage.messageType.SUCCESS) {
 						Login.setVisible(false);
 						Game.setVisible(true);
+						client.spawnListenerThread(reference);
 					}
 					JOptionPane.showMessageDialog(null, response.messageText);	
 				}
@@ -387,7 +395,7 @@ public class chatGame implements ActionListener {
 		LogoSignIn2.setIcon(new ImageIcon(logoSign2));
 		Login.add(LogoSignIn2);
 
-		JButton btnForgottonPassword = new JButton("Forgotton Password");
+		JButton btnForgottonPassword = new JButton("Forgotten Password");
 		btnForgottonPassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Login.setVisible(false);
@@ -558,9 +566,17 @@ public class chatGame implements ActionListener {
 		btnReturnToLogin.setBounds(156, 517, 233, 44);
 		ForgotPassword.add(btnReturnToLogin);
 
-		JButton btnDisplaySecurityQuestion = new JButton("Submit Username");
+		JButton btnDisplaySecurityQuestion = new JButton("Get Question");
 		btnDisplaySecurityQuestion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try{
+					String username = usernameEntry.getText();
+					System.out.println("Get Question Called");
+					ServerMessage response = client.forgottenPassword(username, null);
+					JOptionPane.showMessageDialog(null, response.messageText);
+               }catch (Exception e1){
+            	   
+               }
 			}
 		});
 		btnDisplaySecurityQuestion.setToolTipText("Click here to display password");
@@ -570,6 +586,23 @@ public class chatGame implements ActionListener {
 		ForgotPassword.add(btnDisplaySecurityQuestion);
 
 		JButton btnSubmitSecurityAnswer = new JButton("Submit Security Answer");
+		btnSubmitSecurityAnswer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					String username = usernameEntry.getText();
+					String answer = securityAnswer.getText();
+					System.out.println("Submit Question Called");
+					ServerMessage response = client.forgottenPassword(username, answer);
+					if (response.type == ServerMessage.messageType.SUCCESS) {
+						Login.setVisible(true);
+						ForgotPassword.setVisible(false);
+					}
+					JOptionPane.showMessageDialog(null, response.messageText);
+               }catch (Exception e1){
+            	   
+               }
+			}
+		});
 		btnSubmitSecurityAnswer.setToolTipText("Click here to display password");
 		btnSubmitSecurityAnswer.setForeground(Color.BLUE);
 		btnSubmitSecurityAnswer.setFont(new Font("Silom", Font.PLAIN, 12));
