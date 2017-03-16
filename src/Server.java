@@ -57,6 +57,7 @@ public class Server implements IServer{
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
 		game = new Mafia();
+		database = new DatabaseManager();
 		
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new ClientHandler(i, this);
@@ -214,11 +215,13 @@ public class Server implements IServer{
 								break;
 								
 							case LOGIN :
+								System.out.println("Server Login Code executed");
 								decode = message.messageText.split("/");
 								try {
 									database.loginUser(decode[0], decode[1]);
+									this.username = decode[0];
 									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, "")));
+											ServerMessage.messageType.SUCCESS, "Welcome " + decode[0])));
 								} catch (InvalidUserException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
@@ -295,7 +298,6 @@ public class Server implements IServer{
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				this.active = false;
-				e.printStackTrace();
 			}
 		}
 	}
@@ -474,7 +476,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		Server server = new Server(8000, 20);
+		Server server = new Server(8001, 20);
 	}
 
 }

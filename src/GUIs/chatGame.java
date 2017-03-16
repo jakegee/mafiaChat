@@ -58,6 +58,7 @@ public class chatGame implements ActionListener {
 	public JOptionPane password;
 	public JButton btnLogIn;
 	public JPanel Game;
+	public Client client;
 
 	/**
 	 * Launch the application.
@@ -78,8 +79,9 @@ public class chatGame implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public chatGame() {
+	public chatGame(Client client) {
 		initialize();
+		this.client = client;
 	}
 
 	/**
@@ -317,25 +319,19 @@ public class chatGame implements ActionListener {
 			
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ChatClientApp.client.run();
+					//client.run(); <- why call run?
 					String username = txtUsername.getText();
 					String password = new String(txtPassword.getPassword());
-					ServerMessage response = ChatClientApp.client.createLoginPacket(username, password);
-					if (response.type.equals("SUCCESS")) {
+					ServerMessage response = client.createLoginPacket(username, password);
+					if (response.type == ServerMessage.messageType.SUCCESS) {
 						Login.setVisible(false);
 						Game.setVisible(true);
-					} else if (response.type.equals("ERROR")) {
-						Login.setVisible(true);
-						Game.setVisible(false);
-						System.out.println("password dont match");
 					}
+					JOptionPane.showMessageDialog(null, response.messageText);	
 				}
 				catch(Exception e1){
 					JOptionPane.showMessageDialog(null, e1);					
 				}
-				Login.setVisible(true);
-				Game.setVisible(false);
-
 			}
 		});
 		btnLogIn.setToolTipText("Press to login to game");
@@ -357,12 +353,12 @@ public class chatGame implements ActionListener {
 					String password = new String (textPassword.getPassword());
 					String question = txtSecurityQ.getText();
 					String answer = txtSecurityA.getText();
-					ServerMessage response = Client.client.createAccountPacket(username, password, question, answer);
-					if (response.type.equals("SUCCESS")) {
+					ServerMessage response = client.createAccountPacket(username, password, question, answer);
+					if (response.type == ServerMessage.messageType.SUCCESS) {
 						JOptionPane.showInputDialog("Sorry try again");
 						Login.setVisible(true);
 						SignIn.setVisible(false);
-					} else if (response.type.equals("ERROR")) {
+					} else if (response.type == ServerMessage.messageType.ERROR) {
 						JOptionPane.showInputDialog("Sorry try again");
 					}	
 				
