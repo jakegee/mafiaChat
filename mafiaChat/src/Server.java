@@ -227,7 +227,11 @@ public class Server implements IServer{
 									database.loginUser(decode[0], decode[1]);
 									this.username = decode[0];
 									sendServerMessage(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, "Welcome " + decode[0])));
+											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
+									String JSONText = sGson.toJson(new ServerMessage(
+											ServerMessage.messageType.ADDLIVEUSER,
+											this.username));
+									server.relayChat(JSONText);
 								} catch (InvalidUserException e) {
 									sendServerMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.ERROR, e.getMessage())));
@@ -257,6 +261,10 @@ public class Server implements IServer{
 								 
 							case LOGOUT :
 								this.active = false;
+								String JSONText = sGson.toJson(new ServerMessage(
+										ServerMessage.messageType.REMOVELIVEUSER,
+										this.username));
+								server.relayChat(JSONText);
 								break;
 								
 							case PASSWORDHINT :

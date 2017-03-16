@@ -65,6 +65,7 @@ public class chatGame {
 	public chatGame reference;
 	public ScrollPane scrollPane;
 	public JList listChat;
+	public JList listUsers;
 
 	/**
 	 * Launch the application.
@@ -230,12 +231,22 @@ public class chatGame {
 		Game.add(txtServerMess);
 
 		//text area to view online users
+		listUsers = new JList<String>();
+		listUsers.setModel(new DefaultListModel<String>());
+		
+		JScrollPane scrollOnlineUsers = new JScrollPane(listUsers);
+		scrollOnlineUsers.setBounds(379, 107, 158, 229);
+		scrollOnlineUsers.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		Game.add(scrollOnlineUsers);
+		
+		/*
 		JTextArea txtOnlineUsers = new JTextArea();
 		txtOnlineUsers.setToolTipText("View onliner users");
 		txtOnlineUsers.setEditable(false);
 		txtOnlineUsers.setLineWrap(true);
 		txtOnlineUsers.setBounds(379, 107, 158, 229);
 		Game.add(txtOnlineUsers);
+		*/
 
 		//heading for online users
 		JLabel lblOnlineUsers = new JLabel("ONLINE USERS");

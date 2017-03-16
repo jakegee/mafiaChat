@@ -67,9 +67,19 @@ public class Client {
 			this.window = window;
 		}
 		
+		public void addUser(ServerMessage message) {
+			DefaultListModel<String> modelUser = (DefaultListModel<String>) window.listUsers.getModel();
+			modelUser.addElement(message.messageText);			
+		}
+		
+		public void removeUser(ServerMessage message) {
+			DefaultListModel<String> modelUser = (DefaultListModel<String>) window.listUsers.getModel();
+			modelUser.removeElement(message.messageText);			
+		}
+		
 		public void printMessage(ServerMessage message) {
-			DefaultListModel<String> model = (DefaultListModel<String>) window.listChat.getModel();
-			model.addElement(message.messageText);
+			DefaultListModel<String> modelMessage = (DefaultListModel<String>) window.listChat.getModel();
+			modelMessage.addElement(message.messageText);
 			//window.txtEnterMess.setText(message.messageText);
 		}
 		
@@ -108,6 +118,14 @@ public class Client {
 						printMessage(message);
 						break;
 
+					case ADDLIVEUSER:
+						addUser(message);
+						break;
+						
+					case REMOVELIVEUSER:
+						removeUser(message);
+						break;
+						
 					default:
 
 						break;
@@ -239,7 +257,7 @@ public class Client {
 	}
 
 	public void setCommandMsg(String message) {
-		if (message == "" || message == null) {
+		if (message == null || message.isEmpty()) {
 			return;
 		}
 		if (message.charAt(0) == '/') {
