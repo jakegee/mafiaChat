@@ -66,15 +66,18 @@ public class DatabaseManager implements IDatabase {
 
 		try {
 			PreparedStatement userLogin = dbConn
-					.prepareStatement("SELECT userid, username, password FROM users WHERE userid = ?");
+					.prepareStatement("SELECT password FROM users WHERE username = ?");
+			userLogin.setString(1, username);
 			ResultSet rs = userLogin.executeQuery();
-			while (rs.next()) {
-				String userId = rs.getString("uiserid");
-				String usersName = rs.getString("username");
+			if (rs.next()) {
 				String userPassword = rs.getString("password");
+				
+				if (!password.equals(rs.getString("password"))) {
+					throw new InvalidInformationException("password");
+				}
 
-				System.out.println("username : " + username);
-				System.out.println("password : " + password);
+			} else {
+				throw new InvalidUserException(username);
 			}
 
 		} catch (SQLException ex) {
