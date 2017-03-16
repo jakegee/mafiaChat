@@ -32,7 +32,6 @@ public class Mafia implements IGame {
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
     private ArrayList<Integer> mafia; // might make type map
-    private int[] mafiaID; // placeholder
     private ArrayList<Integer> innocentsID; // might make type map
     private ArrayList<Integer> elimDay;
     private ArrayList<Integer> save;
@@ -616,8 +615,14 @@ public class Mafia implements IGame {
 		server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");
 	    } else {
 		server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
+		
+		int [] mafiaArray = new int[mafia.size()];
+		
+		for (int i = 0; i < mafiaArray.length; i++ ){
+		    mafiaArray[i] = mafia.get(i);
+		}
 		server.privateMessage("In order to kill an innocent during the night, the same person needs"
-			+ " to be chosen by all the mafia players", mafiaID);
+			+ " to be chosen by all the mafia players", mafiaArray);
 	    }
 	    eliminate.clear();
 
