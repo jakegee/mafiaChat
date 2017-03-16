@@ -66,6 +66,7 @@ public class chatGame {
 	public ScrollPane scrollPane;
 	public JList listChat;
 	public JList listUsers;
+	public JList listPrivate;
 
 	/**
 	 * Launch the application.
@@ -222,6 +223,15 @@ public class chatGame {
 		txtEnterMess1.setLineWrap(true);
 
 
+		listPrivate = new JList<String>();
+		listPrivate.setModel(new DefaultListModel<String>());
+		
+		JScrollPane scrollPrivate = new JScrollPane(listPrivate);
+		scrollPrivate.setBounds(379, 365, 160, 185);
+		scrollPrivate.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		Game.add(scrollPrivate);
+		
+		/*
 		//text areas to view all users messages
 		this.txtServerMess = new JTextArea();
 		txtServerMess.setToolTipText("Messages received from Server");
@@ -229,6 +239,7 @@ public class chatGame {
 		txtServerMess.setLineWrap(true);
 		txtServerMess.setBounds(379, 365, 160, 185);
 		Game.add(txtServerMess);
+		*/
 
 		//text area to view online users
 		listUsers = new JList<String>();
