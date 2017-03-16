@@ -72,7 +72,7 @@ public class DatabaseManager implements IDatabase {
 			if (rs.next()) {
 				String userPassword = rs.getString("password");
 				
-				if (!password.equals(rs.getString("password"))) {
+				if (!password.equals(userPassword)) {
 					throw new InvalidInformationException("password");
 				}
 
@@ -89,16 +89,23 @@ public class DatabaseManager implements IDatabase {
 
 	@Override
 	public String getSecurityQuestion(String username) throws InvalidUserException {
-		return null;
-		/*
-		 * try { PreparedStatement exUser = dbConn.
-		 * prepareStatement("SELECT username FROM users WHERE username LIKE ?");
-		 * invalidUser.setString(1, username); ResultSet rs =
-		 * invalidUser.executeQuery(); if (rs.next()) { throw new
-		 * InvalidUserException(username);
-		 * 
-		 * } catch (SQLException ex) { ex.printStackTrace(); } }
-		 **/
+		try {
+			PreparedStatement getQuestion = dbConn
+					.prepareStatement("SELECT question FROM users WHERE username = ?");
+			getQuestion.setString(1, username);
+			ResultSet rs = getQuestion.executeQuery();
+			if (rs.next()) {
+				String userName = rs.getString("username");
+				
+				if (!username.equals(userName)) {
+					throw new InvalidUserException("username");
+				}
+			} 
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return username;
 	}
 
 	@Override
