@@ -68,22 +68,7 @@ public class chatGame {
 	public JList listUsers;
 	public JList listPrivate;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					chatGame window = new chatGame();
-//					window.GAME.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
+	
 	/**
 	 * Create the application.
 	 */
@@ -157,28 +142,7 @@ public class chatGame {
 		cmbMessageList.setBounds(415, -11, 135, 50);
 		JLabel lblDropDown =  new JLabel();
 		cmbMessageList.setSelectedIndex(0);
-		//cmbMessageList.addActionListener(this);
 
-//		public void actionPerformed(ActionEvent e) 
-//		{
-//			if(e.getSource() == cmbMessageList) {
-//				JComboBox cb == (JComboBox)e.getSource();
-//				String msg = (String)cb.getSelectedItem();
-//				switch (msg) {
-//					case "Rules" : lblText.setText("The rules are: xxx");
-//					break;
-//					case "Highest Scores":  lblText.setText("The rules are: xxx");
-//					break;
-//					case "Log out":  lblText.setText("The rules are: xxx");
-//					break;
-		
-//					default : lbl.setText("you must make a selection");
-				
-//
-//				}
-//			}
-//
-//		}
 
 		Game.add(lblDropDown);
 		Game.add(cmbMessageList);
@@ -642,15 +606,5 @@ public class chatGame {
 		ForgotPassword.add(btnSubmitSecurityAnswer);
 	}
 
-//	private class theHandler implements ActionListener 
-//	{
-//		
-//	
-//	@Override
-//	public void actionPerformed(ActionEvent event) {
-//		String string = "";
-//		
-//
-//		}
-//	}
+
 }
