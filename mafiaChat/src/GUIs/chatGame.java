@@ -89,7 +89,7 @@ public class chatGame {
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
-		GAME.setBounds(60, 60, 1090, 720);
+		GAME.setBounds(60, 60, 1690, 920);
 	//	GAME.setMinimumSize(new Dimension(550, 670));
 		
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -269,7 +269,7 @@ public class chatGame {
 		//WELCOME SCREEN COMPONENTS
 		//title 
 		JLabel titleWelcome = new JLabel("");
-		titleWelcome.setBounds(35, 10, 1050, 120);
+		titleWelcome.setBounds(95, 10, 1450, 180);
 		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),titleWelcome.getHeight(), Image.SCALE_SMOOTH);
 		titleWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(titleWelcome);
@@ -277,14 +277,14 @@ public class chatGame {
 
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
-		dareTxt.setBounds(320, 505, 500, 100);
+		dareTxt.setBounds(620, 615, 440, 180);
 		Image one = img3.getScaledInstance(dareTxt.getWidth(),dareTxt.getHeight(), Image.SCALE_SMOOTH);
 		dareTxt.setIcon(new ImageIcon(one));
 		Welcome.add(dareTxt);
 
 		//enter button
 		JButton btnEnter = new JButton("ENTER");
-		btnEnter.setFont(new Font("Silom", Font.BOLD, 20));
+		btnEnter.setFont(new Font("Silom", Font.BOLD, 28));
 		btnEnter.setToolTipText("Press to enter game");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -294,12 +294,12 @@ public class chatGame {
 			}
 		});
 		btnEnter.setForeground(Color.BLUE);
-		btnEnter.setBounds(390, 600, 300, 80);
+		btnEnter.setBounds(680, 780, 280, 60);
 		Welcome.add(btnEnter);
 
 		//main logo
 		JLabel msnLogo = new JLabel("");
-		msnLogo.setBounds(300, 137, 428, 350);
+		msnLogo.setBounds(550, 157, 518, 490);
 		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),msnLogo.getHeight(), Image.SCALE_SMOOTH);
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
@@ -309,17 +309,17 @@ public class chatGame {
 		//LOGIN SCREEN COMPONENTS
 		//label for password text
 		JLabel lblPassword = new JLabel("Enter Password");
-		lblPassword.setBounds(56, 272, 165, 47);
+		lblPassword.setBounds(640, 272, 205, 147);
 		lblPassword.setForeground(Color.WHITE);
-		lblPassword.setFont(new Font("Silom", Font.PLAIN, 18));
+		lblPassword.setFont(new Font("Silom", Font.PLAIN, 26));
 		Login.add(lblPassword);
 
 		//label for username text
 		JLabel label = new JLabel("Enter Username");
-		label.setBounds(56, 200, 163, 38);
+		label.setBounds(156, 200, 263, 138);
 		label.setForeground(Color.WHITE);
 		Login.add(label);
-		label.setFont(new Font("Silom", Font.PLAIN, 18));
+		label.setFont(new Font("Silom", Font.PLAIN, 46));
 
 		//login button
 		JButton btnLogIn = new JButton("Log In");
@@ -372,17 +372,17 @@ public class chatGame {
 
 
 		JLabel titleLogin = new JLabel("");
-		titleLogin.setBounds(22, 20, 500, 90);
+		titleLogin.setBounds(440, 10, 950, 180);
 		Image logoLog = img.getScaledInstance(titleLogin.getWidth(),titleLogin.getHeight(), Image.SCALE_SMOOTH);
 		titleLogin.setIcon(new ImageIcon(logoLog));
 		Login.add(titleLogin);
 
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(281, 269, 215, 50);
+		txtPassword.setBounds(401, 269, 215, 50);
 		Login.add(txtPassword);
 
 		JLabel LogoSignIn = new JLabel("");
-		LogoSignIn.setBounds(6, 558, 88, 64);
+		LogoSignIn.setBounds(600, 558, 88, 64);
 		Image logoSign = img2.getScaledInstance(LogoSignIn.getWidth(),LogoSignIn.getHeight(), Image.SCALE_SMOOTH);
 		LogoSignIn.setIcon(new ImageIcon(logoSign));
 		Login.add(LogoSignIn);

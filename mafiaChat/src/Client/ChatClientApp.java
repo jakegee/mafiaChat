@@ -49,7 +49,7 @@ public class ChatClientApp {
 				try {
 					
 					int port = 8000;
-					String host = "10.20.218.212";
+					String host = "localhost";
 					Client client = new Client(port, host);
 					chatGame window = new chatGame(client);
 					window.GAME.setVisible(true);
