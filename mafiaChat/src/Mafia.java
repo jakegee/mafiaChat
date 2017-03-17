@@ -29,10 +29,12 @@ public class Mafia implements IGame {
 						  // the timer
 
     private boolean day = true;
+    private boolean gameInProgress = true; //this is possibly to be used in handleMessage
 
     // private ArrayList<Integer> containing the players who have used /ready
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
+    private String[] mafiaAtStart; //might make this for innocents as well
     private ArrayList<Integer> mafia; // might make type map
     private ArrayList<Integer> innocentsID; // might make type map
     private ArrayList<Integer> elimDay;
@@ -258,12 +260,14 @@ public class Mafia implements IGame {
 	}
 
 	int numMafia = Math.round(votedStart.size() / 3);
+	mafiaAtStart = new String[numMafia];
 
 	for (int j = 0; j < numMafia; j++) {
 	    int index = mafiaPicker.nextInt(votedStart.size());
 
 	    int id = votedStart.get(index);
 	    mafia.add(id);
+	    mafiaAtStart[j] = server.getUsername(id);
 	    votedStart.remove(index);
 	}
 
@@ -683,6 +687,7 @@ public class Mafia implements IGame {
 
 	    day = true;
 	    server.setChatActive(true);
+	    checkWin();
 	} else {
 
 	}
@@ -697,6 +702,7 @@ public class Mafia implements IGame {
 	} else {
 
 	}
+	server.publicMessage("The mafia were: " + mafiaAtStart);
     }
 
     private void assignPoints() { // only assign points to the survivors?
