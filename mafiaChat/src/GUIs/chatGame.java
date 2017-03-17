@@ -50,23 +50,26 @@ public class chatGame {
 	public JTextField txtSecurityQ;
 	public JTextField txtSecurityA;
 	public JPasswordField textPassword;
-//	public JScrollPane scrollB;
-//	public JScrollBar Scroll;
 	public JTextField securityAnswer;
 	public String[] messageStrings;
 	public JComboBox cmbMessageList;
+	public Client client;
+	public chatGame reference;
+	public JList listChat;
+	public JList listUsers;
+	public JList listPrivate;
+//	public JScrollPane scrollB;
+//	public JScrollBar Scroll;
+	
 //	public JTextArea txtServerMess;
 //	public JTextArea txtEnterMess;
 //	public JTextArea txtEnterMess1;
 //	public JOptionPane password;
 //	public JButton btnLogIn;
 //	public JPanel Game;
-public Client client;
-public chatGame reference;
+
 //	public ScrollPane scrollPane;
-public JList listChat;
-public JList listUsers;
-public JList listPrivate;
+
 
 	
 	/**
@@ -86,8 +89,9 @@ public JList listPrivate;
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
-		GAME.setBounds(100, 100, 550, 670);
-		GAME.setMinimumSize(new Dimension(550, 670));
+		GAME.setBounds(60, 60, 1090, 720);
+	//	GAME.setMinimumSize(new Dimension(550, 670));
+		
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//images
@@ -265,7 +269,7 @@ public JList listPrivate;
 		//WELCOME SCREEN COMPONENTS
 		//title 
 		JLabel titleWelcome = new JLabel("");
-		titleWelcome.setBounds(22, 20, 500, 90);
+		titleWelcome.setBounds(35, 10, 1050, 120);
 		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),titleWelcome.getHeight(), Image.SCALE_SMOOTH);
 		titleWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(titleWelcome);
@@ -273,7 +277,7 @@ public JList listPrivate;
 
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
-		dareTxt.setBounds(133, 425, 271, 76);
+		dareTxt.setBounds(320, 505, 500, 100);
 		Image one = img3.getScaledInstance(dareTxt.getWidth(),dareTxt.getHeight(), Image.SCALE_SMOOTH);
 		dareTxt.setIcon(new ImageIcon(one));
 		Welcome.add(dareTxt);
@@ -290,12 +294,12 @@ public JList listPrivate;
 			}
 		});
 		btnEnter.setForeground(Color.BLUE);
-		btnEnter.setBounds(163, 512, 195, 40);
+		btnEnter.setBounds(390, 600, 300, 80);
 		Welcome.add(btnEnter);
 
 		//main logo
 		JLabel msnLogo = new JLabel("");
-		msnLogo.setBounds(116, 157, 308, 256);
+		msnLogo.setBounds(300, 137, 428, 350);
 		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),msnLogo.getHeight(), Image.SCALE_SMOOTH);
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
