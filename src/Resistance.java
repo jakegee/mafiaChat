@@ -55,8 +55,8 @@ public class Resistance extends Game{
 	private ArrayList<Integer> spies;
 	
 	public void setUpGame() {
-		int[] currentConfig = gameConfig.get(users.size());
-		Mission mission = new Mission(users.size());
+		currentConfig = gameConfig.get(users.size());
+		mission = new Mission(users.size());
 		state = GameState.SQUAD_SELECTION;
 		voted = new ArrayList<Integer>();
 		spies = new ArrayList<Integer>();
@@ -80,8 +80,15 @@ public class Resistance extends Game{
 			server.privateMessage(messageForSpies, element);
 		}
 		
-		for (int element : users) {
-			leaderQueue.add(server.getUsername(element));
+		ArrayList<Integer> allocated = new ArrayList<Integer>();
+		while(true) {
+			int randomNum =  ThreadLocalRandom.current().nextInt(0, users.size());
+			if (!allocated.contains(randomNum)) {
+				leaderQueue.add(server.getUsername(randomNum));
+				if (leaderQueue.size() == users.size()) {
+					break;
+				}
+			}
 		}
 		nextLeader();
 	}
@@ -108,12 +115,18 @@ public class Resistance extends Game{
 			this.numberOfPlayers = numberOfPlayers;
 			this.missionNumber = 1;
 			selectedSquad = new ArrayList<Integer>();
+			squadSize = currentConfig[missionNumber + 1];
 		}
 		
 		public void addSquadMember(int user) {
 			selectedSquad.add(user);
 			server.publicMessage(server.getUsername(user) + " has been added to the squad");
 			if (selectedSquad.size() == squadSize) {
+				String message = "Submitted Team is [ ";
+				for (int element : selectedSquad) {
+					message += server.getUsername(element) + " ";
+				}
+				server.publicMessage(message + "] Cast votes now");
 				state = GameState.SQUAD_VOTE;
 			}
 		}
@@ -128,6 +141,7 @@ public class Resistance extends Game{
 		}
 		
 		public void nextMission() {
+			missionNumber++;
 			selectedSquad = new ArrayList<Integer>();
 			squadSize = currentConfig[missionNumber + 1];
 			missionSuccess = new ArrayList<Boolean>();
@@ -263,8 +277,8 @@ public class Resistance extends Game{
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
-						mission.squadVote(true);
 						server.publicMessage(server.getUsername(origin) + " voted yes");
+						mission.squadVote(true);
 					}
 				} else if (command.equals("/downvote")) {
 					if (voted.contains(origin)) {
