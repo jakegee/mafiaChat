@@ -1,4 +1,5 @@
 
+import java.awt.RenderingHints.Key;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
@@ -17,6 +19,7 @@ public class DatabaseManager implements IDatabase {
 	private String dbName;
 	private Connection dbConn;
 	private PreparedStatement createUser;
+
 
 	public DatabaseManager() {
 
@@ -34,7 +37,14 @@ public class DatabaseManager implements IDatabase {
 		}
 
 	}
-
+	
+	public String hashing(String s) {
+		int hash = 7;
+		for (int i = 0; i < s.length(); i++) {
+			hash = hash*31 + s.charAt(i);
+		}
+		return String.valueOf(hash);
+	}
 	public void registerUser(String username, String password, String securityQuestion, String questionAnswer)
 			throws UserExistsException {
 
@@ -45,7 +55,7 @@ public class DatabaseManager implements IDatabase {
 			if (rs.next()) {
 				throw new UserExistsException(username);
 			}
-
+			
 			createUser = dbConn.prepareStatement("INSERT INTO users (username, password, question, answer) VALUES (?,?,?,?)");
 
 			createUser.setString(1, username);
@@ -59,6 +69,8 @@ public class DatabaseManager implements IDatabase {
 			ex.printStackTrace();
 		}
 	}
+	
+
 
 	@Override
 	public void loginUser(String username, String password) throws InvalidUserException, InvalidInformationException {
@@ -132,6 +144,7 @@ public class DatabaseManager implements IDatabase {
 		}		
 		return null;
 	}
+
 
 	public static void main(String[] args) {
 		System.out.println("HELLO!!!!!");
