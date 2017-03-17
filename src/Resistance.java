@@ -6,7 +6,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
-import Stubs.ServerStub;
+import Stubs.ServerStubCMD;
 import messages.Message;
 import systemInterfaces.Game;
 import systemInterfaces.IGame;
@@ -341,7 +341,7 @@ public class Resistance extends Game{
 	}
 	
 	public static void main(String[] args) {
-		ServerStub theStub = new ServerStub(new String[] {"Debbie", "Arnold", "Dave", "CoolVishnu", "AMouse"});
+		ServerStubCMD theStub = new ServerStubCMD(new String[] {"Debbie", "Arnold", "Dave", "CoolVishnu", "AMouse"});
 		Game game = new Resistance(theStub);
 		theStub.attachGameObject(game);
 		theStub.commandLineControl();

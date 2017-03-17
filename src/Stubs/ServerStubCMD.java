@@ -9,13 +9,13 @@ import messages.Message;
 import systemInterfaces.Game;
 import systemInterfaces.IServer;
 
-public class ServerStub implements IServer{
+public class ServerStubCMD implements IServer{
 	private Map<Integer, String> IDToUser; 
 	private Map<String, Integer> userToID; 
 	private ArrayList<Integer> activeClients;
 	private Game game;
 			
-	public ServerStub(String[] testUsers) {
+	public ServerStubCMD(String[] testUsers) {
 			IDToUser = new HashMap<Integer, String>();
 			userToID = new HashMap<String, Integer>();
 			activeClients = new ArrayList<Integer>();
@@ -148,6 +148,10 @@ public class ServerStub implements IServer{
 			}
 	 
 		}
+	}
+	
+	public void testControl() {
+		
 	}
 
 }
