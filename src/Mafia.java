@@ -740,6 +740,9 @@ public class Mafia implements IGame {
     }
 
     private void elimNight(String victim) {
+	nightElimTimer.cancel();
+	nightElimTimer.purge();
+	
 	int victimID = server.getUserID(victim);
 
 	players.remove(victimID);
@@ -751,6 +754,9 @@ public class Mafia implements IGame {
     }
 
     private void failNight() {
+	nightElimTimer.cancel();
+	nightElimTimer.purge();
+	
 	server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
 
 	int[] mafiaArray = new int[mafia.size()];
@@ -800,12 +806,15 @@ public class Mafia implements IGame {
 	}
     }
     
-    public synchronized void nightElimTimeout() {
-//	if (nightVote.size() > dayVote.size()) {
-//	    night();
-//	} else {
-//	    day();
-//	}
+    public synchronized void nightElimTimeout() {	
+	int[] mafiaArray = new int[mafia.size()];
+
+	for (int i = 0; i < mafiaArray.length; i++) {
+	    mafiaArray[i] = mafia.get(i);
+	}
+	server.privateMessage("Not all mafia voted before the timer so noone was killed during the night", mafiaArray);
+	
+	failNight();
     }
 
 }
