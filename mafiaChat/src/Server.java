@@ -63,7 +63,7 @@ public class Server implements IServer{
 		GsonBuilder builder = new GsonBuilder();
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
-		game = new Resistance(this);
+		game = new Mafia(this);
 		database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
