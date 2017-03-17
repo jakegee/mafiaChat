@@ -1,3 +1,4 @@
+import systemInterfaces.Game;
 import systemInterfaces.IDatabase;
 import systemInterfaces.IGame;
 import systemInterfaces.IServer;
@@ -5,6 +6,7 @@ import systemInterfaces.IServer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
@@ -36,7 +38,7 @@ import exceptions.UserExistsException;
  */
 public class Server implements IServer{
 
-	private IGame game;
+	private Game game;
 	private IDatabase database;
 	
 	private ServerSocket sSocket;
@@ -61,7 +63,7 @@ public class Server implements IServer{
 		GsonBuilder builder = new GsonBuilder();
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
-		game = new Mafia();
+		game = new TestGame(this);
 		database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
