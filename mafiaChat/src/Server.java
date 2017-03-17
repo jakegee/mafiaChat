@@ -246,7 +246,7 @@ public class Server implements IServer{
 								try {
 									if (server.currentUsers.contains(decode[0])) {
 										sendLoginMessage(gson.toJson(new ServerMessage(
-												ServerMessage.messageType.ERROR, "User alread logged in")));
+												ServerMessage.messageType.ERROR, "User already logged in")));
 										continue;
 									}
 									database.loginUser(decode[0], decode[1]);
