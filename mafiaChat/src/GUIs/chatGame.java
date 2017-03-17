@@ -50,23 +50,23 @@ public class chatGame {
 	public JTextField txtSecurityQ;
 	public JTextField txtSecurityA;
 	public JPasswordField textPassword;
-	public JScrollPane scrollB;
-	public JScrollBar Scroll;
+//	public JScrollPane scrollB;
+//	public JScrollBar Scroll;
 	public JTextField securityAnswer;
 	public String[] messageStrings;
 	public JComboBox cmbMessageList;
-	public JTextArea txtServerMess;
-	public JTextArea txtEnterMess;
-	public JTextArea txtEnterMess1;
-	public JOptionPane password;
-	public JButton btnLogIn;
-	public JPanel Game;
-	public Client client;
-	public chatGame reference;
-	public ScrollPane scrollPane;
-	public JList listChat;
-	public JList listUsers;
-	public JList listPrivate;
+//	public JTextArea txtServerMess;
+//	public JTextArea txtEnterMess;
+//	public JTextArea txtEnterMess1;
+//	public JOptionPane password;
+//	public JButton btnLogIn;
+//	public JPanel Game;
+public Client client;
+public chatGame reference;
+//	public ScrollPane scrollPane;
+public JList listChat;
+public JList listUsers;
+public JList listPrivate;
 
 	
 	/**
