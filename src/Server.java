@@ -63,7 +63,7 @@ public class Server implements IServer{
 		GsonBuilder builder = new GsonBuilder();
 		sGson = builder.create();
 		connections = new LinkedBlockingQueue<Socket>(5);
-		game = new TestGame(this);
+		game = new Resistance(this);
 		database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
@@ -486,7 +486,7 @@ public class Server implements IServer{
 	public ArrayList<Integer> getActiveClientIDs() {
 		ArrayList<Integer> returnList = new ArrayList<Integer>();
 		for (int i  = 0; i < threads.length; i++) {
-			if (threads[i].getActive()) {
+			if (threads[i].inChat) {
 				returnList.add(i);
 			}
 		}
