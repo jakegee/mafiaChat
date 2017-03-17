@@ -34,7 +34,7 @@ public class ChatClientApp {
 				try {
 					
 					int port = 8000;
-					String host = "127.0.0.1";
+					String host = "localhost";
 					Client client = new Client(port, host);
 					chatGame window = new chatGame(client);
 					window.GAME.setVisible(true);
