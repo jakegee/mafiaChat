@@ -244,6 +244,11 @@ public class Server implements IServer{
 								System.out.println("Server Login Code executed");
 								decode = message.messageText.split("/");
 								try {
+									if (server.currentUsers.contains(decode[0])) {
+										sendLoginMessage(gson.toJson(new ServerMessage(
+												ServerMessage.messageType.ERROR, "User alread logged in")));
+										continue;
+									}
 									database.loginUser(decode[0], decode[1]);
 									this.username = decode[0];
 									sendLoginMessage(gson.toJson(new ServerMessage(

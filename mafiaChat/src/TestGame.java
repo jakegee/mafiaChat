@@ -10,7 +10,7 @@ public class TestGame extends Game{
 	}
 
 	@Override
-	public void handleMessage(Message message, int origin) {
+	public synchronized void handleMessage(Message message, int origin) {
 		String text = message.messageText;
 		String command;
 		String remText;
@@ -29,11 +29,14 @@ public class TestGame extends Game{
 			server.publicMessage(server.getUsername(origin) + " sent poop");
 		} else if (command.equals("/lovephil")){
 			server.publicMessage(server.getUsername(origin) + " loves phil, don't tell coolfozia22");
-		} else {
-			server.privateMessage("Unrecognised Command", origin);
+		} else if (command.equals("/time")) {
+			server.publicMessage("Timer for 10 seconds started");
+			this.createTimerEvent(10, "Timer up");
 		}
-		
-		
+	}
+	
+	public synchronized void handleTimerEvent(String message) {
+		server.publicMessage(message);
 	}
 
 }
