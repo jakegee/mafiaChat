@@ -14,7 +14,6 @@ import systemInterfaces.IServer;
 
 public class Resistance extends Game{
 	
-	private int failedVotes;
 	private int numberOfSuccesses;
 	private boolean activeTimer;
 	
@@ -88,6 +87,7 @@ public class Resistance extends Game{
 				if (leaderQueue.size() == users.size()) {
 					break;
 				}
+				allocated.add(randomNum);
 			}
 		}
 		nextLeader();
@@ -108,14 +108,20 @@ public class Resistance extends Game{
 		private int squadSize;
 		private int missionNumber;
 		private int votes;
-		private int negvotes;
+		private int negVotes;
 		private ArrayList<Boolean> missionSuccess;
+		private int failedVotes;
+		private int failedMissions;
 		
 		public Mission(int numberOfPlayers ) {
 			this.numberOfPlayers = numberOfPlayers;
 			this.missionNumber = 1;
-			selectedSquad = new ArrayList<Integer>();
-			squadSize = currentConfig[missionNumber + 1];
+			this.selectedSquad = new ArrayList<Integer>();
+			this.squadSize = currentConfig[missionNumber + 1];
+			this.votes = 0;
+			this.failedVotes = 0;
+			this.failedMissions = 0;
+			this.missionSuccess = new ArrayList<Boolean>();
 		}
 		
 		public void addSquadMember(int user) {
@@ -141,11 +147,17 @@ public class Resistance extends Game{
 		}
 		
 		public void nextMission() {
-			missionNumber++;
-			selectedSquad = new ArrayList<Integer>();
-			squadSize = currentConfig[missionNumber + 1];
-			missionSuccess = new ArrayList<Boolean>();
+			server.publicMessage(missionNumber + " missions have passed");
+			server.publicMessage(failedMissions + " failed so far");
+			this.missionNumber++;
+			this.selectedSquad = new ArrayList<Integer>();
+			this.squadSize = currentConfig[missionNumber + 1];
+			this.missionSuccess = new ArrayList<Boolean>();
 			state = GameState.SQUAD_SELECTION;
+			this.votes = 0;
+			this.negVotes = 0;
+			server.publicMessage("Current mission requires " + squadSize + " team members, "
+					+ "and " + currentConfig[7] + " downvote(s) to fail");
 			nextLeader();
 		}
 		
@@ -153,13 +165,20 @@ public class Resistance extends Game{
 			selectedSquad = new ArrayList<Integer>();
 			missionSuccess = new ArrayList<Boolean>();
 			state = GameState.SQUAD_SELECTION;
+			this.votes = 0;
+			this.negVotes = 0;
 			nextLeader();
 		}
 		
-		public void addSubmittedSuccessFail(boolean success) {
-			missionSuccess.add(success);
-			if (missionSuccess.size() == squadSize) {
-				evaluateMission();
+		public void addSubmittedSuccessFail(boolean success, int origin) {
+			if (selectedSquad.contains(origin)) {
+				missionSuccess.add(success);
+				server.privateMessage("Vote successfully counted", origin);
+				if (missionSuccess.size() == squadSize) {
+					evaluateMission();
+				}
+			} else {
+				server.privateMessage("You are not part of the current squad, vote not included", origin);
 			}
 		}
 		
@@ -167,19 +186,22 @@ public class Resistance extends Game{
 			if (vote) {
 				votes++;				
 			} else {
-				negvotes++;
+				negVotes++;
 			}
 			
-			if ( votes >= Math.ceil(numberOfPlayers/2)) {
+			
+			if ( votes >= Math.ceil(numberOfPlayers/2.0)) {
 				state = GameState.SQUAD_ATTEMPT;
-				server.publicMessage("Squad Accepted");
-				failedVotes = 0;
-			}
-			
-			if (negvotes >= Math.ceil(numberOfPlayers/2)) {
+				server.publicMessage("Squad Accepted, Squad submit /vote for pass and /downvote for failure");
+				voted.clear();
+			} else if (negVotes >= Math.ceil(numberOfPlayers/2)) {
 				failedVotes++;
-				server.publicMessage("Vote failed, " + failedVotes + " failed votes so far");
+				server.publicMessage("Vote failed, " + failedVotes + " failed votes so far, "
+						+ (5 - failedVotes) + " failed votes until spies win");
 				repeatMission();
+				voted.clear();
+			} else {
+				server.publicMessage("Currently " + votes + " votes and " + negVotes + " against votes");
 			}
 		}
 		
@@ -188,20 +210,20 @@ public class Resistance extends Game{
 			if (missionNumber == 4 && currentConfig[7] == 2) {
 				if (failures >= 2) {
 					server.publicMessage("Mission failed with " + failures + " failures");
-					failedVotes++;
+					failedMissions++;
 				} else {
 					server.publicMessage("Mission succeeded with " + failures + "failures");
 				}
 			} else {
 				if (failures >= 1) {
 					server.publicMessage("Mission failed with " + failures + " failures");
-					failedVotes++;
+					failedMissions++;
 				} else {
 					server.publicMessage("Mission succeded with 0 failures");
 				}
 			}
 			
-			if (failedVotes >= 3) {
+			if (failedMissions >= 3) {
 				server.publicMessage("3 Failures, Spies win");
 				state = GameState.GAMESTART;
 				return;
@@ -214,6 +236,7 @@ public class Resistance extends Game{
 			}
 			
 			nextMission();
+			voted.clear();
 			
 		}
 		
@@ -279,13 +302,15 @@ public class Resistance extends Game{
 					} else {
 						server.publicMessage(server.getUsername(origin) + " voted yes");
 						mission.squadVote(true);
+						voted.add(origin);
 					}
 				} else if (command.equals("/downvote")) {
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
-						mission.squadVote(false);
 						server.publicMessage(server.getUsername(origin) + " voted no");
+						mission.squadVote(false);
+						voted.add(origin);
 					}
 				} else {
 					server.privateMessage("Unrecognised command " + command, origin);
@@ -297,13 +322,13 @@ public class Resistance extends Game{
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
-						mission.addSubmittedSuccessFail(true);
+						mission.addSubmittedSuccessFail(true, origin);
 					}
 				} else if (command.equals("/downvote")) {
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
-						mission.addSubmittedSuccessFail(false);
+						mission.addSubmittedSuccessFail(false, origin);
 					}
 				} else {
 					server.privateMessage("Unrecognised command " + command, origin);

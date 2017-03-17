@@ -112,7 +112,11 @@ public class ServerStub implements IServer{
 
 	@Override
 	public int getUserID(String username) {
-		return userToID.get(username);
+		if (userToID.containsKey(username)) {
+			return userToID.get(username);
+		} else {
+			return -1;
+		}
 	}
 	
 	public void commandLineControl() {
