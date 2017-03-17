@@ -781,10 +781,6 @@ public class Mafia implements IGame {
 	gameInProgress = false;
     }
 
-    private void assignPoints() { // only assign points to the survivors?
-
-    }
-
     public synchronized void dayElimVoteTimeout() {
 	if (playerOnTrialID == null) {
 
