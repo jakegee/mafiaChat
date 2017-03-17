@@ -1,5 +1,6 @@
 package systemInterfaces;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -7,11 +8,11 @@ import messages.Message;
 
 public abstract class Game {
 	protected IServer server;
+	protected ArrayList<Integer> users;
 	private Timer timer;
 	
 	public Game(IServer server) {
 		this.server = server;
-		this.timer = new Timer();
 	}
 	
 	
@@ -26,34 +27,12 @@ public abstract class Game {
 	public abstract void handleMessage (Message message, int origin);
 	
 	protected void createTimerEvent(int secondsTillEvent, String message) {
+		this.timer = new Timer();
 		timer.schedule(new TimerEventCaller(message), secondsTillEvent * 1000);
 	}
 	
-	protected void createTimerEvent(int[] secondsTillEvent, String message) {
-		
-	}
-	
-	private void handlePrivateTimerEvent(String message, int timeTillFinalCall) {
-		
-	}
-	
-	protected abstract void handleTimerEvent(String message);
-	
-	private class privateTimer extends TimerTask {
-		private String message;
-		private int finalCallTime;
-		
-		public privateTimer(String message, int finalCallTime) {
-			this.message = message;
-			this.finalCallTime = finalCallTime;
-		}
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			
-		}
-		
+	protected void handleTimerEvent(String message) {
+		this.timer.cancel();
 	}
 	
 	private class TimerEventCaller extends TimerTask {
