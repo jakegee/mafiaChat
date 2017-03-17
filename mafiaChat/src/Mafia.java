@@ -29,12 +29,13 @@ public class Mafia implements IGame {
 						  // the timer
 
     private boolean day = true;
-    private boolean gameInProgress = true; //this is possibly to be used in handleMessage
+    private boolean gameInProgress = false; // this is possibly to be used in
+					    // handleMessage
 
     // private ArrayList<Integer> containing the players who have used /ready
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
-    private String[] mafiaAtStart; //might make this for innocents as well
+    private String[] mafiaAtStart; // might make this for innocents as well
     private ArrayList<Integer> mafia; // might make type map
     private ArrayList<Integer> innocentsID; // might make type map
     private ArrayList<Integer> elimDay;
@@ -45,8 +46,10 @@ public class Mafia implements IGame {
     private ArrayList<Integer> nightVote;
     private Integer playerOnTrialID = null;
     private Random mafiaPicker;
-    
+
     private Timer dayElimTimer;
+    private Timer nightVoteTimer;
+    private Timer nightElimTimer;
 
     // how timer was used in the GuiChatroom for OperatingSystemsAndNetworksEx2
     // timer = new Timer();
@@ -76,7 +79,7 @@ public class Mafia implements IGame {
 	String command = text.substring(0, text.indexOf(' '));
 	String remText = text.substring(text.indexOf(' ') + 1);
 
-	if (day == true) {
+	if (!gameInProgress) {
 
 	    if (command == "/ready") { // no trailing text after /ready
 		if (!remText.isEmpty()) {
@@ -99,59 +102,66 @@ public class Mafia implements IGame {
 		} else {
 		    voteStart(origin);
 		}
-
-	    } else if (command == "/elim") { // space between /elim and player
-					     // name, no trailing text after
-					     // player name
-		if (remText.isEmpty() || remText.contains(" ")) {
-		    server.privateMessage(
-			    "The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
-			    origin);
-		} else {
-		    elimDay(remText, origin);
-		}
-
-	    } else if (command == "/save") {
-		if (remText.isEmpty() || remText.contains(" ")) {
-		    server.privateMessage(
-			    "The command \"/save\" needs to be followed by a player's name with no spaces/characters thereafter",
-			    origin);
-		} else {
-		    save(remText, origin);
-		}
-
-	    } else if (command == "/night") {
-		if (!remText.isEmpty()) {
-		    server.privateMessage("The command \"/night\" cannnot have characters after it", origin);
-		} else {
-		    voteNight(origin);
-		}
-
-	    } else if (command == "/day") {
-		if (!remText.isEmpty()) {
-		    server.privateMessage("The command \"/day\" cannnot have characters after it", origin);
-		} else {
-		    voteDay(origin);
-		}
-
 	    } else {
 		server.privateMessage(message + " does not contain a valid command", origin);
 	    }
 
 	} else {
+	    if (day == true) {
 
-	    if (command == "/elim") {
-		if (remText.isEmpty() || remText.contains(" ")) {
-		    server.privateMessage(
-			    "The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
-			    origin);
+		if (command == "/elim") { // space between /elim and player
+					  // name, no trailing text after
+					  // player name
+		    if (remText.isEmpty() || remText.contains(" ")) {
+			server.privateMessage(
+				"The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
+				origin);
+		    } else {
+			elimDay(remText, origin);
+		    }
+
+		} else if (command == "/save") {
+		    if (remText.isEmpty() || remText.contains(" ")) {
+			server.privateMessage(
+				"The command \"/save\" needs to be followed by a player's name with no spaces/characters thereafter",
+				origin);
+		    } else {
+			save(remText, origin);
+		    }
+
+		} else if (command == "/night") {
+		    if (!remText.isEmpty()) {
+			server.privateMessage("The command \"/night\" cannnot have characters after it", origin);
+		    } else {
+			voteNight(origin);
+		    }
+
+		} else if (command == "/day") {
+		    if (!remText.isEmpty()) {
+			server.privateMessage("The command \"/day\" cannnot have characters after it", origin);
+		    } else {
+			voteDay(origin);
+		    }
+
 		} else {
-		    elimNight(remText, origin);
+		    server.privateMessage(message + " does not contain a valid command", origin);
 		}
+
 	    } else {
-		server.privateMessage(
-			"The only valid command during the night is \"elim\" followed a player's name (separated by a space)",
-			origin);
+
+		if (command == "/elim") {
+		    if (remText.isEmpty() || remText.contains(" ")) {
+			server.privateMessage(
+				"The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
+				origin);
+		    } else {
+			elimNightVote(remText, origin);
+		    }
+		} else {
+		    server.privateMessage(
+			    "The only valid command during the night is \"/elim\" followed a player's name (separated by a space)",
+			    origin);
+		}
 	    }
 	}
 
@@ -296,6 +306,8 @@ public class Mafia implements IGame {
 	// rather than including the players own name in the list
 	server.privateMessage("you are one of the mafia, the mafia members (including " + "you) are " + mafiaIDArray,
 		mafiaIDArray);
+
+	gameInProgress = true;
     }
 
     /**
@@ -350,7 +362,7 @@ public class Mafia implements IGame {
 
 		@Override
 		public void run() {
-		    dayElimVoteTimeout(); //this might need a catch
+		    dayElimVoteTimeout(); // this might need a catch
 
 		}
 	    };
@@ -424,7 +436,7 @@ public class Mafia implements IGame {
 	elimDay.clear();
 	save.clear();
 	elimDayVoteInProgress = false;
-	
+
 	server.publicMessage(server.getUsername(playerOnTrialID) + " has been eliminated");
 
 	checkWin();
@@ -474,7 +486,7 @@ public class Mafia implements IGame {
 	}
 
     }
-    
+
     private void checkSave(int origin) { // does this need to be synchronized?
 
 	// if (elimDay.size() > playerIDs.size() / 2) {
@@ -485,20 +497,20 @@ public class Mafia implements IGame {
 	}
 
     }
-    
-    private void saved(){
+
+    private void saved() {
 	// playerIDs.remove(playerOnTrialID);
-	
+
 	dayElimTimer.cancel();
 	dayElimTimer.purge();
-	
-	playerOnTrialID = null;	
+
+	playerOnTrialID = null;
 	elimDay.clear();
 	save.clear();
 	elimDayVoteInProgress = false;
-	
+
 	server.publicMessage(server.getUsername(playerOnTrialID) + " has been saved");
-}
+    }
 
     /**
      * The voteNight method either starts the vote to change the game to night
@@ -530,7 +542,24 @@ public class Mafia implements IGame {
 	    }
 
 	    nightVote.add(origin);
-	    checkNight(origin);
+
+	    if (nightVote.size() == 1) {
+		TimerTask nightVoteTimeout = new TimerTask() {
+
+		    @Override
+		    public void run() {
+			nightVoteTimeout(); // this might need a catch
+
+		    }
+		};
+
+		nightVoteTimer = new Timer();
+
+		nightVoteTimer.schedule(nightVoteTimeout, 20000);
+	    } else {
+		checkNight(origin);
+	    }
+
 	}
     }
 
@@ -577,10 +606,18 @@ public class Mafia implements IGame {
 
 	// if (dayVote.size() > playerIDs.size() / 2) {
 	if (dayVote.size() > players.size() / 2) {
-	    dayVote.clear();
-	    nightVote.clear();
-	    server.publicMessage("Majority vote reached for it to remain day");
+	    day();
 	}
+    }
+
+    private void day() {
+	nightVoteTimer.cancel();
+	nightVoteTimer.purge();
+
+	dayVote.clear();
+	nightVote.clear();
+	nightVoteInProgress = false;
+	server.publicMessage("Majority vote reached for it to remain day");
     }
 
     /**
@@ -597,16 +634,39 @@ public class Mafia implements IGame {
 
 	// if (nightVote.size() > playerIDs.size() / 2) {
 	if (nightVote.size() > players.size() / 2) {
-	    nightVote.clear();
-	    dayVote.clear();
-	    server.publicMessage("Majority vote reached for it to change to night, all players now muted");
-	    // need to make sure that muting all the players doesn't stop the
-	    // mafia from voting
-
-	    server.setChatActive(false); // wondering if it matters what order
-	    day = false; // these are in
-	    nightVoteInProgress = false;
+	    night();
 	}
+    }
+
+    private void night() {
+	nightVoteTimer.cancel();
+	nightVoteTimer.purge();
+
+	nightVote.clear();
+	dayVote.clear();
+	server.publicMessage("Majority vote reached for it to change to night, all players now muted");
+	// need to make sure that muting all the players doesn't stop the
+	// mafia from voting
+
+	server.setChatActive(false); // wondering if it matters what order these
+				     // are in
+	day = false;
+	nightVoteInProgress = false;
+	
+	TimerTask nightElimTimeout = new TimerTask() {
+
+	    @Override
+	    public void run() {
+		nightVoteTimeout(); // this might need a catch
+
+	    }
+	};
+
+	nightElimTimer = new Timer();
+
+	nightElimTimer.schedule(nightElimTimeout, 10000);
+	
+	
     }
 
     /**
@@ -617,7 +677,7 @@ public class Mafia implements IGame {
      * @param origin
      *            is the id of the player making the vote
      */
-    private void elimNight(String player, int origin) {
+    private void elimNightVote(String player, int origin) {
 	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 	// int playerID = server.getUserID(player);
 	int playerID = invPlayers.get(player);
@@ -640,7 +700,6 @@ public class Mafia implements IGame {
 	    server.privateMessage("you can only vote for a valid player once", origin);
 
 	} else {
-	    // TODO figure how to handle night vote
 	    eliminate.put(origin, player);
 	    checkElimNight(origin);
 	}
@@ -665,33 +724,42 @@ public class Mafia implements IGame {
 		}
 	    }
 
-	    if (unique.equals(false)) {
-		int victimID = server.getUserID(victim);
-
-		players.remove(victimID);
-		innocentsID.remove(victimID);
-		server.privateMessage("you have been killed in the night", victimID);
-		server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");
+	    if (unique.equals(true)) {
+		elimNight(victim);
 	    } else {
-		server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
-
-		int[] mafiaArray = new int[mafia.size()];
-
-		for (int i = 0; i < mafiaArray.length; i++) {
-		    mafiaArray[i] = mafia.get(i);
-		}
-		server.privateMessage("In order to kill an innocent during the night, the same person needs"
-			+ " to be chosen by all the mafia players", mafiaArray);
+		failNight();
 	    }
 	    eliminate.clear();
 
 	    day = true;
 	    server.setChatActive(true);
-	    checkWin();
 	} else {
 
 	}
 
+    }
+
+    private void elimNight(String victim) {
+	int victimID = server.getUserID(victim);
+
+	players.remove(victimID);
+	innocentsID.remove(victimID);
+	server.privateMessage("you have been killed in the night", victimID);
+	server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");
+
+	checkWin();
+    }
+
+    private void failNight() {
+	server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
+
+	int[] mafiaArray = new int[mafia.size()];
+
+	for (int i = 0; i < mafiaArray.length; i++) {
+	    mafiaArray[i] = mafia.get(i);
+	}
+	server.privateMessage("In order to kill an innocent during the night, the same person needs"
+		+ " to be chosen by all the mafia players", mafiaArray);
     }
 
     private void checkWin() {
@@ -703,6 +771,8 @@ public class Mafia implements IGame {
 
 	}
 	server.publicMessage("The mafia were: " + mafiaAtStart);
+
+	gameInProgress = false;
     }
 
     private void assignPoints() { // only assign points to the survivors?
@@ -720,6 +790,22 @@ public class Mafia implements IGame {
 	    }
 
 	}
+    }
+
+    public synchronized void nightVoteTimeout() {
+	if (nightVote.size() > dayVote.size()) {
+	    night();
+	} else {
+	    day();
+	}
+    }
+    
+    public synchronized void nightElimTimeout() {
+//	if (nightVote.size() > dayVote.size()) {
+//	    night();
+//	} else {
+//	    day();
+//	}
     }
 
 }
