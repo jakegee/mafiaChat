@@ -174,7 +174,7 @@ public class chatGame {
 		listChat.setModel(new DefaultListModel<String>());
 		
 		JScrollPane scrollPane = new JScrollPane(listChat);
-		scrollPane.setBounds(28,105,727,455);
+		scrollPane.setBounds(21,115,911,555);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
 		//this.txtEnterMess = new JTextArea();
@@ -195,7 +195,7 @@ public class chatGame {
 		listPrivate.setModel(new DefaultListModel<String>());
 		
 		JScrollPane scrollPrivate = new JScrollPane(listPrivate);
-		scrollPrivate.setBounds(950, 395, 412, 243);
+		scrollPrivate.setBounds(950, 395, 412, 268);
 		scrollPrivate.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPrivate);
 		
@@ -231,21 +231,21 @@ public class chatGame {
 		JLabel lblOnlineUsers = new JLabel("ONLINE USERS");
 		lblOnlineUsers.setFont(new Font("Silom", Font.PLAIN, 18));
 		lblOnlineUsers.setForeground(Color.WHITE);
-		lblOnlineUsers.setBounds(1000, 80, 179, 26);
+		lblOnlineUsers.setBounds(1220, 80, 179, 26);
 		Game.add(lblOnlineUsers);
 
 		//heading for server messages
 		JLabel lblServerMessages = new JLabel("SERVER MESSAGES");
 		lblServerMessages.setFont(new Font("Silom", Font.PLAIN, 18));
 		lblServerMessages.setForeground(Color.WHITE);
-		lblServerMessages.setBounds(846, 307, 261, 16);
+		lblServerMessages.setBounds(1180, 365, 179, 26);
 		Game.add(lblServerMessages);
 
 		//send button
 		JButton Send = new JButton("SEND");
 		Send.setToolTipText("Click to send message");
 		Send.setBackground(Color.GRAY);
-		Send.setFont(new Font("Silom", Font.PLAIN, 18));
+		Send.setFont(new Font("Silom", Font.PLAIN, 40));
 		Send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -254,7 +254,7 @@ public class chatGame {
 			}
 		});
 		Send.setForeground(Color.BLUE);
-		Send.setBounds(941, 700, 114, 60);
+		Send.setBounds(941, 682, 154, 90);
 		Game.add(Send);
 
 		JLabel titleGame = new JLabel("");
@@ -266,7 +266,7 @@ public class chatGame {
 		JButton btnRules = new JButton("Rules");
 		btnRules.setToolTipText("Click to send message");
 		btnRules.setForeground(Color.BLUE);
-		btnRules.setFont(new Font("Silom", Font.PLAIN, 14));
+		btnRules.setFont(new Font("Silom", Font.PLAIN, 20));
 		btnRules.setBackground(Color.GRAY);
 		btnRules.setBounds(1105, 700, 126, 72);
 		Game.add(btnRules);
@@ -274,7 +274,7 @@ public class chatGame {
 		JButton btnLogOut = new JButton("Log Out");
 		btnLogOut.setToolTipText("Click to send message");
 		btnLogOut.setForeground(Color.BLUE);
-		btnLogOut.setFont(new Font("Silom", Font.PLAIN, 14));
+		btnLogOut.setFont(new Font("Silom", Font.PLAIN, 20));
 		btnLogOut.setBackground(Color.GRAY);
 		btnLogOut.setBounds(1235, 700, 126, 72);
 		Game.add(btnLogOut);
@@ -293,7 +293,7 @@ public class chatGame {
 
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
-		dareTxt.setBounds(440, 505, 480, 210);
+		dareTxt.setBounds(480, 525, 440, 180);
 		Image one = img3.getScaledInstance(dareTxt.getWidth(),dareTxt.getHeight(), Image.SCALE_SMOOTH);
 		dareTxt.setIcon(new ImageIcon(one));
 		Welcome.add(dareTxt);
