@@ -6,6 +6,7 @@ import systemInterfaces.IServer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +22,8 @@ import messages.ServerMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import Stubs.DatabaseStub;
+import Stubs.GameStub;
 import Game.Mafia;
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
@@ -50,6 +53,7 @@ public class Server implements IServer{
 	private boolean relayChat;
 	private ArrayList<String> currentUsers;
 	private DateFormat df;
+	private int maxServerSize;
 	
 	/**
 	 * Constructor for instantiating an instance of the Server class
@@ -60,15 +64,20 @@ public class Server implements IServer{
 	 * will be able to support
 	 */
 	public Server(int port, int maxServerSize) {
-		threads = new ClientHandler[maxServerSize];
+		this.threads = new ClientHandler[maxServerSize];
 		GsonBuilder builder = new GsonBuilder();
-		sGson = builder.create();
-		connections = new LinkedBlockingQueue<Socket>(5);
-		game = new Mafia(this);
-		database = new DatabaseManager();
+		this.sGson = builder.create();
+		this.connections = new LinkedBlockingQueue<Socket>(5);
+		this.game = new GameStub(this);
+		this.database = new DatabaseStub();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
-		
+		this.port = port;
+		this.maxServerSize = maxServerSize;
+	}
+	
+	public void startServerListening() {
+	
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new ClientHandler(i, this);
 			threads[i].start();
@@ -127,7 +136,7 @@ public class Server implements IServer{
 			super();
 			GsonBuilder builder = new GsonBuilder();
 			builder.setPrettyPrinting(); 
-			gson = builder.create();
+			this.gson = builder.create();
 			this.idNumber = idNumber;
 			this.server = server;
 			this.username = null;
@@ -533,11 +542,50 @@ public class Server implements IServer{
 		return -1;
 	}
 	
+	public void setGameObject(String gameClassName) throws ClassNotFoundException {
+		try {
+			Object newGame = Class.forName(gameClassName).getConstructor(IServer.class).newInstance(this);
+			game = (Game) newGame;
+			System.out.println("Successfully set game to " + gameClassName);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} 
+	}
+	
 	public static void main(String[] args) {
+		String[] args_ = {"Mafia", "8000", "20"};
+		int port;
+		int serverSize;
+		Server server;
 		
-		
-		
-		Server server = new Server(8000, 20);
+		if ((port = Integer.parseInt(args_[1])) == -1) {
+			System.out.println("Invalid port number " + args_[1]);
+		} else if ((serverSize = Integer.parseInt(args_[2])) == -1) {
+			System.out.println("Invalid server size " + args_[2]);
+		} else {
+			if (args_[0].equals("debug")) {
+				server = new Server(8000, 20);
+				server.startServerListening();
+			} else {
+				server = new Server(port, serverSize);
+				try {
+					server.setGameObject(args_[0]);
+					server.startServerListening();
+				} catch (ClassNotFoundException e) {
+					System.out.println("Class " + args_[0] + " is not a valid Class Name");
+				}
+			}
+		}
 	}
 
 }
