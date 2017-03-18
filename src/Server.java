@@ -21,6 +21,7 @@ import messages.ServerMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import Game.Mafia;
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
 import exceptions.UserExistsException;

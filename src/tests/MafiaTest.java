@@ -1,3 +1,5 @@
+package tests;
+
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -7,8 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import Client.Client;
 import GUIs.chatGame;
+import Game.Mafia;
 import Stubs.ServerStubJUnit;
 import systemInterfaces.Game;
 
@@ -44,7 +48,8 @@ public class MafiaTest {
     @Before
     public void setUp() {
 
-	serverStub = new ServerStubJUnit(new String[] { "client1", "client2", "client3", "client4", "client5", "client6", "client7" });
+	serverStub = new ServerStubJUnit(
+		new String[] { "client1", "client2", "client3", "client4", "client5", "client6", "client7" });
 	mafia = new Mafia(serverStub);
 	serverStub.attachGameObject(mafia);
 	// port = 8000;
@@ -54,13 +59,13 @@ public class MafiaTest {
 
 	// currentUsers = server.getActiveClientIDs();
 	// try {
-	 client1ID = serverStub.getUserID("client1");
-	 client2ID = serverStub.getUserID("client2");
-	 client3ID = serverStub.getUserID("client3");
-	 client4ID = serverStub.getUserID("client4");
-	 client5ID = serverStub.getUserID("client5");
-	 client6ID = serverStub.getUserID("client6");
-	 client7ID = serverStub.getUserID("client7");
+	client1ID = serverStub.getUserID("client1");
+	client2ID = serverStub.getUserID("client2");
+	client3ID = serverStub.getUserID("client3");
+	client4ID = serverStub.getUserID("client4");
+	client5ID = serverStub.getUserID("client5");
+	client6ID = serverStub.getUserID("client6");
+	client7ID = serverStub.getUserID("client7");
 	//
 	// client1.createAccountPacket("client1", "client1", " ", " ");
 	// client2.createAccountPacket("client2", "client2", " ", " ");
@@ -89,7 +94,7 @@ public class MafiaTest {
      * empty at start.
      */
     @Test
-    public void test1() {
+    public void testActiveClients() {
 	assertFalse(serverStub.getActiveClientIDs().isEmpty());
     }
 
@@ -98,10 +103,18 @@ public class MafiaTest {
      * ready array stored in the Mafia class.
      */
     @Test
-    public void test2() {
+    public void testReady() {
 	serverStub.sendCommand("/ready", "client1");
 
-	assertTrue(mafia.ready.contains(client1ID));
+	assertTrue(mafia.getReady().contains(client1ID));
+    }
+
+    @Test
+    public void testReady2() {
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/ready", "client1");
+
+	assertEquals(1, mafia.getReady().size());
     }
 
     /**
@@ -109,96 +122,88 @@ public class MafiaTest {
      * the ready array in the Mafia class.
      */
     @Test
-    public void test3() {
+    public void testUnready() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/unready", "client1");
 
-	assertTrue(mafia.ready.isEmpty());
+	assertTrue(mafia.getReady().isEmpty());
     }
 
     @Test
-    public void test4() {
+    public void testUnready2() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/unready", "client1");
 
-	assertFalse(mafia.ready.contains(client1ID));
+	assertFalse(mafia.getReady().contains(client1ID));
     }
 
     @Test
-    public void test5() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client1");
-
-	assertEquals(1, mafia.ready.size());
-    }
-
-    @Test
-    public void test6() {
+    public void testUnready3() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/unready", "client2");
 
-	assertTrue(mafia.ready.contains(client1ID));
+	assertTrue(mafia.getReady().contains(client1ID));
     }
 
     @Test
-    public void test7() {
+    public void testStart() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/start", "client1");
 
-	assertFalse(mafia.votedStart.contains(client1ID));
+	assertFalse(mafia.getVotedStart().contains(client1ID));
     }
 
     @Test
-    public void test8() {
+    public void testStart2() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
 	serverStub.sendCommand("/ready", "client4");
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
-	
+
 	serverStub.sendCommand("/start", "client3");
-	
-	assertTrue(mafia.votedStart.contains(client3ID));
+
+	assertTrue(mafia.getVotedStart().contains(client3ID));
 
     }
-    
+
     @Test
-    public void test9() {
+    public void testUnready4() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
 	serverStub.sendCommand("/ready", "client4");
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
-	
+
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/unready", "client3");
-	
-	assertFalse(mafia.votedStart.contains(client3ID));
-	assertFalse(mafia.ready.contains(client3ID));
+
+	assertFalse(mafia.getVotedStart().contains(client3ID));
+	assertFalse(mafia.getReady().contains(client3ID));
     }
-    
+
     @Test
-    public void test10() {
+    public void testUnready5() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
 	serverStub.sendCommand("/ready", "client4");
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
-	
+
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/start", "client5");
 	serverStub.sendCommand("/unready", "client3");
-	
-	assertTrue(mafia.votedStart.isEmpty());
-	assertFalse(mafia.ready.contains(client3ID));
+
+	assertTrue(mafia.getVotedStart().isEmpty());
+	assertFalse(mafia.getReady().contains(client3ID));
     }
-    
+
     @Test
-    public void test11(){
+    public void testUnready6() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
@@ -206,52 +211,105 @@ public class MafiaTest {
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
 	serverStub.sendCommand("/ready", "client7");
-	
+
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/start", "client5");
 	serverStub.sendCommand("/unready", "client3");
-	
-	assertTrue(mafia.votedStart.contains(client5ID));
-	assertFalse(mafia.votedStart.contains(client3ID));
-	assertFalse(mafia.ready.contains(client3ID));
+
+	assertTrue(mafia.getVotedStart().contains(client5ID));
+	assertFalse(mafia.getVotedStart().contains(client3ID));
+	assertFalse(mafia.getReady().contains(client3ID));
     }
-    
+
     @Test
-    public void test12(){
+    public void testStart3() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
 	serverStub.sendCommand("/ready", "client4");
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
-	
+
 	serverStub.sendCommand("/start", "client1");
 	serverStub.sendCommand("/start", "client2");
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/start", "client4");
 	serverStub.sendCommand("/start", "client5");
 	serverStub.sendCommand("/start", "client6");
+
+	assertTrue(mafia.isGameInProgress());
+	assertTrue(mafia.isDay());
 	
-	assertTrue(mafia.gameInProgress);
-	
+	assertTrue(mafia.getReady().isEmpty());
+	assertTrue(mafia.getVotedStart().isEmpty());
+	assertEquals(2, mafia.getMafia().size());
+
     }
 
-    // @After
-    // public void logout() {
-    //
-    // try {
-    // client1.createLogoutPacket();
-    // client2.createLogoutPacket();
-    // client3.createLogoutPacket();
-    // client4.createLogoutPacket();
-    // client5.createLogoutPacket();
-    // client6.createLogoutPacket();
-    //
-    // serverThread.interrupt();
-    //
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
+    @Test
+    public void testStart4() {
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/ready", "client2");
+	serverStub.sendCommand("/ready", "client3");
+	serverStub.sendCommand("/ready", "client4");
+	serverStub.sendCommand("/ready", "client5");
+	serverStub.sendCommand("/ready", "client6");
+	serverStub.sendCommand("/ready", "client7");
+
+	serverStub.sendCommand("/start", "client1");
+	serverStub.sendCommand("/start", "client2");
+	serverStub.sendCommand("/start", "client3");
+	serverStub.sendCommand("/start", "client4");
+	serverStub.sendCommand("/start", "client5");
+	serverStub.sendCommand("/start", "client6");
+
+	assertFalse(mafia.isGameInProgress());
+
+    }
+
+    @Test
+    public void testElim() {
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/ready", "client2");
+	serverStub.sendCommand("/ready", "client3");
+	serverStub.sendCommand("/ready", "client4");
+	serverStub.sendCommand("/ready", "client5");
+	serverStub.sendCommand("/ready", "client6");
+
+	serverStub.sendCommand("/start", "client1");
+	serverStub.sendCommand("/start", "client2");
+	serverStub.sendCommand("/start", "client3");
+	serverStub.sendCommand("/start", "client4");
+	serverStub.sendCommand("/start", "client5");
+	serverStub.sendCommand("/start", "client6");
+
+	serverStub.sendCommand("/elim client4", "client1");
+
+	assertEquals(client4ID, (int) mafia.getPlayerOnTrialID());
+	assertEquals(1, mafia.getElimDay().size());
+
+    }
+    
+    @Test
+    public void testElim2(){
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/ready", "client2");
+	serverStub.sendCommand("/ready", "client3");
+	serverStub.sendCommand("/ready", "client4");
+	serverStub.sendCommand("/ready", "client5");
+	serverStub.sendCommand("/ready", "client6");
+
+	serverStub.sendCommand("/start", "client1");
+	serverStub.sendCommand("/start", "client2");
+	serverStub.sendCommand("/start", "client3");
+	serverStub.sendCommand("/start", "client4");
+	serverStub.sendCommand("/start", "client5");
+	serverStub.sendCommand("/start", "client6");
+
+	serverStub.sendCommand("/elim client4", "client1");
+	serverStub.sendCommand("/elim client4", "client1");
+
+	assertEquals(client4ID, (int) mafia.getPlayerOnTrialID());
+    }
 
 }
