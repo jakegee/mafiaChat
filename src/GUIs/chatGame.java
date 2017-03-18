@@ -89,7 +89,7 @@ public class chatGame {
 		//set size and details of game.
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
-		GAME.setBounds(60, 60, 1690, 920);
+		GAME.setBounds(60, 60, 1390, 820);
 	//	GAME.setMinimumSize(new Dimension(550, 670));
 		
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,14 +154,14 @@ public class chatGame {
 
 		//logo image bottom of screen
 		JLabel logoSignIn1 = new JLabel("");
-		logoSignIn1.setBounds(6, 558, 88, 64);
+		logoSignIn1.setBounds(908, 20, 150, 80);
 		Image SigninLogo1 = img2.getScaledInstance(logoSignIn1.getWidth(),logoSignIn1.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn1.setIcon(new ImageIcon(SigninLogo1));
 		SignIn.add(logoSignIn1);
 
 		//logo image bottom of screen
 		JLabel logoSignIn2 = new JLabel("");
-		logoSignIn2.setBounds(456, 558, 88, 64);
+		logoSignIn2.setBounds(908, 20, 150, 80);
 		Image SigninLogo2 = img2.getScaledInstance(logoSignIn2.getWidth(),logoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn2.setIcon(new ImageIcon(SigninLogo2));
 		SignIn.add(logoSignIn2);
@@ -258,7 +258,7 @@ public class chatGame {
 		Game.add(Send);
 
 		JLabel titleGame = new JLabel("");
-		titleGame.setBounds(22, 20, 738, 73);
+		titleGame.setBounds(135, 20, 1050, 100);
 		Image a = img.getScaledInstance(titleGame.getWidth(),titleGame.getHeight(), Image.SCALE_SMOOTH);
 		titleGame.setIcon(new ImageIcon(a));
 		Game.add(titleGame);
@@ -285,7 +285,7 @@ public class chatGame {
 		//WELCOME SCREEN COMPONENTS
 		//title 
 		JLabel titleWelcome = new JLabel("");
-		titleWelcome.setBounds(95, 10, 1450, 180);
+		titleWelcome.setBounds(135, 20, 1050, 180);
 		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),titleWelcome.getHeight(), Image.SCALE_SMOOTH);
 		titleWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(titleWelcome);
@@ -293,7 +293,7 @@ public class chatGame {
 
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
-		dareTxt.setBounds(620, 615, 440, 180);
+		dareTxt.setBounds(440, 505, 480, 210);
 		Image one = img3.getScaledInstance(dareTxt.getWidth(),dareTxt.getHeight(), Image.SCALE_SMOOTH);
 		dareTxt.setIcon(new ImageIcon(one));
 		Welcome.add(dareTxt);
@@ -310,12 +310,12 @@ public class chatGame {
 			}
 		});
 		btnEnter.setForeground(Color.BLUE);
-		btnEnter.setBounds(680, 780, 280, 60);
+		btnEnter.setBounds(550, 710, 240, 50);
 		Welcome.add(btnEnter);
 
 		//main logo
 		JLabel msnLogo = new JLabel("");
-		msnLogo.setBounds(550, 157, 518, 490);
+		msnLogo.setBounds(440, 157, 518, 390);
 		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),msnLogo.getHeight(), Image.SCALE_SMOOTH);
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
@@ -388,7 +388,7 @@ public class chatGame {
 
 
 		JLabel titleLogin = new JLabel("");
-		titleLogin.setBounds(440, 10, 950, 180);
+		titleLogin.setBounds(135, 20, 1050, 100);
 		Image logoLog = img.getScaledInstance(titleLogin.getWidth(),titleLogin.getHeight(), Image.SCALE_SMOOTH);
 		titleLogin.setIcon(new ImageIcon(logoLog));
 		Login.add(titleLogin);
@@ -474,7 +474,7 @@ public class chatGame {
 		SignIn.add(btnRegister);
 
 		JLabel titleSignIn = new JLabel("");
-		titleSignIn.setBounds(22, 20, 500, 90);
+		titleSignIn.setBounds(135, 20, 1050, 100);
 		Image newimg = img.getScaledInstance(titleSignIn.getWidth(),titleSignIn.getHeight(), Image.SCALE_SMOOTH);
 		titleSignIn.setIcon(new ImageIcon(newimg));
 		SignIn.add(titleSignIn);
@@ -521,7 +521,7 @@ public class chatGame {
 		//ForgottenPassword Panel
 
 		JLabel titleForgotten = new JLabel("");
-		titleForgotten.setBounds(22, 20, 500, 90);
+		titleForgotten.setBounds(135, 20, 1050, 100);
 		Image Logo1 = img.getScaledInstance(titleForgotten.getWidth(),titleForgotten.getHeight(), Image.SCALE_SMOOTH);
 		titleForgotten.setIcon(new ImageIcon(Logo1));
 		ForgotPassword.add(titleForgotten);
