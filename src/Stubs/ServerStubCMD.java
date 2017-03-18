@@ -269,4 +269,9 @@ public class ServerStubCMD implements IServer{
 		theStub.commandLineControl();
 	}
 
+	@Override
+	public void setGameObject(String string) throws ClassNotFoundException {
+		// TODO Auto-generated method stub
+	}
+
 }

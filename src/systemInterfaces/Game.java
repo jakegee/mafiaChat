@@ -35,7 +35,7 @@ public abstract class Game {
 	 */
 	protected void createTimerEvent(int secondsTillEvent, String message) {
 		this.timer = new Timer();
-		timer.schedule(new TimerEventCaller(message), secondsTillEvent * 1000);
+		timer.schedule(new TimerEventCaller(message, secondsTillEvent), secondsTillEvent * 1000);
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public abstract class Game {
 	 * 
 	 * @param message Message sent from createTimerEvent
 	 */
-	protected void handleTimerEvent(String message) {
+	protected void handleTimerEvent(String message, int delay) {
 		this.timer.cancel();
 	}
 	
@@ -82,6 +82,7 @@ public abstract class Game {
 	 */
 	private class TimerEventCaller extends TimerTask {
 		private String message;
+		private int delay;
 		
 		/**
 		 * Constructor for instantiating an object of the 
@@ -90,8 +91,9 @@ public abstract class Game {
 		 * @param message Message to send to the handleTimerEvent
 		 * function
 		 */
-		public TimerEventCaller(String message) {
+		public TimerEventCaller(String message, int delay) {
 			this.message = message;
+			this.delay = delay;
 		}
 		
 		/**
@@ -100,7 +102,7 @@ public abstract class Game {
 		 */
 		@Override
 		public void run() {
-			handleTimerEvent(message);
+			handleTimerEvent(message, delay);
 		}
 		
 	}

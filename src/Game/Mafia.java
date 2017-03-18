@@ -868,7 +868,7 @@ public class Mafia extends Game {
     }
 
     @Override
-    protected void handleTimerEvent(String message) { // not sure how to
+    protected void handleTimerEvent(String message, int delay) { // not sure how to
 						      // integrate the timers i
 						      // have into this, would
 						      // prefer to just delete

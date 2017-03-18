@@ -550,6 +550,7 @@ public class Server implements IServer{
 		return -1;
 	}
 	
+	@Override
 	public void setGameObject(String gameClassName) throws ClassNotFoundException {
 		try {
 			Object newGame = Class.forName(gameClassName).getConstructor(IServer.class).newInstance(this);
@@ -571,7 +572,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		String[] args_ = {"Resistance", "8000", "20"};
+		String[] args_ = {"Mafia", "8000", "20"};
 		int port;
 		int serverSize;
 		Server server;
