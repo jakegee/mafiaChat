@@ -1,3 +1,4 @@
+package Server;
 import systemInterfaces.Game;
 import systemInterfaces.IDatabase;
 import systemInterfaces.IGame;
