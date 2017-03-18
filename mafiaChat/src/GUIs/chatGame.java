@@ -154,14 +154,14 @@ public class chatGame {
 
 		//logo image bottom of screen
 		JLabel logoSignIn1 = new JLabel("");
-		logoSignIn1.setBounds(908, 20, 150, 80);
+		logoSignIn1.setBounds(10, 598, 170, 150);
 		Image SigninLogo1 = img2.getScaledInstance(logoSignIn1.getWidth(),logoSignIn1.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn1.setIcon(new ImageIcon(SigninLogo1));
 		SignIn.add(logoSignIn1);
 
 		//logo image bottom of screen
 		JLabel logoSignIn2 = new JLabel("");
-		logoSignIn2.setBounds(908, 20, 150, 80);
+		logoSignIn2.setBounds(1186, 598, 170, 150);
 		Image SigninLogo2 = img2.getScaledInstance(logoSignIn2.getWidth(),logoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn2.setIcon(new ImageIcon(SigninLogo2));
 		SignIn.add(logoSignIn2);
@@ -325,14 +325,14 @@ public class chatGame {
 		//LOGIN SCREEN COMPONENTS
 		//label for password text
 		JLabel lblPassword = new JLabel("Enter Password");
-		lblPassword.setBounds(640, 272, 205, 147);
+		lblPassword.setBounds(246, 272, 563, 138);
 		lblPassword.setForeground(Color.WHITE);
-		lblPassword.setFont(new Font("Silom", Font.PLAIN, 26));
+		lblPassword.setFont(new Font("Silom", Font.PLAIN, 46));
 		Login.add(lblPassword);
 
 		//label for username text
 		JLabel label = new JLabel("Enter Username");
-		label.setBounds(156, 200, 263, 138);
+		label.setBounds(246, 200, 563, 138);
 		label.setForeground(Color.WHITE);
 		Login.add(label);
 		label.setFont(new Font("Silom", Font.PLAIN, 46));
@@ -360,16 +360,16 @@ public class chatGame {
 			}
 		});
 		btnLogIn.setToolTipText("Press to login to game");
-		btnLogIn.setFont(new Font("Silom", Font.PLAIN, 18));
-		btnLogIn.setBounds(212, 362, 116, 44);
+		btnLogIn.setFont(new Font("Silom", Font.PLAIN, 26));
+		btnLogIn.setBounds(582, 442, 240, 50);
 		btnLogIn.setForeground(Color.BLUE);
 		Login.add(btnLogIn);
 
 		//signup button
 		JButton btnSignUp = new JButton("Sign Up");
 		btnSignUp.setToolTipText("Press to register new user");
-		btnSignUp.setFont(new Font("Silom", Font.PLAIN, 18));
-		btnSignUp.setBounds(212, 430, 116, 44);
+		btnSignUp.setFont(new Font("Silom", Font.PLAIN, 26));
+		btnSignUp.setBounds(582, 510, 240, 50);
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					Login.setVisible(false);
@@ -381,7 +381,7 @@ public class chatGame {
 
 		//label
 		txtUsername = new JTextField();
-		txtUsername.setBounds(283, 188, 213, 50);
+		txtUsername.setBounds(723, 240, 515, 50);
 		txtUsername.setFont(new Font("Futura", Font.PLAIN, 13));
 		txtUsername.setColumns(10);
 		Login.add(txtUsername);
@@ -394,11 +394,11 @@ public class chatGame {
 		Login.add(titleLogin);
 
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(401, 269, 215, 50);
+		txtPassword.setBounds(723, 312, 515, 50);
 		Login.add(txtPassword);
 
 		JLabel LogoSignIn = new JLabel("");
-		LogoSignIn.setBounds(600, 558, 88, 64);
+		LogoSignIn.setBounds(10, 598, 170, 150);
 		Image logoSign = img2.getScaledInstance(LogoSignIn.getWidth(),LogoSignIn.getHeight(), Image.SCALE_SMOOTH);
 		LogoSignIn.setIcon(new ImageIcon(logoSign));
 		Login.add(LogoSignIn);
@@ -407,7 +407,7 @@ public class chatGame {
 
 
 		JLabel LogoSignIn2 = new JLabel("");
-		LogoSignIn2.setBounds(456, 558, 88, 64);
+		LogoSignIn2.setBounds(1186, 598, 170, 150);
 		Image logoSign2 = img2.getScaledInstance(LogoSignIn2.getWidth(),LogoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		LogoSignIn2.setIcon(new ImageIcon(logoSign2));
 		Login.add(LogoSignIn2);
@@ -421,8 +421,8 @@ public class chatGame {
 		});
 		btnForgottonPassword.setToolTipText("Click here to help retrieve password");
 		btnForgottonPassword.setForeground(Color.BLUE);
-		btnForgottonPassword.setFont(new Font("Silom", Font.PLAIN, 13));
-		btnForgottonPassword.setBounds(175, 584, 179, 38);
+		btnForgottonPassword.setFont(new Font("Silom", Font.PLAIN, 20));
+		btnForgottonPassword.setBounds(562, 680, 290, 50);
 		Login.add(btnForgottonPassword);
 
 		///////////////////////////////////////////////////////////////////////////////////
@@ -431,18 +431,18 @@ public class chatGame {
 
 		JLabel lblEnterName = new JLabel("Enter Username");
 		lblEnterName.setForeground(Color.WHITE);
-		lblEnterName.setFont(new Font("Silom", Font.PLAIN, 18));
-		lblEnterName.setBounds(19, 178, 189, 29);
+		lblEnterName.setFont(new Font("Silom", Font.PLAIN, 38));
+		lblEnterName.setBounds(210, 200, 500, 50);
 		SignIn.add(lblEnterName);
 
 		JLabel lblEnterPassword = new JLabel("Enter Password");
 		lblEnterPassword.setForeground(Color.WHITE);
-		lblEnterPassword.setFont(new Font("Silom", Font.PLAIN, 18));
-		lblEnterPassword.setBounds(17, 257, 213, 22);
+		lblEnterPassword.setFont(new Font("Silom", Font.PLAIN, 38));
+		lblEnterPassword.setBounds(210, 280, 500, 50);
 		SignIn.add(lblEnterPassword);
 
 		textUsername = new JTextField();
-		textUsername.setBounds(282, 167, 213, 54);
+		textUsername.setBounds(640, 200, 500, 50);
 		SignIn.add(textUsername);
 		textUsername.setColumns(10);
 
@@ -469,8 +469,8 @@ public class chatGame {
 			}
 		});
 		btnRegister.setForeground(Color.BLUE);
-		btnRegister.setFont(new Font("Silom", Font.PLAIN, 20));
-		btnRegister.setBounds(214, 524, 142, 44);
+		btnRegister.setFont(new Font("Silom", Font.PLAIN, 28));
+		btnRegister.setBounds(582, 510, 240, 50);
 		SignIn.add(btnRegister);
 
 		JLabel titleSignIn = new JLabel("");
@@ -480,13 +480,13 @@ public class chatGame {
 		SignIn.add(titleSignIn);
 
 		JLabel lblSecurityQ = new JLabel("Set security question");
-		lblSecurityQ.setFont(new Font("Silom", Font.PLAIN, 18));
+		lblSecurityQ.setFont(new Font("Silom", Font.PLAIN, 38));
 		lblSecurityQ.setForeground(Color.WHITE);
-		lblSecurityQ.setBounds(17, 336, 244, 35);
+		lblSecurityQ.setBounds(210, 360, 500, 50);
 		SignIn.add(lblSecurityQ);
 
 		txtSecurityQ = new JTextField();
-		txtSecurityQ.setBounds(282, 325, 213, 54);
+		txtSecurityQ.setBounds(640, 360, 500, 50);
 		SignIn.add(txtSecurityQ);
 		txtSecurityQ.setColumns(10);
 
@@ -498,24 +498,24 @@ public class chatGame {
 				Login.setVisible(true);
 			}
 		});
-		btnBack.setFont(new Font("Silom", Font.PLAIN, 13));
+		btnBack.setFont(new Font("Silom", Font.PLAIN, 18));
 		btnBack.setForeground(Color.BLUE);
-		btnBack.setBounds(247, 580, 69, 29);
+		btnBack.setBounds(622, 590, 99, 39);
 		SignIn.add(btnBack);
 
 		JLabel lblEnterHint = new JLabel("Set your answer");
-		lblEnterHint.setFont(new Font("Silom", Font.PLAIN, 18));
+		lblEnterHint.setFont(new Font("Silom", Font.PLAIN, 38));
 		lblEnterHint.setForeground(Color.WHITE);
-		lblEnterHint.setBounds(22, 424, 229, 26);
+		lblEnterHint.setBounds(210, 440, 500, 50);
 		SignIn.add(lblEnterHint);
 
 		txtSecurityA = new JTextField();
 		txtSecurityA.setColumns(10);
-		txtSecurityA.setBounds(282, 412, 213, 54);
+		txtSecurityA.setBounds(640, 440, 500, 50);
 		SignIn.add(txtSecurityA);
 
 		textPassword = new JPasswordField();
-		textPassword.setBounds(280, 246, 215, 50);
+		textPassword.setBounds(640, 280, 500, 50);
 		SignIn.add(textPassword);
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		//ForgottenPassword Panel
@@ -528,44 +528,44 @@ public class chatGame {
 
 
 		JLabel lblUser = new JLabel("Enter Username");
-		lblUser.setBounds(6, 193, 163, 38);
+		lblUser.setBounds(260, 189, 328, 58);
 		lblUser.setForeground(Color.WHITE);
 		ForgotPassword.add(lblUser);
-		lblUser.setFont(new Font("Silom", Font.PLAIN, 13));
+		lblUser.setFont(new Font("Silom", Font.PLAIN, 28));
 
 		usernameEntry = new JTextField();
-		usernameEntry.setBounds(256, 189, 288, 45);
-		usernameEntry.setFont(new Font("Futura", Font.PLAIN, 13));
+		usernameEntry.setBounds(756, 189, 500, 45);
+		usernameEntry.setFont(new Font("Futura", Font.PLAIN, 24));
 		usernameEntry.setColumns(10);
 		ForgotPassword.add(usernameEntry);
 
 		JLabel lblSecurityQuestion = new JLabel("Security question");
-		lblSecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 13));
+		lblSecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 20));
 		lblSecurityQuestion.setForeground(Color.WHITE);
-		lblSecurityQuestion.setBounds(201, 325, 265, 35);
+		lblSecurityQuestion.setBounds(450, 325, 328, 58);
 		ForgotPassword.add(lblSecurityQuestion);
 
 		securityAnswer = new JTextField();
-		securityAnswer.setFont(new Font("Futura", Font.PLAIN, 13));
+		securityAnswer.setFont(new Font("Futura", Font.PLAIN, 24));
 		securityAnswer.setColumns(10);
-		securityAnswer.setBounds(256, 372, 288, 50);
+		securityAnswer.setBounds(756, 372, 500, 50);
 		ForgotPassword.add(securityAnswer);
 
 		JLabel lblEnterTheSet = new JLabel("Enter the set security answer");
 		lblEnterTheSet.setForeground(Color.WHITE);
-		lblEnterTheSet.setFont(new Font("Silom", Font.PLAIN, 13));
-		lblEnterTheSet.setBounds(6, 381, 265, 35);
+		lblEnterTheSet.setFont(new Font("Silom", Font.PLAIN, 28));
+		lblEnterTheSet.setBounds(260, 381, 3505, 58);
 		ForgotPassword.add(lblEnterTheSet);
 
 		JLabel msnForgotten1 = new JLabel("");
-		msnForgotten1.setBounds(6, 558, 88, 64);
+		msnForgotten1.setBounds(10, 598, 170, 150);
 		Image LogPassword1 = img2.getScaledInstance(msnForgotten1.getWidth(),msnForgotten1.getHeight(), Image.SCALE_SMOOTH);
 		msnForgotten1.setIcon(new ImageIcon(LogPassword1));
 		ForgotPassword.add(msnForgotten1);
 
 
 		JLabel msnForgotten2 = new JLabel("");
-		msnForgotten2.setBounds(456, 558, 88, 64);
+		msnForgotten2.setBounds(1186, 598, 170, 150);
 		Image LogPassword11 = img2.getScaledInstance(msnForgotten2.getWidth(),msnForgotten2.getHeight(), Image.SCALE_SMOOTH);
 		msnForgotten2.setIcon(new ImageIcon(LogPassword11));
 		ForgotPassword.add(msnForgotten2);
@@ -579,8 +579,8 @@ public class chatGame {
 		});
 		btnReturnToLogin.setToolTipText("Press to login to game");
 		btnReturnToLogin.setForeground(Color.BLUE);
-		btnReturnToLogin.setFont(new Font("Silom", Font.PLAIN, 16));
-		btnReturnToLogin.setBounds(156, 517, 233, 44);
+		btnReturnToLogin.setFont(new Font("Silom", Font.PLAIN, 20));
+		btnReturnToLogin.setBounds(506, 537, 280, 44);
 		ForgotPassword.add(btnReturnToLogin);
 
 		JButton btnDisplaySecurityQuestion = new JButton("Get Question");
@@ -598,8 +598,8 @@ public class chatGame {
 		});
 		btnDisplaySecurityQuestion.setToolTipText("Click here to display password");
 		btnDisplaySecurityQuestion.setForeground(Color.BLUE);
-		btnDisplaySecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 12));
-		btnDisplaySecurityQuestion.setBounds(340, 237, 204, 38);
+		btnDisplaySecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 20));
+		btnDisplaySecurityQuestion.setBounds(975, 237, 280, 44);
 		ForgotPassword.add(btnDisplaySecurityQuestion);
 
 		JButton btnSubmitSecurityAnswer = new JButton("Submit Security Answer");
@@ -622,8 +622,8 @@ public class chatGame {
 		});
 		btnSubmitSecurityAnswer.setToolTipText("Click here to display password");
 		btnSubmitSecurityAnswer.setForeground(Color.BLUE);
-		btnSubmitSecurityAnswer.setFont(new Font("Silom", Font.PLAIN, 12));
-		btnSubmitSecurityAnswer.setBounds(340, 446, 204, 38);
+		btnSubmitSecurityAnswer.setFont(new Font("Silom", Font.PLAIN, 20));
+		btnSubmitSecurityAnswer.setBounds(975, 446, 280, 44); 
 		ForgotPassword.add(btnSubmitSecurityAnswer);
 	}
 
