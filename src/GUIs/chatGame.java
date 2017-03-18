@@ -470,7 +470,7 @@ public class chatGame {
 		});
 		btnRegister.setForeground(Color.BLUE);
 		btnRegister.setFont(new Font("Silom", Font.PLAIN, 28));
-		btnRegister.setBounds(582, 510, 240, 50);
+		btnRegister.setBounds(582, 570, 240, 50);
 		SignIn.add(btnRegister);
 
 		JLabel titleSignIn = new JLabel("");
@@ -500,7 +500,7 @@ public class chatGame {
 		});
 		btnBack.setFont(new Font("Silom", Font.PLAIN, 18));
 		btnBack.setForeground(Color.BLUE);
-		btnBack.setBounds(642, 590, 99, 39);
+		btnBack.setBounds(642, 630, 99, 39);
 		SignIn.add(btnBack);
 
 		JLabel lblEnterHint = new JLabel("Set your answer");
