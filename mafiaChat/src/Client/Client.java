@@ -191,7 +191,7 @@ public class Client {
 	/**
 	 * this method returns messages from the server.
 	 * 
-	 * @return
+	 * @return responses from the  server
 	 */
 	public ServerMessage getResponse() {
 		try {
@@ -204,21 +204,12 @@ public class Client {
 	}
 
 	/**
-	 * boolean true if online
-	 * 
-	 * @return boolean true if online
-	 */
-	public boolean getOnline() {
-		return this.online;
-	}
-
-	/**
 	 * This method sends out the client message.
 	 * 
 	 * @param jsonText
 	 */
 	public void sendClientMessage(String jsonText) {
-		// if (this.online == true) {
+		
 		try {
 			outputStream.writeUTF(jsonText);
 			outputStream.flush();
@@ -226,7 +217,7 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// }
+		
 
 	}
 
