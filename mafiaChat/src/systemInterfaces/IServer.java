@@ -96,5 +96,7 @@ public interface IServer {
 	 * username String argument
 	 */
 	public int getUserID(String username);
+
+	public void setGameObject(String string) throws ClassNotFoundException;
 	
 }

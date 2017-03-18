@@ -266,4 +266,9 @@ public class ServerStubJUnit implements IServer{
 		}
 	}
 	
+	@Override
+	public void setGameObject(String string) throws ClassNotFoundException {
+		// TODO Auto-generated method stub
+	}
+	
 }
