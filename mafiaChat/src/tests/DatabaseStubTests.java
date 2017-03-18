@@ -15,7 +15,7 @@ import exceptions.UserExistsException;
  * use in other tests
  * 
  * @author Team Nice
- *
+ * @version 18-03-2017
  */
 public class DatabaseStubTests {
 	private DatabaseStub dbStub;
@@ -23,9 +23,6 @@ public class DatabaseStubTests {
 	@Before
     public void setUp() {
 		dbStub = new DatabaseStub();
-		//users.add(new String[]{"testUser1", "abc", "the answer is password", "password"});
-		//users.add(new String[]{"testUser2", "def", "the answer is testhint", "testhint"});
-		//users.add(new String[]{"testUser3", "123", "the answer is other", "other"});
 	}
 	
 	/**
