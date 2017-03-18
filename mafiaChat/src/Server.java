@@ -37,7 +37,7 @@ import exceptions.UserExistsException;
  * CLientHandler Threads
  * 
  * @author Team Nice
- * @version 1-03-2017
+ * @version 18-03-2017
  *
  */
 public class Server implements IServer{
@@ -161,6 +161,13 @@ public class Server implements IServer{
 			}
 		}
 		
+		/**
+		 * Function for sending a ServerMessage object represented by a String
+		 * in JSON form to the client, even if the client's inChat variable
+		 * is false
+		 * 
+		 * @param JSONText Json representation of a ServerMessage object
+		 */
 		public void sendLoginMessage(String JSONText) { 
 			if (this.active == true) {
 				try {
