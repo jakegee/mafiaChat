@@ -139,17 +139,17 @@ public class chatGame {
 
 		//GAME PANEL COMPONENTS
 
-		//drop down menu
-		messageStrings  = new String [] {"Options","Rules", "Highest Scores", "Log out"};
-		cmbMessageList = new JComboBox(messageStrings);
-		cmbMessageList.setToolTipText("click drop down to view options");
-		cmbMessageList.setBounds(415, -11, 135, 50);
-		JLabel lblDropDown =  new JLabel();
-		cmbMessageList.setSelectedIndex(0);
-
-
-		Game.add(lblDropDown);
-		Game.add(cmbMessageList);
+//		//drop down menu
+//		messageStrings  = new String [] {"Options","Rules", "Highest Scores", "Log out"};
+//		cmbMessageList = new JComboBox(messageStrings);
+//		cmbMessageList.setToolTipText("click drop down to view options");
+//		cmbMessageList.setBounds(415, -11, 135, 50);
+//		JLabel lblDropDown =  new JLabel();
+//		cmbMessageList.setSelectedIndex(0);
+//
+//
+//		Game.add(lblDropDown);
+//		Game.add(cmbMessageList);
 
 
 		//logo image bottom of screen
@@ -174,7 +174,7 @@ public class chatGame {
 		listChat.setModel(new DefaultListModel<String>());
 		
 		JScrollPane scrollPane = new JScrollPane(listChat);
-		scrollPane.setBounds(28,105,339,445);
+		scrollPane.setBounds(28,105,727,455);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
 		//this.txtEnterMess = new JTextArea();
@@ -183,7 +183,7 @@ public class chatGame {
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds(28,562,402,60);
+		scrollPane1.setBounds(28,572,611,60);
 		scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane1);
 		JTextArea txtEnterMess1 = new JTextArea();
@@ -195,7 +195,7 @@ public class chatGame {
 		listPrivate.setModel(new DefaultListModel<String>());
 		
 		JScrollPane scrollPrivate = new JScrollPane(listPrivate);
-		scrollPrivate.setBounds(379, 365, 160, 185);
+		scrollPrivate.setBounds(786, 335, 272, 263);
 		scrollPrivate.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPrivate);
 		
@@ -214,7 +214,7 @@ public class chatGame {
 		listUsers.setModel(new DefaultListModel<String>());
 		
 		JScrollPane scrollOnlineUsers = new JScrollPane(listUsers);
-		scrollOnlineUsers.setBounds(379, 107, 158, 229);
+		scrollOnlineUsers.setBounds(786, 58, 272, 224);
 		scrollOnlineUsers.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollOnlineUsers);
 		
@@ -229,23 +229,23 @@ public class chatGame {
 
 		//heading for online users
 		JLabel lblOnlineUsers = new JLabel("ONLINE USERS");
-		lblOnlineUsers.setFont(new Font("Silom", Font.PLAIN, 13));
+		lblOnlineUsers.setFont(new Font("Silom", Font.PLAIN, 18));
 		lblOnlineUsers.setForeground(Color.WHITE);
-		lblOnlineUsers.setBounds(395, 94, 115, 16);
+		lblOnlineUsers.setBounds(835, 20, 179, 26);
 		Game.add(lblOnlineUsers);
 
 		//heading for server messages
 		JLabel lblServerMessages = new JLabel("SERVER MESSAGES");
-		lblServerMessages.setFont(new Font("Silom", Font.PLAIN, 13));
+		lblServerMessages.setFont(new Font("Silom", Font.PLAIN, 18));
 		lblServerMessages.setForeground(Color.WHITE);
-		lblServerMessages.setBounds(395, 346, 135, 16);
+		lblServerMessages.setBounds(846, 307, 261, 16);
 		Game.add(lblServerMessages);
 
 		//send button
 		JButton Send = new JButton("SEND");
 		Send.setToolTipText("Click to send message");
 		Send.setBackground(Color.GRAY);
-		Send.setFont(new Font("Silom", Font.PLAIN, 13));
+		Send.setFont(new Font("Silom", Font.PLAIN, 18));
 		Send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -254,14 +254,30 @@ public class chatGame {
 			}
 		});
 		Send.setForeground(Color.BLUE);
-		Send.setBounds(442, 562, 87, 60);
+		Send.setBounds(641, 572, 114, 60);
 		Game.add(Send);
 
 		JLabel titleGame = new JLabel("");
-		titleGame.setBounds(22, 20, 500, 90);
+		titleGame.setBounds(22, 20, 738, 73);
 		Image a = img.getScaledInstance(titleGame.getWidth(),titleGame.getHeight(), Image.SCALE_SMOOTH);
 		titleGame.setIcon(new ImageIcon(a));
 		Game.add(titleGame);
+		
+		JButton btnRules = new JButton("Rules");
+		btnRules.setToolTipText("Click to send message");
+		btnRules.setForeground(Color.BLUE);
+		btnRules.setFont(new Font("Silom", Font.PLAIN, 14));
+		btnRules.setBackground(Color.GRAY);
+		btnRules.setBounds(943, 610, 96, 32);
+		Game.add(btnRules);
+		
+		JButton btnLogOut = new JButton("Log Out");
+		btnLogOut.setToolTipText("Click to send message");
+		btnLogOut.setForeground(Color.BLUE);
+		btnLogOut.setFont(new Font("Silom", Font.PLAIN, 14));
+		btnLogOut.setBackground(Color.GRAY);
+		btnLogOut.setBounds(835, 610, 96, 32);
+		Game.add(btnLogOut);
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
