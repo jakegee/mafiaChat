@@ -71,11 +71,42 @@ public class DatabaseStubTests {
     }
     
     /**
-     * Check whether a getSecurityQuestion operation 
+     * Check whether a getSecurityQuestion operation returns the expected result for 
      */
-    @Test (expected=UserExistsException.class)
-    public void test6() throws UserExistsException {
-    	dbStub.registerUser("testUser1", "testpass", "testhint", "testanswer");
+    @Test 
+    public void test6() throws InvalidUserException {
+    	assertEquals("the answer is password", dbStub.getSecurityQuestion("testUser1"));
     }
 	
+    /**
+     * Check whether a getSecurityQuestion operation returns an error for an invalid user
+     */
+    @Test (expected=InvalidUserException.class)
+    public void test7() throws InvalidUserException {
+    	dbStub.getSecurityQuestion("testUser4");
+    }
+    
+    /**
+     * Check whether a checkQuestionAnswer operation returns the password for a valid answer
+     */
+    @Test 
+    public void test8() throws InvalidUserException, InvalidInformationException {
+    	dbStub.checkQuestionAnswer("testUser2", "testhint");
+    }   
+    
+    /**
+     * Check whether a checkQuestionAnswer operation returns an error for an invalid user
+     */
+    @Test (expected=InvalidUserException.class)
+    public void test9() throws InvalidUserException, InvalidInformationException {
+    	dbStub.checkQuestionAnswer("testUser4", "testhint");
+    }   
+    
+    /**
+     * Check whether a checkQuestionAnswer operation returns an error for an invalid answer
+     */
+    @Test (expected=InvalidInformationException.class)
+    public void test10() throws InvalidUserException, InvalidInformationException {
+    	dbStub.checkQuestionAnswer("testUser2", "nottesthint");
+    }  
 }

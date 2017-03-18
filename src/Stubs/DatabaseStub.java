@@ -58,8 +58,6 @@ public class DatabaseStub implements IDatabase{
 			throws InvalidUserException, InvalidInformationException {
 		for (String[] element : users) {
 			if (element[0].equals(username)) {
-				System.out.println(element[3]);
-				System.out.println(hintAnswer);
 				if (element[3].equals(hintAnswer)) {
 					return element[1];
 				} else {
@@ -68,20 +66,6 @@ public class DatabaseStub implements IDatabase{
 			}
 		}
 		throw new InvalidUserException(username);
-	}
-	
-	public static void main(String[] args) {
-		DatabaseStub stub = new DatabaseStub();
-		try {
-			String returnString = stub.getSecurityQuestion("testUser2");
-			String password = stub.checkQuestionAnswer("testUser2", "testhint");
-			System.out.println(password);
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		
-		
-		
 	}
 
 }
