@@ -24,7 +24,7 @@ import com.google.gson.GsonBuilder;
 
 import Stubs.DatabaseStub;
 import Stubs.GameStub;
-import Game.Mafia;
+import Game.*;
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
 import exceptions.UserExistsException;
@@ -563,7 +563,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		String[] args_ = {"Mafia", "8000", "20"};
+		String[] args_ = {"Resistance", "8000", "20"};
 		int port;
 		int serverSize;
 		Server server;
@@ -579,7 +579,7 @@ public class Server implements IServer{
 			} else {
 				server = new Server(port, serverSize);
 				try {
-					server.setGameObject(args_[0]);
+					server.setGameObject("Game." + args_[0]);
 					server.startServerListening();
 				} catch (ClassNotFoundException e) {
 					System.out.println("Class " + args_[0] + " is not a valid Class Name");
