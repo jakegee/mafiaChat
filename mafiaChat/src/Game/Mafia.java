@@ -1,3 +1,4 @@
+package Game;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -19,34 +20,34 @@ public class Mafia extends Game {
 					  // storing
     // player ids/usernames
 
-    public boolean nightVoteInProgress = false;
-    public boolean elimDayVoteInProgress = false;
+    private boolean nightVoteInProgress = false;
+    private boolean elimDayVoteInProgress = false;
 
-    public ArrayList<Integer> playersLeftToVote; // could use to private
-						  // message the users to tell
-						  // them that they still need
-						  // to vote
-						  // this could be attached to
-						  // the timer
+    // private ArrayList<Integer> playersLeftToVote; // could use to private
+    // message the users to tell
+    // them that they still need
+    // to vote
+    // this could be attached to
+    // the timer
 
-    public boolean day = true;
-    public boolean gameInProgress = false; // this is possibly to be used in
+    private boolean day = true;
+    private boolean gameInProgress = false; // this is possibly to be used in
 					    // handleMessage
 
     // private ArrayList<Integer> containing the players who have used /ready
-    protected ArrayList<Integer> ready;
-    public ArrayList<Integer> votedStart;
-    public String[] mafiaAtStart; // might make this for innocents as well
-    public ArrayList<Integer> mafia; // might make type map
-    public ArrayList<Integer> innocentIDs; // might make type map
-    public ArrayList<Integer> elimDay;
-    public ArrayList<Integer> save;
+    private ArrayList<Integer> ready;
+    private ArrayList<Integer> votedStart;
+    private String[] mafiaAtStart; // might make this for innocents as well
+    private ArrayList<Integer> mafia; // might make type map
+    private ArrayList<Integer> innocentIDs; // might make type map
+    private ArrayList<Integer> elimDay;
+    private ArrayList<Integer> save;
     // private ArrayList<Integer> playerIDs;
-    public HashMap<Integer, String> eliminate;
-    public ArrayList<Integer> dayVote;
-    public ArrayList<Integer> nightVote;
-    public Integer playerOnTrialID = null;
-    public Random mafiaPicker;
+    private HashMap<Integer, String> eliminate;
+    private ArrayList<Integer> dayVote;
+    private ArrayList<Integer> nightVote;
+    private Integer playerOnTrialID = null;
+    // private Random mafiaPicker;
 
     private Timer dayElimTimer;
     private Timer nightVoteTimer;
@@ -65,6 +66,10 @@ public class Mafia extends Game {
 	super(server);
 	ready = new ArrayList<>();
 	votedStart = new ArrayList<>();
+	elimDay = new ArrayList<>();
+	save = new ArrayList<>();
+	nightVote = new ArrayList<>();
+	dayVote = new ArrayList<>();
 
     }
 
@@ -85,12 +90,15 @@ public class Mafia extends Game {
     public void handleMessage(Message message, int origin) {
 
 	String text = message.messageText;
-	String command = message.messageText;
-
-	String remText;
+	String remText = "";
+	String command = "";
+	
+	
 	if (text.indexOf(' ') < 0) {
 	    remText = "";
+	    command = message.messageText;
 	} else {
+	    command = message.messageText.substring(0, text.indexOf(' '));
 	    remText = text.substring(text.indexOf(' ') + 1);
 	}
 
@@ -210,7 +218,7 @@ public class Mafia extends Game {
 		    server.privateMessage("There are enough players to start the game. Use the command"
 			    + " \"/start\" to vote to start", readyArray);
 
-//		    votedStart = new ArrayList<>();
+		    // votedStart = new ArrayList<>();
 		}
 
 		if (ready.size() == 16) {
@@ -232,19 +240,19 @@ public class Mafia extends Game {
 	    int index = ready.indexOf(origin);
 	    ready.remove(index);
 
-	    server.publicMessage(
-		    server.getUsername((origin)) + " has unreadied, the number of players ready is now: " + ready.size());
+	    server.publicMessage(server.getUsername((origin)) + " has unreadied, the number of players ready is now: "
+		    + ready.size());
 	    // possibly extend to mention which players are ready
-	    
+
 	    int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
-	    
-	    if (ready.size() == 5) {		
+
+	    if (ready.size() == 5) {
 
 		server.privateMessage("There are no longer enough players to start the game, start vote has been reset",
 			readyArray);
-		
+
 		votedStart.clear();
-	    } else if (ready.size() >= 6){
+	    } else if (ready.size() >= 6) {
 		int voteIndex = votedStart.indexOf(origin);
 		votedStart.remove(voteIndex);
 	    }
@@ -266,18 +274,18 @@ public class Mafia extends Game {
      *            message.
      */
     private void voteStart(int origin) {
-	//ensures that players aren't added more than once
+	// ensures that players aren't added more than once
 	if (!votedStart.contains(origin) && ready.contains(origin) && ready.size() >= 6) {
 
 	    votedStart.add(origin);
 	    if (votedStart.size() == ready.size() && votedStart.size() >= 6) {
 		gameStart();
-		
-	    } else {		
+
+	    } else {
 		server.publicMessage("number of players that want to start: " + votedStart.size());
 		// possibly extend message to mention who has voted to start
 	    }
-	    
+
 	} else if (votedStart.contains(origin)) {
 	    server.privateMessage("you have already voted to start", origin);
 	} else {
@@ -288,7 +296,7 @@ public class Mafia extends Game {
     private void gameStart() { // TODO: implement muting players that are not in
 			       // the game
 	ready.clear();
-	
+
 	players = new TreeBidiMap<>();
 	mafia = new ArrayList<>();
 	innocentIDs = new ArrayList<>();
@@ -302,12 +310,12 @@ public class Mafia extends Game {
 
 	int numMafia = Math.round(votedStart.size() / 3);
 	mafiaAtStart = new String[numMafia];
-	
+
 	for (int j = 0; j < numMafia; j++) {
-	   // int index = mafiaPicker.nextInt(votedStart.size());
+	    // int index = mafiaPicker.nextInt(votedStart.size());
 	    int index = ThreadLocalRandom.current().nextInt(votedStart.size());
 	    int id = votedStart.get(index);
-	    
+
 	    mafia.add(id);
 	    mafiaAtStart[j] = server.getUsername(id);
 	    votedStart.remove(index);
@@ -339,6 +347,7 @@ public class Mafia extends Game {
 	server.privateMessage("you are one of the mafia, the mafia members (including " + "you) are " + mafiaIDArray,
 		mafiaIDArray);
 
+	day = true;
 	gameInProgress = true;
     }
 
@@ -808,13 +817,22 @@ public class Mafia extends Game {
     private void checkWin() {
 	if (mafia.size() == innocentIDs.size()) {
 	    server.publicMessage("The Mafia win");
+	    gameEnd();
 	} else if (mafia.size() == 0) {
 	    server.publicMessage("The innocents win");
+	    gameEnd();
 	}
-	
+
+    }
+
+    private void gameEnd() { // could make public to force the game to end
 	server.publicMessage("The mafia were: " + mafiaAtStart);
 
 	gameInProgress = false;
+	players.clear();
+	mafia.clear();
+	innocentIDs.clear();
+	server.unMuteAllPlayers();
     }
 
     public synchronized void dayElimVoteTimeout() {
@@ -850,9 +868,146 @@ public class Mafia extends Game {
     }
 
     @Override
-    protected void handleTimerEvent(String message) { // not sure how to integrate the timers i have into this, would prefer to just delete it
+    protected void handleTimerEvent(String message) { // not sure how to
+						      // integrate the timers i
+						      // have into this, would
+						      // prefer to just delete
+						      // it
 	// TODO Auto-generated method stub
 
     }
+
+    /**
+     * @return the players
+     */
+    public TreeBidiMap<Integer, String> getPlayers() {
+	return players;
+    }
+
+    /**
+     * @return the nightVoteInProgress
+     */
+    public boolean isNightVoteInProgress() {
+	return nightVoteInProgress;
+    }
+
+    /**
+     * @return the elimDayVoteInProgress
+     */
+    public boolean isElimDayVoteInProgress() {
+	return elimDayVoteInProgress;
+    }
+
+    /**
+     * @return the day
+     */
+    public boolean isDay() {
+	return day;
+    }
+
+    /**
+     * @return the gameInProgress
+     */
+    public boolean isGameInProgress() {
+	return gameInProgress;
+    }
+
+    /**
+     * @return the ready
+     */
+    public ArrayList<Integer> getReady() {
+	return ready;
+    }
+
+    /**
+     * @return the votedStart
+     */
+    public ArrayList<Integer> getVotedStart() {
+	return votedStart;
+    }
+
+    /**
+     * @return the mafiaAtStart
+     */
+    public String[] getMafiaAtStart() {
+	return mafiaAtStart;
+    }
+
+    /**
+     * @return the mafia
+     */
+    public ArrayList<Integer> getMafia() {
+	return mafia;
+    }
+
+    /**
+     * @return the innocentIDs
+     */
+    public ArrayList<Integer> getInnocentIDs() {
+	return innocentIDs;
+    }
+
+    /**
+     * @return the elimDay
+     */
+    public ArrayList<Integer> getElimDay() {
+	return elimDay;
+    }
+
+    /**
+     * @return the save
+     */
+    public ArrayList<Integer> getSave() {
+	return save;
+    }
+
+    /**
+     * @return the eliminate
+     */
+    public HashMap<Integer, String> getEliminate() {
+	return eliminate;
+    }
+
+    /**
+     * @return the dayVote
+     */
+    public ArrayList<Integer> getDayVote() {
+	return dayVote;
+    }
+
+    /**
+     * @return the nightVote
+     */
+    public ArrayList<Integer> getNightVote() {
+	return nightVote;
+    }
+
+    /**
+     * @return the playerOnTrialID
+     */
+    public Integer getPlayerOnTrialID() {
+	return playerOnTrialID;
+    }
+
+    // /**
+    // * @return the dayElimTimer
+    // */
+    // public Timer getDayElimTimer() {
+    // return dayElimTimer;
+    // }
+    //
+    // /**
+    // * @return the nightVoteTimer
+    // */
+    // public Timer getNightVoteTimer() {
+    // return nightVoteTimer;
+    // }
+    //
+    // /**
+    // * @return the nightElimTimer
+    // */
+    // public Timer getNightElimTimer() {
+    // return nightElimTimer;
+    // }
 
 }
