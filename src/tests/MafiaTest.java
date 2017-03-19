@@ -243,20 +243,20 @@ public class MafiaTest {
 
 	assertFalse(mafia.getReady().contains(client1ID));
     }
-
+    
     @Test
     public void testUnready3() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/unready", "client2");
+	serverStub.sendCommand("/unready", "client4");
 
-	assertTrue(mafia.getReady().contains(client1ID));
+	assertTrue(mafia.getReady().isEmpty());
     }
 
     @Test
     public void testUnready4() {
-	serverStub.sendCommand("/unready", "client4");
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/unready", "client2");
 
-	assertTrue(mafia.getReady().isEmpty());
+	assertTrue(mafia.getReady().contains(client1ID));
     }
 
     @Test
@@ -294,7 +294,7 @@ public class MafiaTest {
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/unready", "client3");
 
-	assertFalse(mafia.getVotedStart().contains(client3ID));
+	assertTrue(mafia.getVotedStart().isEmpty());
 	assertFalse(mafia.getReady().contains(client3ID));
     }
 
@@ -418,14 +418,11 @@ public class MafiaTest {
     @Test
     public void testSaveVote2() {
 	gameStart6Players();
-	serverStub.sendCommand("/elim client4", "client1");
 	serverStub.sendCommand("/elim client4", "client6");
-	assertEquals(2, mafia.getElimDay().size());
-
 	serverStub.sendCommand("/save client4", "client6");
 
 	assertEquals(client4ID, (int) mafia.getPlayerOnTrialID());
-	assertEquals(1, mafia.getElimDay().size());
+	assertTrue(mafia.getElimDay().isEmpty());
 	assertEquals(1, mafia.getSave().size());
 	assertTrue(mafia.isElimDayVoteInProgress());
     }
@@ -515,6 +512,17 @@ public class MafiaTest {
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertFalse(mafia.isElimDayVoteInProgress());
     }
+    
+    @Test
+    public void testElimDayVote8() {
+	gameStart6Players();
+	serverStub.sendCommand("/elim client6", "client6");
+
+	assertTrue(mafia.getElimDay().isEmpty());
+	assertFalse(mafia.isElimDayVoteInProgress());
+    }
+    
+    
 
     @Test
     public void testSaveVote6() {
@@ -700,7 +708,7 @@ public class MafiaTest {
     }
 
     @Test
-    public void testElimNightVote1() {
+    public void testElimNightVote() {
 	successNightVote6Players();
 
 	int innocentID = (int) mafia.getInnocentIDs().get(0);
@@ -830,7 +838,7 @@ public class MafiaTest {
     }
 
     @Test
-    public void mafiaNumtest() {
+    public void testMafiaNum() {
 	gameStart6Players();
 	assertEquals(2, mafia.getMafia().size());
 	end6PlayerInnocentWin();
@@ -840,7 +848,7 @@ public class MafiaTest {
     }
 
     @Test
-    public void mafiaRandomTest() {
+    public void testMafiaRandom() {
 
 	boolean random = true;
 
