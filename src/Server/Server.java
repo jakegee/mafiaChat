@@ -70,7 +70,7 @@ public class Server implements IServer{
 		this.sGson = builder.create();
 		this.connections = new LinkedBlockingQueue<Socket>(5);
 		this.game = new GameStub(this);
-		this.database = new DatabaseStub();
+		this.database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
 		this.port = port;
