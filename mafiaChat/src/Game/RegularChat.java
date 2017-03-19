@@ -41,6 +41,7 @@ public class RegularChat extends Game {
 			}
 			break;
 			
+		/*	
 		case "/game" :
 			try {
 				server.setGameObject("Game." + messageDecode[1]);
@@ -49,6 +50,7 @@ public class RegularChat extends Game {
 				server.privateMessage("Game: " + messageDecode[1] + " is not known", origin);
 			}
 			break;
+		*/
 		
 		case "/time":
 			int charPos = messageDecode[1].indexOf(" ");
@@ -72,9 +74,12 @@ public class RegularChat extends Game {
 			break;
 		
 		default:
-			server.privateMessage("Invalid command", origin);
+			//server.privateMessage("Invalid command", origin);
 			break;
 		}
+		
+		super.handleMessage(message, origin);
+		
 	}
 	
 	@Override

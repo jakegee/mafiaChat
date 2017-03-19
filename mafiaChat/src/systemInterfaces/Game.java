@@ -1,6 +1,8 @@
 package systemInterfaces;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,9 +12,14 @@ public abstract class Game {
 	protected IServer server;
 	protected ArrayList<Integer> users;
 	private Timer timer;
+	private Map<String, Integer> gameChoice;
+	private Map<String, String> playerChoice;
+	private int activePlayers;
 	
 	public Game(IServer server) {
 		this.server = server;
+		this.gameChoice = new HashMap<String, Integer>();
+		this.playerChoice = new HashMap<String, String>();
 	}
 	
 	
@@ -24,7 +31,39 @@ public abstract class Game {
 	 * as well as the rest of the text passed in to the client
 	 * @param origin int representing the user which entered the command
 	 */
-	public abstract void handleMessage (Message message, int origin);
+	public void handleMessage (Message message, int origin) {
+		String[] messageDecode = decodeMessage(message);
+		
+		switch (messageDecode[0]) {
+		case "/game" :
+			try {
+				String user = server.getUsername(origin);
+				if (messageDecode[1] != playerChoice.get(user)) {
+					server.publicMessage("User: <" + user + "> voted to change game to " + messageDecode[1]);
+					int currentVal;
+					try {
+						currentVal = gameChoice.get(messageDecode[1]);
+					} catch (NullPointerException e) {
+						currentVal = 0;
+					}
+					if (++currentVal >= Math.ceil(server.getActiveClientIDs().size()/2.0)) {
+						server.setGameObject("Game." + messageDecode[1]);
+					}
+					gameChoice.put(messageDecode[1], ++currentVal);
+				} else {
+					server.privateMessage("You already voted for " + messageDecode[1], origin);
+				}
+			} catch (ClassNotFoundException e) {
+				server.privateMessage("Game: " + messageDecode[1] + " is not known", origin);
+			}
+			break;
+		
+		default :
+			server.privateMessage("Invalid Command", origin);
+			break;
+		}
+		
+	}
 	
 	/**
 	 * Non-blocking function for creating a Timer Event which sends the message String
