@@ -1,4 +1,5 @@
 package Game;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -92,8 +93,7 @@ public class Mafia extends Game {
 	String text = message.messageText;
 	String remText = "";
 	String command = "";
-	
-	
+
 	if (text.indexOf(' ') < 0) {
 	    remText = "";
 	    command = message.messageText;
@@ -141,7 +141,7 @@ public class Mafia extends Game {
 				"The command \"/elim\" needs to be followed by a player's name with no spaces/characters thereafter",
 				origin);
 		    } else {
-			elimDay(remText, origin);
+			elimDayVote(remText, origin);
 		    }
 
 		} else if (command.equals("/save")) {
@@ -150,7 +150,7 @@ public class Mafia extends Game {
 				"The command \"/save\" needs to be followed by a player's name with no spaces/characters thereafter",
 				origin);
 		    } else {
-			save(remText, origin);
+			saveVote(remText, origin);
 		    }
 
 		} else if (command.equals("/night")) {
@@ -204,7 +204,7 @@ public class Mafia extends Game {
 	if (!ready.contains(origin)) { // ensures players aren't added more than
 				       // once
 
-	    if (ready.size() < 17) {
+	    if (ready.size() < 16) {
 		ready.add(origin);
 
 		server.publicMessage(server.getUsername(origin) + " has been set to ready");
@@ -253,8 +253,10 @@ public class Mafia extends Game {
 
 		votedStart.clear();
 	    } else if (ready.size() >= 6) {
-		int voteIndex = votedStart.indexOf(origin);
-		votedStart.remove(voteIndex);
+		if (votedStart.contains(origin)) {
+		    int voteIndex = votedStart.indexOf(origin);
+		    votedStart.remove(voteIndex);
+		}
 	    }
 
 	    if (ready.size() < 6) {
@@ -308,7 +310,7 @@ public class Mafia extends Game {
 
 	}
 
-	int numMafia = Math.round(votedStart.size() / 3);
+	int numMafia = (int) Math.round((double) votedStart.size() / 3);
 	mafiaAtStart = new String[numMafia];
 
 	for (int j = 0; j < numMafia; j++) {
@@ -366,65 +368,74 @@ public class Mafia extends Game {
      * @param origin
      *            is the id of the player making the vote
      */
-    private void elimDay(String player, int origin) {
-	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
+    private void elimDayVote(String player, int origin) {
+
 	// int playerID = server.getUserID(player);
-	int playerID = invPlayers.get(player);
+	if (players.containsValue(player)) {
+	    OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
 
-	// if (nightVote.size() > 0) {
-	if (nightVoteInProgress) {
-	    server.privateMessage("cannot vote to eliminate a player while there is a vote to change the game to night",
-		    origin);
+	    int playerID = invPlayers.get(player);
 
-	    // } else if (!playerIDs.contains(playerID)) { // this is for when
-	    // using ArrayList of playerIDs
+	    // if (nightVote.size() > 0) {
+	    if (nightVoteInProgress) {
+		server.privateMessage(
+			"cannot vote to eliminate a player while there is a vote to change the game to night", origin);
+
+		// } else if (!playerIDs.contains(playerID)) { // this is for
+		// when
+		// using ArrayList of playerIDs
+	    } else if (playerID == origin) {
+		server.privateMessage("you cannot vote for yourself", origin);
+
+	    } else if (elimDay.contains(origin)) {
+
+		server.privateMessage("you have already voted to start", origin);
+
+	    } else if (playerOnTrialID == null) {
+		elimDayVoteInProgress = true;
+		playerOnTrialID = playerID;
+		elimDay.add(origin);
+
+		TimerTask dayElimVoteTimeout = new TimerTask() { // not sure if
+								 // this
+								 // will work
+								 // properly
+								 // (method
+								 // should
+								 // continue
+								 // without
+								 // waiting for
+								 // it
+								 // to finish
+
+		    @Override
+		    public void run() {
+			dayElimVoteTimeout(); // this might need a catch
+
+		    }
+		};
+
+		dayElimTimer = new Timer();
+
+		dayElimTimer.schedule(dayElimVoteTimeout, 20000);
+
+	    } else {
+		if (playerOnTrialID != playerID) {
+		    server.privateMessage("cannot vote for " + player + " while the vote for "
+			    + server.getUsername(playerOnTrialID) + " is in progress", origin);
+		} else {
+		    if (save.contains(origin)) {
+			int index = save.indexOf(origin);
+			save.remove(index);
+		    }
+
+		    elimDay.add(origin);
+		    checkElim(origin);
+		}
+	    }
 	} else if (!players.containsValue(player)) {
 	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
 
-	} else if (playerID == origin) {
-	    server.privateMessage("you cannot vote for yourself", origin);
-
-	} else if (playerOnTrialID == null) {
-	    elimDayVoteInProgress = true;
-	    playerOnTrialID = playerID;
-	    elimDay.add(origin); // not checked if this will eliminate because
-	    // assumed that 1 vote is not enough.
-	    // there could be a deadlock when two players are
-	    // left (might change the mafia win condition to
-	    // address this)
-
-	    TimerTask dayElimVoteTimeout = new TimerTask() { // not sure if this
-							     // will work
-							     // properly (method
-							     // should continue
-							     // without
-							     // waiting for it
-							     // to finish
-
-		@Override
-		public void run() {
-		    dayElimVoteTimeout(); // this might need a catch
-
-		}
-	    };
-
-	    dayElimTimer = new Timer();
-
-	    dayElimTimer.schedule(dayElimVoteTimeout, 20000);
-
-	} else {
-	    if (playerOnTrialID != playerID) {
-		server.privateMessage("cannot vote for " + player + " while the vote for "
-			+ server.getUsername(playerOnTrialID) + " is in progress", origin);
-	    } else {
-		if (save.contains(origin)) {
-		    int index = save.indexOf(origin);
-		    save.remove(index);
-		}
-
-		elimDay.add(origin);
-		checkElim(origin);
-	    }
 	}
 
     }
@@ -476,15 +487,14 @@ public class Mafia extends Game {
 
 	server.setPlayerMuted(playerOnTrialID, true);
 
+	server.publicMessage(server.getUsername(playerOnTrialID) + " has been eliminated");
+
 	playerOnTrialID = null;
 	elimDay.clear();
 	save.clear();
 	elimDayVoteInProgress = false;
 
-	server.publicMessage(server.getUsername(playerOnTrialID) + " has been eliminated");
-
 	checkWin();
-
     }
 
     /**
@@ -499,35 +509,38 @@ public class Mafia extends Game {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void save(String player, int origin) {// suspicious player doesn't
-						  // need to vote for themselves
-	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
-	// int playerID = server.getUserID(player);
-	int playerID = invPlayers.get(player);
+    private void saveVote(String player, int origin) {// suspicious player do need
+						  // to vote for themselves
 
-	if (playerOnTrialID == null) {
-	    server.privateMessage("you cannot vote to save someone when there is no-one on trial", origin);
+	if (players.containsValue(player)) {
+	    OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
+	    // int playerID = server.getUserID(player);
+	    int playerID = invPlayers.get(player);
 
-	    // } else if (!playerIDs.contains(playerID)) {
-	} else if (!players.containsValue(playerID)) {
+	    if (playerOnTrialID == null) {
+		server.privateMessage("you cannot vote to save someone when there is no-one on trial", origin);
+
+		// } else if (!playerIDs.contains(playerID)) {
+	    } else if (playerID == origin) {
+		server.privateMessage("you don't need to vote to save yourself", origin);
+
+	    } else {
+		if (playerOnTrialID != playerID) {
+		    server.privateMessage("cannot vote for " + player + " while the vote for "
+			    + server.getUsername(playerOnTrialID) + " is in progress", origin);
+		} else {
+		    if (elimDay.contains(origin)) {
+			int index = elimDay.indexOf(origin);
+			elimDay.remove(index);
+		    }
+
+		    save.add(origin);
+		    checkSave(origin);
+		}
+	    }
+	} else if (!players.containsValue(player)) {
 	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
 
-	} else if (playerID == origin) {
-	    server.privateMessage("you don't need to vote to save yourself", origin);
-
-	} else {
-	    if (playerOnTrialID != playerID) {
-		server.privateMessage("cannot vote for " + player + " while the vote for "
-			+ server.getUsername(playerOnTrialID) + " is in progress", origin);
-	    } else {
-		if (elimDay.contains(origin)) {
-		    int index = elimDay.indexOf(origin);
-		    elimDay.remove(index);
-		}
-
-		save.add(origin);
-		checkSave(origin);
-	    }
 	}
 
     }
@@ -549,12 +562,13 @@ public class Mafia extends Game {
 	dayElimTimer.cancel();
 	dayElimTimer.purge();
 
+	server.publicMessage(server.getUsername(playerOnTrialID) + " has been saved");
+
 	playerOnTrialID = null;
 	elimDay.clear();
 	save.clear();
 	elimDayVoteInProgress = false;
 
-	server.publicMessage(server.getUsername(playerOnTrialID) + " has been saved");
     }
 
     /**
@@ -699,6 +713,7 @@ public class Mafia extends Game {
 				     // are in
 	day = false;
 	nightVoteInProgress = false;
+	eliminate = new HashMap<>();
 
 	TimerTask nightElimTimeout = new TimerTask() {
 
@@ -724,35 +739,44 @@ public class Mafia extends Game {
      *            is the id of the player making the vote
      */
     private void elimNightVote(String player, int origin) {
-	OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
-	// int playerID = server.getUserID(player);
-	int playerID = invPlayers.get(player);
 
-	if (innocentIDs.contains(origin)) {
-	    server.privateMessage(player + "As an innocent you are not active during the night", origin);
+	if (players.containsValue(player)) {
+	    OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
+	    // int playerID = server.getUserID(player);
+	    int playerID = invPlayers.get(player);
 
-	    // } else if (!playerIDs.contains(player)) {
+	    if (innocentIDs.contains(origin)) {
+		server.privateMessage(player + "As an innocent you are not active during the night", origin);
+
+		// } else if (!playerIDs.contains(player)) {
+	    } else if (playerID == origin) { // not sure about keeping this in
+		server.privateMessage("you cannot vote for yourself", origin);
+
+	    } else if (mafia.contains(playerID)) { // wondering whether it's
+						 // better to
+						 // leave this out
+		server.privateMessage("you cannot vote for another mafia player", origin);
+
+	    } else if (eliminate.containsKey(origin)) {
+		server.privateMessage("you can only vote for a valid player once", origin);
+
+	    } else {
+		eliminate.put(origin, player);
+		checkElimNight(origin);
+	    }
 	} else if (!players.containsValue(player)) {
 	    server.privateMessage(player + " is not in this game/has already been eliminated", origin);
-
-	} else if (playerID == origin) { // not sure about keeping this in
-	    server.privateMessage("you cannot vote for yourself", origin);
-
-	} else if (mafia.contains(player)) { // wondering whether it's better to
-					     // leave this out
-	    server.privateMessage("you cannot vote for another mafia player", origin);
-
-	} else if (eliminate.containsKey(origin)) {
-	    server.privateMessage("you can only vote for a valid player once", origin);
-
-	} else {
-	    eliminate.put(origin, player);
-	    checkElimNight(origin);
 	}
     }
 
     private void checkElimNight(int origin) {
-	String[] votes = (String[]) eliminate.values().toArray();
+	Object[] elimArr = eliminate.values().toArray();
+
+	String[] votes = new String[elimArr.length];
+
+	for (int i = 0; i < elimArr.length; i++) {
+	    votes[i] = (String) elimArr[i];
+	}
 
 	if (eliminate.size() < mafia.size()) {
 	    server.privateMessage("waiting for " + (mafia.size() - votes.length) + "more mafia to vote", origin);
@@ -779,8 +803,6 @@ public class Mafia extends Game {
 
 	    day = true;
 	    server.setChatActive(true);
-	} else {
-
 	}
 
     }
@@ -865,16 +887,6 @@ public class Mafia extends Game {
 	server.privateMessage("Not all mafia voted before the timer so noone was killed during the night", mafiaArray);
 
 	failNight();
-    }
-
-    @Override
-    protected void handleTimerEvent(String message, int delay) { // not sure how to
-						      // integrate the timers i
-						      // have into this, would
-						      // prefer to just delete
-						      // it
-	// TODO Auto-generated method stub
-
     }
 
     /**
