@@ -62,6 +62,11 @@ public class Mafia extends Game {
     // ChatClientApp.frame.client.get_message();
     // }
     // }, 1000, 2000);
+    
+    static {
+    	rules = "Mafia rules go here, use \n to end a line, this will appear \n"
+    			+ "on a dialog box when rules are pressed";
+    }
 
     public Mafia(IServer server) {
 	super(server);
