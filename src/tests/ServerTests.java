@@ -201,7 +201,7 @@ public class ServerTests {
 	@Test
 	public void test14() throws IOException {
 		cStub.spawnListenerThread();
-		cStub.setCommandMsg("/private testUser1 poop");
+		cStub.setCommandMsg("/private testUser1 hi");
 		assertEquals(" test private message sent by user 0",
 				cStub.getPrivateMessages().get(cStub.getPrivateMessages().size()));
 		

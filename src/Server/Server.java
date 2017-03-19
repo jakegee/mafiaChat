@@ -142,6 +142,8 @@ public class Server implements IServer{
 			this.server = server;
 			this.username = null;
 			this.df = new SimpleDateFormat("HH:mm:ss");
+			this.inChat = false;
+			this.active = false;
 		}
 		
 		/**
@@ -572,7 +574,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		String[] args_ = {"Mafia", "8000", "20"};
+		String[] args_ = {"RegularChat", "8000", "20"};
 		int port;
 		int serverSize;
 		Server server;
@@ -583,7 +585,7 @@ public class Server implements IServer{
 			System.out.println("Invalid server size " + args_[2]);
 		} else {
 			if (args_[0].equals("debug")) {
-				server = new Server(8000, 20);
+				server = new Server(port, serverSize);
 				server.startServerListening();
 			} else {
 				server = new Server(port, serverSize);
