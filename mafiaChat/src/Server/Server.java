@@ -357,6 +357,10 @@ public class Server implements IServer{
 								}
 								break;
 							
+							case RULES :
+								sendServerMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.RULES, game.getRules())));
+							
 							default : 
 								System.out.println("Invalid Message type recieved #Panic");
 								break;

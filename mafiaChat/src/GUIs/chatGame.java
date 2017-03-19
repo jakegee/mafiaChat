@@ -20,12 +20,15 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
@@ -189,6 +192,21 @@ public class chatGame {
 		JTextArea txtEnterMess1 = new JTextArea();
 		scrollPane1.setViewportView(txtEnterMess1);
 		txtEnterMess1.setLineWrap(true);
+		
+		txtEnterMess1.addKeyListener(new KeyAdapter() {
+		      public void keyPressed(KeyEvent evt) {
+		          int key = evt.getKeyCode();
+		          if (key == KeyEvent.VK_ENTER) {
+					client.setCommandMsg(txtEnterMess1.getText());
+					txtEnterMess1.setText("");
+					return;
+		          } else {
+		        	  if(txtEnterMess1.getText().equals("\n")) {
+		        		  txtEnterMess1.setText("");
+		        	  }
+		          }
+		        }
+		      });
 
 
 		listPrivate = new JList<String>();
@@ -253,6 +271,7 @@ public class chatGame {
 				txtEnterMess1.setText("");
 			}
 		});
+		
 		Send.setForeground(Color.BLUE);
 		Send.setBounds(941, 682, 154, 90);
 		Game.add(Send);
@@ -267,6 +286,12 @@ public class chatGame {
 		btnRules.setToolTipText("Click to send message");
 		btnRules.setForeground(Color.BLUE);
 		btnRules.setFont(new Font("Silom", Font.PLAIN, 20));
+		btnRules.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.getRules();
+			}
+		});
+		
 		btnRules.setBackground(Color.GRAY);
 		btnRules.setBounds(1105, 700, 126, 72);
 		Game.add(btnRules);
@@ -290,8 +315,9 @@ public class chatGame {
 		btnLogOut.setBackground(Color.GRAY);
 		btnLogOut.setBounds(1235, 700, 126, 72);
 		Game.add(btnLogOut);
-
-
+		
+		Game.getRootPane().setDefaultButton(Send);
+		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//WELCOME SCREEN COMPONENTS
@@ -316,7 +342,6 @@ public class chatGame {
 		btnEnter.setToolTipText("Press to enter game");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Welcome to Mafia Chat");
 				Welcome.setVisible(false);
 				Login.setVisible(true);
 			}
@@ -331,7 +356,6 @@ public class chatGame {
 		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),msnLogo.getHeight(), Image.SCALE_SMOOTH);
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
-
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		//LOGIN SCREEN COMPONENTS

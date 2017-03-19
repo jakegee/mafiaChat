@@ -16,6 +16,11 @@ public abstract class Game {
 	private Map<String, String> playerChoice;
 	private int activePlayers;
 	
+	protected static String rules;
+	static {
+		rules = "The writer of this game has not provided rules";
+	}
+	
 	public Game(IServer server) {
 		this.server = server;
 		this.gameChoice = new HashMap<String, Integer>();
@@ -59,10 +64,14 @@ public abstract class Game {
 			break;
 		
 		default :
-			server.privateMessage("Invalid Command", origin);
+			//server.privateMessage("Invalid Command", origin);
 			break;
 		}
 		
+	}
+	
+	public String getRules() {
+		return rules;
 	}
 	
 	/**
