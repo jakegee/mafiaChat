@@ -17,6 +17,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  * this is the client class. this class sends messages to the server and to
@@ -120,6 +121,10 @@ public class Client {
 		public void serverMsgPrint(ServerMessage message) {
 			modelPrivate.addElement(message.messageText);
 		}
+		
+		public void createDialogBox(ServerMessage message) {
+			JOptionPane.showMessageDialog(null, message.messageText);
+		}
 
 		/**
 		 * this method initializes reading the input stream from the server upon
@@ -153,6 +158,10 @@ public class Client {
 
 					case REMOVELIVEUSER:
 						removeUser(message);
+						break;
+					
+					case RULES:
+						createDialogBox(message);
 						break;
 
 					default:
@@ -349,6 +358,17 @@ public class Client {
 			sendClientMessage(jsonText);
 		}
 
+	}
+	
+	public void getRules() {
+		String jsonText = cGson.toJson(new Message(Message.messageType.RULES, null));
+		
+		try {
+			outputStream.writeUTF(jsonText);
+			outputStream.flush();
+			
+		} catch (IOException ie) {
+		}
 	}
 
 }
