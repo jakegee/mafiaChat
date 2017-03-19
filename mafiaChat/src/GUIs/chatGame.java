@@ -273,6 +273,18 @@ public class chatGame {
 		
 		JButton btnLogOut = new JButton("Log Out");
 		btnLogOut.setToolTipText("Click to send message");
+		btnLogOut.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try {
+					client.createLogoutPacket();
+					Welcome.setVisible(true);
+					Game.setVisible(false);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnLogOut.setForeground(Color.BLUE);
 		btnLogOut.setFont(new Font("Silom", Font.PLAIN, 20));
 		btnLogOut.setBackground(Color.GRAY);
