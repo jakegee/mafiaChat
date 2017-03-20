@@ -334,11 +334,9 @@ public class Resistance extends Game{
 				} else {
 					server.privateMessage("Unrecognised command " + command, origin);
 				}
-				break;
-		
-			// {GAMESTART, SQUAD_SELECTION, SQUAD_VOTE, SQUAD_ATTEMPT, GAMEEND};
-			
+				break;	
 		}
+		super.handleMessage(message, origin);
 	}
 	
 	public static void main(String[] args) {

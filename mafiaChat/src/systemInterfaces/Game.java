@@ -53,6 +53,7 @@ public abstract class Game {
 					}
 					if (++currentVal >= Math.ceil(server.getActiveClientIDs().size()/2.0)) {
 						server.setGameObject("Game." + messageDecode[1]);
+						server.publicMessage("Game set to " + messageDecode[1]);
 					}
 					gameChoice.put(messageDecode[1], ++currentVal);
 				} else {
@@ -64,7 +65,7 @@ public abstract class Game {
 			break;
 		
 		default :
-			//server.privateMessage("Invalid Command", origin);
+			server.privateMessage("Invalid Command", origin);
 			break;
 		}
 		

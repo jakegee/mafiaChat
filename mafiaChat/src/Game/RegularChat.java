@@ -82,11 +82,9 @@ public class RegularChat extends Game {
 			break;
 		
 		default:
-			//server.privateMessage("Invalid command", origin);
+			super.handleMessage(message, origin);
 			break;
 		}
-		
-		super.handleMessage(message, origin);
 		
 	}
 	
