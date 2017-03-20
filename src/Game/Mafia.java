@@ -738,7 +738,7 @@ public class Mafia extends Game {
 
 	    @Override
 	    public void run() {
-		nightVoteTimeout(); // this might need a catch
+		nightElimTimeout(); // this might need a catch
 
 	    }
 	};
@@ -895,6 +895,7 @@ public class Mafia extends Game {
 	} else {
 	    day();
 	}
+
     }
 
     public synchronized void nightElimTimeout() {
@@ -905,6 +906,10 @@ public class Mafia extends Game {
 	}
 	server.privateMessage("Not all mafia voted before the timer so noone was killed during the night", mafiaArray);
 
+	eliminate.clear();
+	day = true;
+	server.setChatActive(true);
+	
 	failNight();
     }
 
