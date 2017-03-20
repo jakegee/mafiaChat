@@ -956,4 +956,31 @@ public class MafiaTest {
 	assertFalse(mafia.isDay());
 	assertTrue(mafia.getEliminate().isEmpty());
     }
+    
+    @Test
+    public void timerDayElim(){
+	gameStart6Players();
+	serverStub.sendCommand("/elim client3", "client4");
+	assertFalse(mafia.getPlayerOnTrialID() == null);
+	
+	try {
+	    Thread.sleep(20250);
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	
+	assertTrue(mafia.getPlayerOnTrialID() == null);
+	assertTrue(mafia.getElimDay().isEmpty());
+    }
+    
+    @Test
+    public void timerDayElim2(){
+	
+    }
+    
+    @Test
+    public void timerDayElim3(){
+	
+    }
 }
