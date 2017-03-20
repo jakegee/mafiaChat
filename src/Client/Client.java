@@ -303,7 +303,8 @@ public class Client {
 	public void createLogoutPacket() throws IOException {
 		String jsonText = cGson.toJson(new Message(Message.messageType.LOGOUT, null));
 		sendClientMessage(jsonText);
-		socket.close();
+		killListenerThread();
+		
 	}
 
 	/**
