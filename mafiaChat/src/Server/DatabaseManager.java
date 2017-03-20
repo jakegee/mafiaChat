@@ -110,7 +110,7 @@ public class DatabaseManager implements IDatabase {
 				String question = rs.getString("question");
 				return question;
 			} else {
-					throw new InvalidUserException("username");
+					throw new InvalidUserException(username);
 			}
 
 		} catch (SQLException ex) {
