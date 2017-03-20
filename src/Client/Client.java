@@ -370,5 +370,19 @@ public class Client {
 		} catch (IOException ie) {
 		}
 	}
+	
+	public static void main(String[] args) {
+		try {
+			Client client = new Client(8000, "localhost");
+			System.out.println(client.forgottenPassword(" ", null).messageText);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 }
