@@ -16,7 +16,7 @@ public class ServerMessage {
 	//
 	// Error represents if a login, register or retrive password command
 	// failed, with the text field containing the error message
-	public enum messageType { PRIVATE, PUBLIC, CHAT, SUCCESS, ERROR, ADDLIVEUSER, REMOVELIVEUSER, RULES};
+	public enum messageType { PRIVATE, PUBLIC, CHAT, SUCCESS, ERROR, ADDLIVEUSER, REMOVELIVEUSER, RULES, LOGOUT};
 	
 	// Type of message
 	public messageType type;
