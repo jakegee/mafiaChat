@@ -70,6 +70,7 @@ public class Client {
 		private DefaultListModel<String> modelMessage;
 		private DefaultListModel<String> modelUser;
 		private DefaultListModel<String> modelPrivate;
+		private boolean active;
 
 		/**
 		 * this is the constructor of the class which uses all four variables as parameters.
@@ -80,6 +81,7 @@ public class Client {
 			modelMessage = (DefaultListModel<String>) window.listChat.getModel();
 			modelUser = (DefaultListModel<String>) window.listUsers.getModel();
 			modelPrivate = (DefaultListModel<String>) window.listPrivate.getModel();
+			this.active = true;
 		}
 
 		/**
@@ -133,7 +135,7 @@ public class Client {
 		 */
 		public void run() {
 			try {
-				while (true) {
+				while (this.active == true) {
 
 					ServerMessage message = getResponse();
 					System.out.println(message.messageText);
@@ -162,6 +164,11 @@ public class Client {
 					
 					case RULES:
 						createDialogBox(message);
+						break;
+						
+					case LOGOUT:
+						this.active = false;
+						modelUser.removeAllElements();
 						break;
 
 					default:
@@ -303,7 +310,7 @@ public class Client {
 	public void createLogoutPacket() throws IOException {
 		String jsonText = cGson.toJson(new Message(Message.messageType.LOGOUT, null));
 		sendClientMessage(jsonText);
-		killListenerThread();
+		//killListenerThread();
 		
 	}
 

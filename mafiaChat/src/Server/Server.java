@@ -242,7 +242,7 @@ public class Server implements IServer{
 					while(this.active == true) {
 						String input = in.readUTF();
 						Message message = gson.fromJson(input, Message.class);
-						System.out.println(message.messageText);
+						System.out.println("New Message" + message.messageText);
 						
 						switch (message.type) {
 				
@@ -271,6 +271,8 @@ public class Server implements IServer{
 									}
 									database.loginUser(decode[0], decode[1]);
 									this.username = decode[0];
+									System.out.println(gson.toJson(new ServerMessage(
+											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									
@@ -316,13 +318,15 @@ public class Server implements IServer{
 								break;
 								 
 							case LOGOUT :
-								this.active = false;
 								String JSONText = sGson.toJson(new ServerMessage(
 										ServerMessage.messageType.REMOVELIVEUSER,
 										this.username));
 								server.relayChat(JSONText);
 								server.currentUsers.remove(this.username);
 								this.username = null;
+								sendLoginMessage(gson.toJson(new ServerMessage(
+										ServerMessage.messageType.LOGOUT, "")));
+								this.inChat = false;
 								break;
 								
 							case PASSWORDHINT :
