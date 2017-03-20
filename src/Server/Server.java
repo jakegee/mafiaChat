@@ -322,6 +322,7 @@ public class Server implements IServer{
 										this.username));
 								server.relayChat(JSONText);
 								server.currentUsers.remove(this.username);
+								this.username = null;
 								break;
 								
 							case PASSWORDHINT :

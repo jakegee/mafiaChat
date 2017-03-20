@@ -3,12 +3,16 @@ package Server;
 import java.awt.RenderingHints.Key;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+
+import javax.crypto.KeyGenerator;
 
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
@@ -20,6 +24,7 @@ public class DatabaseManager implements IDatabase {
 	private String dbName;
 	private Connection dbConn;
 	private PreparedStatement createUser;
+	
 
 
 	public DatabaseManager() {
@@ -36,8 +41,28 @@ public class DatabaseManager implements IDatabase {
 		} catch (ClassNotFoundException ex) {
 			System.out.println("Driver not found");
 		}
+		
+		try {
+			KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+			
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			//md.update()
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 
 	}
+	
+	
 	
 	public String hashing(String s) {
 		int hash = 7;
