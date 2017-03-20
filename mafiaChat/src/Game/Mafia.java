@@ -62,11 +62,11 @@ public class Mafia extends Game {
     // ChatClientApp.frame.client.get_message();
     // }
     // }, 1000, 2000);
-    
-    static {
-    	rules = "Mafia rules go here, use \n to end a line, this will appear \n"
-    			+ "on a dialog box when rules are pressed";
-    }
+
+    // static {
+    // rules = "Mafia rules go here, use \n to end a line, this will appear \n"
+    // + "on a dialog box when rules are pressed";
+    // }
 
     public Mafia(IServer server) {
 	super(server);
@@ -393,8 +393,10 @@ public class Mafia extends Game {
 		server.privateMessage("you cannot vote for yourself", origin);
 
 	    } else if (elimDay.contains(origin)) {
-
 		server.privateMessage("you have already voted to start", origin);
+
+	    } else if (!players.containsKey(origin)) {
+		server.privateMessage("you are not in the game, so cannot participate", origin);
 
 	    } else if (playerOnTrialID == null) {
 		elimDayVoteInProgress = true;
@@ -514,8 +516,9 @@ public class Mafia extends Game {
      *            is the userID of type int for the person who sent the command
      *            message.
      */
-    private void saveVote(String player, int origin) {// suspicious player do need
-						  // to vote for themselves
+    private void saveVote(String player, int origin) {// suspicious player do
+						      // need
+	// to vote for themselves
 
 	if (players.containsValue(player)) {
 	    OrderedBidiMap<String, Integer> invPlayers = players.inverseBidiMap();
@@ -526,13 +529,14 @@ public class Mafia extends Game {
 		server.privateMessage("you cannot vote to save someone when there is no-one on trial", origin);
 
 		// } else if (!playerIDs.contains(playerID)) {
-	    } else if (playerID == origin) {
-		server.privateMessage("you don't need to vote to save yourself", origin);
-
 	    } else {
 		if (playerOnTrialID != playerID) {
 		    server.privateMessage("cannot vote for " + player + " while the vote for "
 			    + server.getUsername(playerOnTrialID) + " is in progress", origin);
+
+		} else if (!players.containsKey(origin)) {
+		    server.privateMessage("you are not in the game, so cannot participate", origin);
+
 		} else {
 		    if (elimDay.contains(origin)) {
 			int index = elimDay.indexOf(origin);
@@ -556,6 +560,8 @@ public class Mafia extends Game {
 	server.publicMessage(players.get(origin) + " has voted to save " + server.getUsername(playerOnTrialID));
 
 	if (save.size() > players.size() / 2) {
+	    saved();
+	} else if (save.size() == players.size() / 2 && players.size() % 2 == 0) {
 	    saved();
 	}
 
@@ -597,6 +603,9 @@ public class Mafia extends Game {
 
 	} else if (nightVote.contains(origin)) {
 	    server.privateMessage("you have already voted to change the game to night", origin);
+
+	} else if (!players.containsKey(origin)) {
+	    server.privateMessage("you are not in the game, so cannot participate", origin);
 
 	} else {
 	    nightVoteInProgress = true;
@@ -647,6 +656,9 @@ public class Mafia extends Game {
 	} else if (dayVote.contains(origin)) {
 	    server.privateMessage("you have already voted to keep the game in the day phase", origin);
 
+	} else if (!players.containsKey(origin)) {
+	    server.privateMessage("you are not in the game, so cannot participate", origin);
+
 	} else {
 	    if (nightVote.contains(origin)) {
 		int index = nightVote.indexOf(origin);
@@ -672,6 +684,8 @@ public class Mafia extends Game {
 
 	// if (dayVote.size() > playerIDs.size() / 2) {
 	if (dayVote.size() > players.size() / 2) {
+	    day();
+	} else if (dayVote.size() == players.size() / 2 && players.size() % 2 == 0) {
 	    day();
 	}
     }
@@ -750,16 +764,16 @@ public class Mafia extends Game {
 	    // int playerID = server.getUserID(player);
 	    int playerID = invPlayers.get(player);
 
-	    if (innocentIDs.contains(origin)) {
-		server.privateMessage(player + "As an innocent you are not active during the night", origin);
+	    if (!mafia.contains(origin)) {
+		server.privateMessage(player + "Only mafia are active during the night", origin);
 
 		// } else if (!playerIDs.contains(player)) {
 	    } else if (playerID == origin) { // not sure about keeping this in
 		server.privateMessage("you cannot vote for yourself", origin);
 
 	    } else if (mafia.contains(playerID)) { // wondering whether it's
-						 // better to
-						 // leave this out
+						   // better to
+						   // leave this out
 		server.privateMessage("you cannot vote for another mafia player", origin);
 
 	    } else if (eliminate.containsKey(origin)) {
