@@ -339,6 +339,13 @@ public class Resistance extends Game{
 		super.handleMessage(message, origin);
 	}
 	
+	@Override
+	public void handleLogout(int origin) {
+		server.publicMessage("User: " + server.getUsername(origin) + " has left, "
+				+ " game cannot continue as number of players has changed, re-starting game");
+		state = GameState.GAMESTART;
+	}
+	
 	public static void main(String[] args) {
 		ServerStubCMD theStub = new ServerStubCMD(new String[] {"Debbie", "Arnold", "Dave", "CoolVishnu", "AMouse"});
 		Game game = new Resistance(theStub);
