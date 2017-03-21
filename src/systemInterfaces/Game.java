@@ -122,6 +122,15 @@ public abstract class Game {
 	}
 	
 	/**
+	 * 
+	 * 
+	 * @param origin
+	 */
+	public void handleLogout(int origin) {
+		
+	}
+	
+	/**
 	 * Inner class TimerEventCaller which extends TimerTask,
 	 * handles calling of handleTimerEvent at the time specified
 	 * in createTimerEvent
