@@ -2,6 +2,7 @@ package Stubs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -272,6 +273,13 @@ public class ServerStubCMD implements IServer{
 	@Override
 	public void setGameObject(String string) throws ClassNotFoundException {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void privateMessage(String message, List<Integer> recipients) {
+		for (int recipient : recipients) {
+			System.out.println("Private Message: " + message + "////// sent to user " + IDToUser.get(recipient) + " ( " + recipient + " ) ");
+		}
 	}
 
 }
