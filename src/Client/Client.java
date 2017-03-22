@@ -390,7 +390,7 @@ public class Client {
 	 *            the message sent by the user
 	 */
 	public void setCommandMsg(String message) {
-		if (message == null || message.isEmpty()) {
+		if (message == null || message.isEmpty() || message.equals("") || message.equals("\n")) {
 			return;
 		}
 		if (message.charAt(0) == '/') {
