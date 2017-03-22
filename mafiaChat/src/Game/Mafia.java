@@ -195,11 +195,10 @@ public class Mafia extends Game {
 		// possibly extend to mention which players are ready
 
 		if (ready.size() >= 6) {
-		    int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
 
 		    // not sure if this should be public or private
 		    server.privateMessage("There are enough players to start the game. Use the command"
-			    + " \"/start\" to vote to start", readyArray);
+			    + " \"/start\" to vote to start", ready);
 
 		    // votedStart = new ArrayList<>();
 		}
@@ -227,12 +226,10 @@ public class Mafia extends Game {
 		    + ready.size());
 	    // possibly extend to mention which players are ready
 
-	    int[] readyArray = ready.stream().mapToInt(i -> i).toArray();
-
 	    if (ready.size() == 5) {
 
 		server.privateMessage("There are no longer enough players to start the game, start vote has been reset",
-			readyArray);
+			ready);
 
 		votedStart.clear();
 	    } else if (ready.size() >= 6) {
@@ -313,22 +310,19 @@ public class Mafia extends Game {
 
 	votedStart.clear();
 
-	int[] innocentIDArray = innocentIDs.stream().mapToInt(i -> i).toArray();
-	server.privateMessage("you are an innocent", innocentIDArray);
+	server.privateMessage("you are an innocent", innocentIDs);
 
-	int[] mafiaIDArray = innocentIDs.stream().mapToInt(i -> i).toArray();
-	String[] mafiaNameArray = new String[mafiaIDArray.length];
+	String message = "you are one of the mafia, the mafia members (including " + "you) are:";
 
-	for (int l = 0; l < mafiaIDArray.length; l++) {
-	    mafiaNameArray[l] = server.getUsername(mafiaIDArray[l]);
+	for (int i = 0; i < numMafia; i++) {
+	    message += " " + server.getUsername(mafia.get(i));
 	}
 
 	// currently uses the default toSting method for array. Also i think it
 	// will display the id numbers rather than the players names - need to
 	// convert if so would be good to only show only the other mafia members
 	// rather than including the players own name in the list
-	server.privateMessage("you are one of the mafia, the mafia members (including " + "you) are " + mafiaIDArray,
-		mafiaIDArray);
+	server.privateMessage(message, mafia);
 
 	day = true;
 	gameInProgress = true;
@@ -783,13 +777,8 @@ public class Mafia extends Game {
 
 	server.publicMessage("As dawn breaks, you wake to find that no-one was killed last night");
 
-	int[] mafiaArray = new int[mafia.size()];
-
-	for (int i = 0; i < mafiaArray.length; i++) {
-	    mafiaArray[i] = mafia.get(i);
-	}
 	server.privateMessage("In order to kill an innocent during the night, the same person needs"
-		+ " to be chosen by all the mafia players", mafiaArray);
+		+ " to be chosen by all the mafia players", mafia);
     }
 
     private void checkWin() {
@@ -805,7 +794,14 @@ public class Mafia extends Game {
     }
 
     private void gameEnd() { // could make public to force the game to end
-	server.publicMessage("The mafia were: " + mafiaAtStart);
+	
+	String message = "The mafia were:";
+
+	for (int i = 0; i < mafiaAtStart.length; i++) {
+	    message += " " + mafiaAtStart[i];
+	}
+	
+	server.publicMessage(message);
 
 	gameInProgress = false;
 	players.clear();
@@ -837,12 +833,8 @@ public class Mafia extends Game {
     }
 
     public synchronized void nightElimTimeout() {
-	int[] mafiaArray = new int[mafia.size()];
 
-	for (int i = 0; i < mafiaArray.length; i++) {
-	    mafiaArray[i] = mafia.get(i);
-	}
-	server.privateMessage("Not all mafia voted before the timer so noone was killed during the night", mafiaArray);
+	server.privateMessage("Not all mafia voted before the timer so noone was killed during the night", mafia);
 
 	eliminate.clear();
 	day = true;
@@ -895,14 +887,9 @@ public class Mafia extends Game {
 	    } else if (day == false) {
 		if (eliminate.containsKey(leaver)) {
 
-		    int[] innocentIDArr = new int[innocentIDs.size()];
-		    for (int i = 0; i < innocentIDs.size(); i++) {
-			innocentIDArr[i] = innocentIDs.get(i);
-		    }
-
 		    server.privateMessage(
-			    leaver + "leaving the game has made them an invalid target, all votes need to be resubmitted",
-			    innocentIDArr);
+			    leaver + " leaving the game has made them an invalid target, all votes need to be resubmitted",
+			    mafia);
 
 		    nightElimTimer.cancel();
 		    nightElimTimer.purge();
