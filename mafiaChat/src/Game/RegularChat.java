@@ -27,6 +27,7 @@ public class RegularChat extends Game {
 		switch (messageDecode[0]) {
 		case "/public" :
 			server.publicMessage( "<c> " + messageDecode[1]);
+			server.publicMessage("THIS SHOULD FUCCCCCKIIIINNNNNGGG FAIL!!!!!!!!");
 			break;
 			
 		case "/private" :
