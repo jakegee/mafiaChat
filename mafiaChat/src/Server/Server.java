@@ -153,7 +153,7 @@ public class Server implements IServer{
 		 * 
 		 * @param JSONText Json representation of a ServerMessage object
 		 */
-		public void sendServerMessage(String JSONText) {
+		public synchronized void sendServerMessage(String JSONText) {
 			if (this.active == true && this.inChat == true) {
 				try {
 					out.writeUTF(JSONText);
@@ -172,7 +172,7 @@ public class Server implements IServer{
 		 * 
 		 * @param JSONText Json representation of a ServerMessage object
 		 */
-		public void sendLoginMessage(String JSONText) { 
+		public synchronized void sendLoginMessage(String JSONText) { 
 			if (this.active == true) {
 				try {
 					out.writeUTF(JSONText);
@@ -188,12 +188,26 @@ public class Server implements IServer{
 		 * @return True if the thread has a client attached
 		 * false otherwise
 		 */
-		public boolean getActive() {
+		public synchronized boolean getActive() {
 			return this.active;
 		}
 		
-		public String getUsername() throws NullPointerException {
+		/**
+		 * @param active Set the active variable within the thread
+		 */
+		public synchronized void setActive(boolean active) {
+			this.active = active;
+		}
+		
+		/**
+		 * @return username attached to the client handler
+		 */
+		public synchronized String getUsername() {
 			return this.username;
+		}
+		
+		public synchronized void setUsername(String username) {
+			this.username = username;
 		}
 		
 		/**
@@ -203,7 +217,7 @@ public class Server implements IServer{
 		 * @param username
 		 * @return
 		 */
-		public boolean isUsernameEqualTo(String username) {
+		public synchronized boolean isUsernameEqualTo(String username) {
 			if (!active) {
 				return false;
 			}
@@ -214,8 +228,29 @@ public class Server implements IServer{
 		 * @param muted True if the player is to be muted, false
 		 * otherwise
 		 */
-		public void setMuted(boolean muted) {
+		public synchronized void setMuted(boolean muted) {
 			this.muted = muted;
+		}
+		
+		/**
+		 * @return if the player is muted or not
+		 */
+		public synchronized boolean getMuted() {
+			return this.muted;
+		}
+		
+		/**
+		 * @return If the player is currently in chat
+		 */
+		public synchronized boolean getInChat() {
+			return this.inChat;
+		}
+		
+		/**
+		 * @param inChat set if the player is in chat or not
+		 */
+		public synchronized void setInChat(boolean inChat) {
+			this.inChat = inChat;
 		}
 		
 		/**
@@ -224,20 +259,15 @@ public class Server implements IServer{
 		 */
 		@Override
 		public void run() {
-			try {
 				while(true) {
 					try {
-						this.active = false;
+						this.setActive(false);
 						this.socket = server.connections.take();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 		
 					this.in = new DataInputStream(socket.getInputStream());
 					this.out = new DataOutputStream(socket.getOutputStream());
-					this.active = true;
-					this.inChat = false;
+					this.setActive(true);
+					this.setInChat(false);
 					String[] decode;
 					
 					while(this.active == true) {
@@ -248,12 +278,12 @@ public class Server implements IServer{
 						switch (message.type) {
 				
 							case MESSAGE : 
-								if (!this.muted) {
+								if (!this.getMuted()) {
 									String JSONText = sGson.toJson(new ServerMessage(
 											ServerMessage.messageType.CHAT,
 											df.format(new Date()) + " " +
 											"<" + username + "> " + message.messageText));
-									server.relayChat(JSONText);
+									this.server.relayChat(JSONText);
 								}
 								break;
 								
@@ -271,13 +301,13 @@ public class Server implements IServer{
 										continue;
 									}
 									database.loginUser(decode[0], decode[1]);
-									this.username = decode[0];
+									this.setUsername(decode[0]);
 									System.out.println(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									
-									this.inChat = true;
+									this.setInChat(true);
 									String JSONText = sGson.toJson(new ServerMessage(
 											ServerMessage.messageType.ADDLIVEUSER,
 											this.username));
@@ -324,11 +354,12 @@ public class Server implements IServer{
 										ServerMessage.messageType.REMOVELIVEUSER,
 										this.username));
 								server.relayChat(JSONText);
-								server.currentUsers.remove(this.username);
-								this.username = null;
+								server.currentUsers.remove(this.getUsername());
+								this.setUsername(null);
 								sendLoginMessage(gson.toJson(new ServerMessage(
 										ServerMessage.messageType.LOGOUT, "")));
-								this.inChat = false;
+								this.setInChat(false);
+								game.handleLogout(idNumber);
 								break;
 								
 							case PASSWORDHINT :
@@ -372,22 +403,27 @@ public class Server implements IServer{
 								System.out.println("Invalid Message type recieved #Panic");
 								break;
 								
+							}
+						}
+					
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						if (this.getUsername() != null) {
+							server.currentUsers.remove(this.getUsername());
+							String JSONText = sGson.toJson(new ServerMessage(
+									ServerMessage.messageType.REMOVELIVEUSER,
+									this.username));
+							server.relayChat(JSONText);
+							this.setActive(false);
+							this.setUsername(null);
+							game.handleLogout(idNumber);
 						}
 					}
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				if (this.username != null) {
-					server.currentUsers.remove(this.username);
-					String JSONText = sGson.toJson(new ServerMessage(
-							ServerMessage.messageType.REMOVELIVEUSER,
-							this.username));
-					server.relayChat(JSONText);
-					this.active = false;
-					this.username = null;
-				}
 			}
-		}
 	}
 	
 	/**
@@ -407,7 +443,7 @@ public class Server implements IServer{
 	 * @param message Message to be transmitted
 	 * @param Origin ID of the ClientHandler which passed on the command
 	 */
-	public void relayChat(String JSONText) {
+	public synchronized void relayChat(String JSONText) {
 		
 		// TODO: Add userName support to specify which user sent the message
 
@@ -431,9 +467,7 @@ public class Server implements IServer{
 	public void publicMessage(String message) {
 		String JSONText = sGson.toJson(new ServerMessage(
 				ServerMessage.messageType.PUBLIC, df.format(new Date()) + " Server : " + message));
-		for (ClientHandler serverThread : threads) {
-			serverThread.sendServerMessage(JSONText);
-		}
+		relayChat(JSONText);
 	}
 
 	/**
