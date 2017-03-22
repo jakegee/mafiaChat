@@ -5,18 +5,15 @@ import systemInterfaces.Game;
 import systemInterfaces.IServer;
 
 public class RegularChat extends Game {
-
-	static {
+	
+	public RegularChat(IServer server) {
+		super(server);
+		// TODO Auto-generated constructor stub
 		rules = "Simple Chat Application\n"
 				+ "- /public: Make server send chat\n"
 				+ "- /private (username): Send private chat\n"
 				+ "- /time (time): Server sends message after time\n"
 				+ "- /game (game): Vote to change game";
-	}
-	
-	public RegularChat(IServer server) {
-		super(server);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

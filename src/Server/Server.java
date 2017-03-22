@@ -101,7 +101,7 @@ public class Server implements IServer{
 			}
 			
 		} catch (IOException e) {
-			System.out.println("Invalid Port Number, Please Retry");
+			System.out.println("Port in use, please try another port");
 		}
 	}
 	
@@ -397,6 +397,7 @@ public class Server implements IServer{
 							case RULES :
 								sendServerMessage(gson.toJson(new ServerMessage(
 										ServerMessage.messageType.RULES, game.getRules())));
+								break;
 							
 							default : 
 								System.out.println("Invalid Message type recieved #Panic");
@@ -405,10 +406,7 @@ public class Server implements IServer{
 							}
 						}
 					
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
+					} catch (IOException  | InterruptedException e) {
 						// TODO Auto-generated catch block
 						if (this.getUsername() != null) {
 							server.currentUsers.remove(this.getUsername());

@@ -18,16 +18,14 @@ public abstract class Game {
     protected boolean gameInProgress = false;
     protected ArrayList<Integer> nonGameUsers;
 	
-	protected static String rules;
-	static {
-		rules = "The writer of this game has not provided rules";
-	}
+	protected String rules;
 	
 	public Game(IServer server) {
 		this.server = server;
 		this.gameChoice = new HashMap<String, Integer>();
 		this.playerChoice = new HashMap<String, String>();
 		this.nonGameUsers = new ArrayList<Integer>();
+		this.rules = "The writer of this game has not provided rules";
 	}
 	
 	
@@ -64,6 +62,24 @@ public abstract class Game {
 				}
 			} catch (ClassNotFoundException e) {
 				server.privateMessage("Game: " + messageDecode[1] + " is not known", origin);
+			}
+			break;
+		
+		case "/racoons" :
+			String remText = messageDecode[1];
+			String messageForUser;
+			int receiver;
+			if ((receiver = server.getUserID(remText)) != -1) {
+				server.publicMessage("Racoons have been dispatched to take out" + server.getUsername(origin));
+				createTimerEvent(10, "Raccoons are 10 seconds away");
+				createTimerEvent(15, "Raccoons are 5 seconds away");
+				createTimerEvent(16, "Raccoons are 4 seconds away");
+				createTimerEvent(17, "Raccoons are 3 seconds away");
+				createTimerEvent(18, "Raccoons are 2 seconds away");
+				createTimerEvent(19, "Raccoons are 1 second away");
+				createTimerEvent(20, server.getUsername(origin) + " was eaten by racoons");
+			} else {
+				server.privateMessage("Invalid User " + messageDecode[1], origin);
 			}
 			break;
 		
@@ -135,6 +151,7 @@ public abstract class Game {
 	 */
 	protected void handleTimerEvent(String message, int delay) {
 		this.timer.cancel();
+		server.publicMessage("<t> " + message + " (Sent " + delay + " second(s) ago)");
 	}
 	
 	/**
