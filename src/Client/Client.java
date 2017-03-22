@@ -198,14 +198,20 @@ public class Client {
 						
 					case LOGOUT:
 						this.active = false;
+						
 						DefaultListModel<String> modelUser = (DefaultListModel<String>)window.listUsers.getModel();
+						DefaultListModel<String> modelPrivate = (DefaultListModel<String>)window.listPrivate.getModel();
+						DefaultListModel<String> modelMessage = (DefaultListModel<String>)window.listChat.getModel();
 						modelUser.removeAllElements();
+						modelPrivate.removeAllElements();
+						modelMessage.removeAllElements();
 						try {
 							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						
 						client.listenerThreadActive = false;
 						break;
 
