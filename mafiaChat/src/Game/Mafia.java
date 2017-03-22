@@ -16,9 +16,6 @@ import org.apache.commons.collections4.OrderedBidiMap;
 import org.apache.commons.collections4.bidimap.TreeBidiMap;
 
 public class Mafia extends Game {
-		
-//		"Mafia rules go here, use \n to end a line, this will appear \n"
-//		+ "on a dialog box when rules are pressed";
 
     TreeBidiMap<Integer, String> players;
 
@@ -961,10 +958,12 @@ public class Mafia extends Game {
 	    players.remove(leaverID);
 
 	    if (innocentIDs.contains(leaverID)) {
-		innocentIDs.remove(leaverID);
+		int index = innocentIDs.indexOf(leaverID);
+		innocentIDs.remove(index);
 
 	    } else {
-		mafia.remove(leaverID);
+		int index = innocentIDs.indexOf(leaverID);
+		mafia.remove(index);
 	    }
 	}
     }
@@ -1079,6 +1078,11 @@ public class Mafia extends Game {
      */
     public Integer getPlayerOnTrialID() {
 	return playerOnTrialID;
+    }
+   
+    @Override
+    public String getRules(){
+	return rules;
     }
 
 }
