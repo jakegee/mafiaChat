@@ -15,6 +15,8 @@ public abstract class Game {
 	private Map<String, Integer> gameChoice;
 	private Map<String, String> playerChoice;
 	private int activePlayers;
+    protected boolean gameInProgress = false;
+    protected ArrayList<Integer> nonGameUsers;
 	
 	protected static String rules;
 	static {
@@ -85,6 +87,19 @@ public abstract class Game {
 	protected void createTimerEvent(int secondsTillEvent, String message) {
 		this.timer = new Timer();
 		timer.schedule(new TimerEventCaller(message, secondsTillEvent), secondsTillEvent * 1000);
+	}
+	
+	/**
+	 * Function to handle the login of the user specified by origin
+	 * 
+	 * @param origin User which just logged in to the chat window
+	 */
+	public void handleLogin(int origin) {
+		if (gameInProgress) {
+			server.setPlayerMuted(origin, true);
+			server.privateMessage("As game is in progress you have been muted ", origin);
+			nonGameUsers.add(origin);
+		}
 	}
 	
 	/**
