@@ -1,6 +1,7 @@
 package systemInterfaces;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * IServer Interface for use by a Game object, specifying what every
@@ -40,6 +41,17 @@ public interface IServer {
 	 * will recieve the message
 	 */
 	public void privateMessage(String message, int[] recipients);
+	
+	 /**
+	 * Function for sending a message to the specified clients
+	 * 
+	 * @param message String to be sent to the chat window of the
+	 * clients specified by recipients, the message will be marked
+	 * as being from the Server
+	 * @param recipients Integer List containing the ids of users
+	 * who will recieve the message
+	 */
+	public void privateMessage(String message, List<Integer> recipients);
 	
 	/**
 	 * Function for muting or unmuting a player specified by playerID,

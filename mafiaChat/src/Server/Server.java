@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import messages.Message;
@@ -463,10 +464,28 @@ public class Server implements IServer{
 	@Override
 	public void privateMessage(String message, int[] recipients) {
 		String JSONText = sGson.toJson(new ServerMessage(
-				ServerMessage.messageType.PRIVATE, message));
+				ServerMessage.messageType.PRIVATE, df.format(new Date()) + " Private : " + message));
 		for (int recipient : recipients) {
 			threads[recipient].sendServerMessage(JSONText);
 		}
+	}
+	
+	 /**
+	 * Function for sending a message to the specified clients
+	 * 
+	 * @param message String to be sent to the chat window of the
+	 * clients specified by recipients, the message will be marked
+	 * as being from the Server
+	 * @param recipients Integer List containing the ids of users
+	 * who will recieve the message
+	 */
+	@Override
+	public void privateMessage(String message, List<Integer> recipients) {
+		String JSONText = sGson.toJson(new ServerMessage(
+				ServerMessage.messageType.PRIVATE, df.format(new Date()) + " Private : " + message));
+		for (int recipient : recipients) {
+			threads[recipient].sendServerMessage(JSONText);
+		}		
 	}
 	
 	/**
