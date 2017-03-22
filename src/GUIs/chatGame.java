@@ -20,6 +20,8 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -158,6 +160,15 @@ public class chatGame {
 		JScrollPane scrollPane = new JScrollPane(listChat);
 		scrollPane.setBounds(21,115,911,555);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
+			private int prevMax = 0;
+	        public void adjustmentValueChanged(AdjustmentEvent e) {  
+	           if (e.getAdjustable().getMaximum() != prevMax) {
+	        	   prevMax = e.getAdjustable().getMaximum();
+	        	   e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+	           }
+	        }
+	    });
 		Game.add(scrollPane);
 
 		//scroll bar for input text with text box

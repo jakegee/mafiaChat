@@ -168,8 +168,8 @@ public class Client {
 				while (this.active == true) {
 
 					ServerMessage message = getResponse();
-					System.out.println(message.messageText);
-
+					//System.out.println(message.messageText);
+				
 					switch (message.type) {
 
 					case PRIVATE:
@@ -221,7 +221,8 @@ public class Client {
 
 					}
 				}
-
+			} catch (NullPointerException e) {
+				client.listenerThreadActive = false;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -262,7 +263,7 @@ public class Client {
 			return decodeServerMessage(inputStream.readUTF());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Server Connection Failed: Cannot Find Server, please Restart");
 		}
 		return null;
 	}

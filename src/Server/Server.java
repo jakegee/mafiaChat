@@ -101,8 +101,7 @@ public class Server implements IServer{
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Invalid Port Number, Please Retry");
 		}
 	}
 	
@@ -355,11 +354,11 @@ public class Server implements IServer{
 										this.username));
 								server.relayChat(JSONText);
 								server.currentUsers.remove(this.getUsername());
-								this.setUsername(null);
 								sendLoginMessage(gson.toJson(new ServerMessage(
 										ServerMessage.messageType.LOGOUT, "")));
 								this.setInChat(false);
 								game.handleLogout(idNumber);
+								this.setUsername(null);
 								break;
 								
 							case PASSWORDHINT :
@@ -418,8 +417,8 @@ public class Server implements IServer{
 									this.username));
 							server.relayChat(JSONText);
 							this.setActive(false);
-							this.setUsername(null);
 							game.handleLogout(idNumber);
+							this.setUsername(null);
 						}
 					}
 				}
@@ -641,7 +640,6 @@ public class Server implements IServer{
 		int port;
 		int serverSize;
 		Server server;
-		
 		if ((port = Integer.parseInt(args_[1])) == -1) {
 			System.out.println("Invalid port number " + args_[1]);
 		} else if ((serverSize = Integer.parseInt(args_[2])) == -1) {
