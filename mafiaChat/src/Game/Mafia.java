@@ -28,7 +28,6 @@ public class Mafia extends Game {
     private boolean elimDayVoteInProgress = false;
 
     private boolean day = true;
-    private boolean gameInProgress = false;
 
     private ArrayList<Integer> ready;
     private ArrayList<Integer> votedStart;
