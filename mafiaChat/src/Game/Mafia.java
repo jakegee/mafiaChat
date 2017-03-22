@@ -976,7 +976,7 @@ public class Mafia extends Game {
 		innocentIDs.remove(index);
 
 	    } else {
-		int index = innocentIDs.indexOf(leaverID);
+		int index = mafia.indexOf(leaverID);
 		mafia.remove(index);
 	    }
 	}
