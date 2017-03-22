@@ -39,6 +39,7 @@ public class Client {
 	private int port;
 	private boolean online;
 	private ListenerThread listener;
+	private boolean listenerThreadActive;
 
 	/**
 	 * this is the constructor for instantiating the instance of the client
@@ -57,6 +58,8 @@ public class Client {
 		Socket socket = new Socket(ip, port);
 		inputStream = new DataInputStream(socket.getInputStream());
 		outputStream = new DataOutputStream(socket.getOutputStream());
+		
+		listenerThreadActive = false;
 
 	}
 
@@ -71,17 +74,16 @@ public class Client {
 		private DefaultListModel<String> modelUser;
 		private DefaultListModel<String> modelPrivate;
 		private boolean active;
+		private Client client;
 
 		/**
 		 * this is the constructor of the class which uses all four variables as parameters.
 		 * @param window
 		 */
-		public ListenerThread(chatGame window) {
+		public ListenerThread(chatGame window, Client client) {
 			this.window = window;
-			modelMessage = (DefaultListModel<String>) window.listChat.getModel();
-			modelUser = (DefaultListModel<String>) window.listUsers.getModel();
-			modelPrivate = (DefaultListModel<String>) window.listPrivate.getModel();
 			this.active = true;
+			this.client = client;
 		}
 
 		/**
@@ -91,6 +93,7 @@ public class Client {
 		 *            the message containing the username.
 		 */
 		public void addUser(ServerMessage message) {
+			DefaultListModel<String> modelUser = (DefaultListModel<String>)window.listUsers.getModel();
 			modelUser.addElement(message.messageText);
 		}
 
@@ -101,6 +104,7 @@ public class Client {
 		 *            containing username that is to be removed.
 		 */
 		public void removeUser(ServerMessage message) {
+			DefaultListModel<String> modelUser = (DefaultListModel<String>)window.listUsers.getModel();
 			modelUser.removeElement(message.messageText);
 		}
 
@@ -111,6 +115,7 @@ public class Client {
 		 *            the message that is to be printed on GUI
 		 */
 		public void printMessage(ServerMessage message) {
+			DefaultListModel<String> modelMessage = (DefaultListModel<String>)window.listChat.getModel();
 			modelMessage.addElement(message.messageText);
 		}
 
@@ -121,6 +126,7 @@ public class Client {
 		 *            from server
 		 */
 		public void serverMsgPrint(ServerMessage message) {
+			DefaultListModel<String> modelPrivate = (DefaultListModel<String>)window.listPrivate.getModel();
 			modelPrivate.addElement(message.messageText);
 		}
 		
@@ -169,6 +175,7 @@ public class Client {
 					case LOGOUT:
 						this.active = false;
 						modelUser.removeAllElements();
+						client.listenerThreadActive = false;
 						break;
 
 					default:
@@ -181,6 +188,7 @@ public class Client {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				client.listenerThreadActive = false;
 			}
 		}
 
@@ -190,9 +198,12 @@ public class Client {
 	 * this method initializes the ListenerThread class.
 	 * @param window
 	 */
-	public void spawnListenerThread(chatGame window) {
-		this.listener = new ListenerThread(window);
-		listener.start();
+	public synchronized void spawnListenerThread(chatGame window) {
+		if (!listenerThreadActive) {
+			listenerThreadActive = true;
+			this.listener = new ListenerThread(window, this);
+			listener.start();
+		}
 	}
 
 	/**
