@@ -281,6 +281,7 @@ public class Server implements IServer{
 											ServerMessage.messageType.ADDLIVEUSER,
 											this.username));
 									server.relayChat(JSONText);
+									game.handleLogin(idNumber);
 									
 									for (String element : currentUsers) {
 										JSONText = sGson.toJson(new ServerMessage(

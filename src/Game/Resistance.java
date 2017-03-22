@@ -13,6 +13,13 @@ import systemInterfaces.Game;
 import systemInterfaces.IGame;
 import systemInterfaces.IServer;
 
+/**
+ * MafiaChat implementation of Don Eskridge's The Resistance, to be 
+ * attached to a MafiaChat server object.
+ * 
+ * @author Team Mafia
+ * @version 22-03-2017
+ */
 public class Resistance extends Game{
 	
 	private int numberOfSuccesses;
@@ -44,6 +51,11 @@ public class Resistance extends Game{
 	private GameState state;
 	private ArrayList<Integer> voted;
 	
+	/**
+	 * Constructor for instantiating an object of the Resistance class
+	 * 
+	 * @param server Server to send commands to
+	 */
 	public Resistance(IServer server) {
 		super(server);
 		state = GameState.GAMESTART;
@@ -54,14 +66,18 @@ public class Resistance extends Game{
 
 	private ArrayList<Integer> spies;
 	
+	/**
+	 * Function called to setUp the game and prepare for playing,
+	 * after a start command is issued.
+	 */
 	public void setUpGame() {
+		gameInProgress = true;
 		currentConfig = gameConfig.get(users.size());
 		mission = new Mission(users.size());
 		state = GameState.SQUAD_SELECTION;
 		voted = new ArrayList<Integer>();
 		spies = new ArrayList<Integer>();
 		leaderQueue = new LinkedBlockingQueue<String>(users.size());
-		
 		server.publicMessage("Welcome to the Resistance");
 		
 		String messageForSpies = "You are a spy, the spies are: ";
@@ -94,6 +110,10 @@ public class Resistance extends Game{
 		nextLeader();
 	}
 	
+	/**
+	 * Function called when the nextLeader is required, after a mission is completed
+	 * or a vote is failed
+	 */
 	public void nextLeader() {
 		String leader = leaderQueue.poll();
 		leaderQueue.add(leader);
@@ -103,6 +123,13 @@ public class Resistance extends Game{
 		server.publicMessage("The subsequent Leader will be " + leaderQueue.peek());
 	}
 	
+	/**
+	 * Inner class mission which encapsulates all commands which are issued
+	 * 
+	 * @author Team Mafia
+	 * @version 21-03-2017
+	 *
+	 */
 	public class Mission {
 		private int numberOfPlayers;
 		private ArrayList<Integer> selectedSquad;
@@ -114,6 +141,12 @@ public class Resistance extends Game{
 		private int failedVotes;
 		private int failedMissions;
 		
+		/**
+		 * Constructor for instantiating an object of the Mission
+		 * class
+		 * 
+		 * @param numberOfPlayers Number of players in the game
+		 */
 		public Mission(int numberOfPlayers ) {
 			this.numberOfPlayers = numberOfPlayers;
 			this.missionNumber = 1;
@@ -125,6 +158,12 @@ public class Resistance extends Game{
 			this.missionSuccess = new ArrayList<Boolean>();
 		}
 		
+		/**
+		 * Function called when the leader requests the addition
+		 * of a new squad member to the squad
+		 * 
+		 * @param user User to be added to the squad
+		 */
 		public void addSquadMember(int user) {
 			selectedSquad.add(user);
 			server.publicMessage(server.getUsername(user) + " has been added to the squad");
@@ -138,6 +177,12 @@ public class Resistance extends Game{
 			}
 		}
 		
+		/**
+		 * Function called when the leader requests the removal of a squad
+		 * member from the squad
+		 * 
+		 * @param user User to be removed from the squad
+		 */
 		public void removeSquadMember(int user) {
 			if (selectedSquad.contains(user)) {
 				selectedSquad.remove(user);
@@ -147,6 +192,9 @@ public class Resistance extends Game{
 			}
 		}
 		
+		/**
+		 * Function called when the next mission is called
+		 */
 		public void nextMission() {
 			server.publicMessage(missionNumber + " missions have passed");
 			server.publicMessage(failedMissions + " failed so far");
@@ -162,6 +210,10 @@ public class Resistance extends Game{
 			nextLeader();
 		}
 		
+		/**
+		 * Function called when the mission is required to be repeated, after the squad 
+		 * has been rejected
+		 */
 		public void repeatMission() {
 			selectedSquad = new ArrayList<Integer>();
 			missionSuccess = new ArrayList<Boolean>();
@@ -171,6 +223,12 @@ public class Resistance extends Game{
 			nextLeader();
 		}
 		
+		/**
+		 * Function called when the mission is s
+		 * 
+		 * @param success
+		 * @param origin
+		 */
 		public void addSubmittedSuccessFail(boolean success, int origin) {
 			if (selectedSquad.contains(origin)) {
 				missionSuccess.add(success);
@@ -227,12 +285,14 @@ public class Resistance extends Game{
 			if (failedMissions >= 3) {
 				server.publicMessage("3 Failures, Spies win");
 				state = GameState.GAMESTART;
+				gameInProgress = false;
 				return;
 			}
 			
 			if (missionNumber == 5) {
 				server.publicMessage("Resistance wins with only " + failedVotes + " failutes");
 				state = GameState.GAMESTART;
+				gameInProgress = false;
 				return;
 			}
 			
@@ -249,6 +309,11 @@ public class Resistance extends Game{
 		String command;
 		String remText;
 		int charPosition = text.indexOf(" ");
+		
+		if (nonGameUsers.contains(origin)) {
+			server.privateMessage("You are not part of the game and cannot send commands", origin);
+			return;
+		}
 		
 		if (charPosition != -1) {
 			remText = text.substring(charPosition + 1);
@@ -343,6 +408,7 @@ public class Resistance extends Game{
 	public void handleLogout(int origin) {
 		server.publicMessage("User: " + server.getUsername(origin) + " has left, "
 				+ " game cannot continue as number of players has changed, re-starting game");
+		gameInProgress = false;
 		state = GameState.GAMESTART;
 	}
 	
