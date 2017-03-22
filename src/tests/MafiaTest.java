@@ -59,14 +59,28 @@ public class MafiaTest {
 	client8ID = serverStub.getUserID("client8");
 
     }
-
-    public void gameStart6Players() {
+    
+    public void ready6Players(){
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
 	serverStub.sendCommand("/ready", "client4");
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
+    }
+    
+    public void ready7Players(){
+	serverStub.sendCommand("/ready", "client1");
+	serverStub.sendCommand("/ready", "client2");
+	serverStub.sendCommand("/ready", "client3");
+	serverStub.sendCommand("/ready", "client4");
+	serverStub.sendCommand("/ready", "client5");
+	serverStub.sendCommand("/ready", "client6");
+	serverStub.sendCommand("/ready", "client6");
+    }
+
+    public void gameStart6Players() {
+	ready6Players();
 
 	serverStub.sendCommand("/start", "client1");
 	serverStub.sendCommand("/start", "client2");
@@ -76,24 +90,8 @@ public class MafiaTest {
 	serverStub.sendCommand("/start", "client6");
     }
 
-    public void successNightVote6Players() {
-	gameStart6Players();
-
-	serverStub.sendCommand("/night", "client6");
-	serverStub.sendCommand("/night", "client2");
-	serverStub.sendCommand("/night", "client4");
-	serverStub.sendCommand("/night", "client5");
-    }
-
     public void gameStart3Mafia() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
-	serverStub.sendCommand("/ready", "client7");
-	serverStub.sendCommand("/ready", "client8");
+	ready7Players();
 
 	serverStub.sendCommand("/start", "client1");
 	serverStub.sendCommand("/start", "client2");
@@ -103,6 +101,15 @@ public class MafiaTest {
 	serverStub.sendCommand("/start", "client6");
 	serverStub.sendCommand("/start", "client7");
 	serverStub.sendCommand("/start", "client8");
+    }
+    
+    public void successNightVote6Players() {
+	gameStart6Players();
+
+	serverStub.sendCommand("/night", "client6");
+	serverStub.sendCommand("/night", "client2");
+	serverStub.sendCommand("/night", "client4");
+	serverStub.sendCommand("/night", "client5");
     }
 
     public void successNightVote3Mafia() {
@@ -269,12 +276,7 @@ public class MafiaTest {
 
     @Test
     public void testStart2() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
+	ready6Players();
 
 	serverStub.sendCommand("/start", "client3");
 
@@ -284,12 +286,7 @@ public class MafiaTest {
 
     @Test
     public void testUnready5() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
+	ready6Players();
 
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/unready", "client3");
@@ -300,12 +297,7 @@ public class MafiaTest {
 
     @Test
     public void testUnready6() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
+	ready6Players();
 
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/start", "client5");
@@ -317,13 +309,7 @@ public class MafiaTest {
 
     @Test
     public void testUnready7() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
-	serverStub.sendCommand("/ready", "client7");
+	ready7Players();
 
 	serverStub.sendCommand("/start", "client3");
 	serverStub.sendCommand("/start", "client5");
@@ -351,13 +337,7 @@ public class MafiaTest {
 
     @Test
     public void testStart4() {
-	serverStub.sendCommand("/ready", "client1");
-	serverStub.sendCommand("/ready", "client2");
-	serverStub.sendCommand("/ready", "client3");
-	serverStub.sendCommand("/ready", "client4");
-	serverStub.sendCommand("/ready", "client5");
-	serverStub.sendCommand("/ready", "client6");
-	serverStub.sendCommand("/ready", "client7");
+	ready7Players();
 
 	serverStub.sendCommand("/start", "client1");
 	serverStub.sendCommand("/start", "client2");
@@ -1100,5 +1080,44 @@ public class MafiaTest {
 	assertTrue(mafia.getEliminate().isEmpty());
 	assertTrue(serverStub.getActiveChat());
 	
+    }
+    
+    @Test
+    public void dcGameNotStarted(){
+	mafia.handleLogout(client4ID);	
+	
+	assertFalse(mafia.getReady().contains(client4ID));
+	assertFalse(mafia.getVotedStart().contains(client4ID));
+    }
+    
+    @Test
+    public void dcUserReady(){
+	mafia.ready(client2ID);
+	mafia.handleLogout(client2ID);
+	
+	assertFalse(mafia.getReady().contains(client2ID));
+    }
+    
+    @Test
+    public void dcUserVotedStart(){
+	ready6Players();	
+	serverStub.sendCommand("/start", client3ID);	
+	
+	mafia.handleLogout(client3ID);
+	
+	assertFalse(mafia.getReady().contains(client3ID));
+	assertFalse(mafia.getVotedStart().contains(client3ID));
+    }
+    
+    @Test
+    public void dcPlayer(){
+	gameStart6Players();
+	
+	mafia.handleLogout(client5ID);
+	
+	assertFalse(mafia.getPlayers().containsKey(client5ID));
+	assertFalse(mafia.getPlayers().containsValue("client5"));
+	assertFalse(mafia.getInnocentIDs().contains(client5ID));
+	assertFalse(mafia.getMafia().contains(client5ID));
     }
 }
