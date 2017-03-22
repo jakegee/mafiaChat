@@ -95,6 +95,12 @@ public class Client {
 		public void addUser(ServerMessage message) {
 			DefaultListModel<String> modelUser = (DefaultListModel<String>)window.listUsers.getModel();
 			modelUser.addElement(message.messageText);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		/**
@@ -106,6 +112,12 @@ public class Client {
 		public void removeUser(ServerMessage message) {
 			DefaultListModel<String> modelUser = (DefaultListModel<String>)window.listUsers.getModel();
 			modelUser.removeElement(message.messageText);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		/**
@@ -117,6 +129,12 @@ public class Client {
 		public void printMessage(ServerMessage message) {
 			DefaultListModel<String> modelMessage = (DefaultListModel<String>)window.listChat.getModel();
 			modelMessage.addElement(message.messageText);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		/**
@@ -128,6 +146,12 @@ public class Client {
 		public void serverMsgPrint(ServerMessage message) {
 			DefaultListModel<String> modelPrivate = (DefaultListModel<String>)window.listPrivate.getModel();
 			modelPrivate.addElement(message.messageText);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		public void createDialogBox(ServerMessage message) {
