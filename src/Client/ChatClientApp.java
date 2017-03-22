@@ -2,6 +2,7 @@ package Client;
 
 import java.awt.EventQueue;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
@@ -48,17 +49,21 @@ public class ChatClientApp {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				//try {
 					
 					int port = 8000;
 					String host = "localhost";
-					Client client = new Client(port, host);
-					chatGame window = new chatGame(client);
-					window.GAME.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					Client client;
+					try {
+						client = new Client(port, host);
+						chatGame window = new chatGame(client);
+						window.GAME.setVisible(true);
+					} catch (UnknownHostException e) {
+						JOptionPane.showMessageDialog(null, "Unknown Host, Server inaccessible");
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(null, "Server not currently active or Invalid Port, \n"
+								+ "please double check port number");
+					}
 			}
 		});
 	}
