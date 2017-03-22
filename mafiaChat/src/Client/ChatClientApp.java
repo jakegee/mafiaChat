@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import javax.swing.JOptionPane;
+
 import GUIs.*;
 
 /**
@@ -31,7 +33,7 @@ public class ChatClientApp {
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Server Connection Failed: Cannot Find Server, please Restart");
 		}
 		
 	}
