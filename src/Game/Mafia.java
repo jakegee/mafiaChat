@@ -40,6 +40,7 @@ public class Mafia extends Game {
     private Timer dayElimTimer;
     private Timer nightVoteTimer;
     private Timer nightElimTimer;
+    private Timer publicReminder;
 
     public Mafia(IServer server) {
 	super(server);
@@ -293,6 +294,7 @@ public class Mafia extends Game {
 
 	    votedStart.add(origin);
 	    if (votedStart.size() == ready.size() && votedStart.size() >= 6) {
+		server.publicMessage("The game has started, it is currently day and the number of players is " + players.size());
 		gameStart();
 
 	    } else {
@@ -409,10 +411,20 @@ public class Mafia extends Game {
 
 		    }
 		};
+		
+		TimerTask reminder= new TimerTask(){
+		    @Override
+		    public void run() {
+			server.publicMessage("5 seconds left to vote");
+
+		    }
+		};
 
 		dayElimTimer = new Timer();
-
-		dayElimTimer.schedule(dayElimVoteTimeout, 20000);
+		publicReminder = new Timer();
+		
+		publicReminder.schedule(reminder, 25000);
+		dayElimTimer.schedule(dayElimVoteTimeout, 30000);
 
 	    } else {
 		if (playerOnTrialID != playerID) {
@@ -594,13 +606,14 @@ public class Mafia extends Game {
 	    }
 
 	    nightVote.add(origin);
-	    server.publicMessage(players.get(origin) + " has voted for it to remain night");
+	    server.publicMessage(players.get(origin) + " has voted for it to change to night");
 
 	    if (nightVote.size() == 1) {
 		TimerTask nightVoteTimeout = new TimerTask() {
 
 		    @Override
 		    public void run() {
+			server.publicMessage("Timer started, 20s left for night vote");
 			nightVoteTimeout(); // this might need a catch
 
 		    }
@@ -608,7 +621,7 @@ public class Mafia extends Game {
 
 		nightVoteTimer = new Timer();
 
-		nightVoteTimer.schedule(nightVoteTimeout, 20000);
+		nightVoteTimer.schedule(nightVoteTimeout, 30000);
 	    } else {
 		checkNight();
 	    }
@@ -710,7 +723,7 @@ public class Mafia extends Game {
 
 	nightElimTimer = new Timer();
 
-	nightElimTimer.schedule(nightElimTimeout, 10000);
+	nightElimTimer.schedule(nightElimTimeout, 20000);
 
     }
 
@@ -729,7 +742,7 @@ public class Mafia extends Game {
 	    int playerID = invPlayers.get(player);
 
 	    if (!mafia.contains(origin)) {
-		server.privateMessage(player + "Only mafia are active during the night", origin);
+		server.privateMessage("Only mafia are active during the night", origin);
 
 	    } else if (playerID == origin) {
 		server.privateMessage("you cannot vote for yourself", origin);
@@ -796,7 +809,8 @@ public class Mafia extends Game {
 	int victimID = server.getUserID(victim);
 
 	players.remove(victimID);
-	innocentIDs.remove(victimID);
+	int index = innocentIDs.indexOf(victimID);
+	innocentIDs.remove(index);
 	server.privateMessage("you have been killed in the night", victimID);
 	server.publicMessage("As dawn breaks, you wake to find that " + victim + " was killed last night");
 
@@ -945,7 +959,7 @@ public class Mafia extends Game {
 
 		    nightElimTimer = new Timer();
 
-		    nightElimTimer.schedule(nightElimTimeout, 10000);
+		    nightElimTimer.schedule(nightElimTimeout, 20000);
 
 		} else if (mafia.contains(leaverID)) {
 
