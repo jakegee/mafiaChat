@@ -65,19 +65,12 @@ public abstract class Game {
 			}
 			break;
 		
-		case "/racoons" :
+		case "/badgers" :
 			String remText = messageDecode[1];
 			String messageForUser;
 			int receiver;
 			if ((receiver = server.getUserID(remText)) != -1) {
-				server.publicMessage("Racoons have been dispatched to take out" + server.getUsername(origin));
-				createTimerEvent(10, "Raccoons are 10 seconds away");
-				createTimerEvent(15, "Raccoons are 5 seconds away");
-				createTimerEvent(16, "Raccoons are 4 seconds away");
-				createTimerEvent(17, "Raccoons are 3 seconds away");
-				createTimerEvent(18, "Raccoons are 2 seconds away");
-				createTimerEvent(19, "Raccoons are 1 second away");
-				createTimerEvent(20, server.getUsername(origin) + " was eaten by racoons");
+				server.publicMessage("Badgers have been dispatched to take out " + messageDecode[1]);
 			} else {
 				server.privateMessage("Invalid User " + messageDecode[1], origin);
 			}

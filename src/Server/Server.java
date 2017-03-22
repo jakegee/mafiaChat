@@ -76,6 +76,7 @@ public class Server implements IServer{
 		this.df = new SimpleDateFormat("HH:mm:ss");
 		this.port = port;
 		this.maxServerSize = maxServerSize;
+		this.relayChat = true;
 	}
 	
 	public void startServerListening() {
@@ -277,7 +278,7 @@ public class Server implements IServer{
 						switch (message.type) {
 				
 							case MESSAGE : 
-								if (!this.getMuted()) {
+								if (!this.getMuted() && server.getChatActive()) {
 									String JSONText = sGson.toJson(new ServerMessage(
 											ServerMessage.messageType.CHAT,
 											df.format(new Date()) + " " +
@@ -554,6 +555,17 @@ public class Server implements IServer{
 	@Override
 	public void setChatActive(boolean active) {
 		this.relayChat = active;
+	}
+	
+	/**
+	 * Function for setting whether the chat should be active or not. Active
+	 * chat is relayed between users, if it is set to false then no chat will
+	 * be passed between clients
+	 * 
+	 * @param active True if chat is to be relayed between clients, false otherwise
+	 */
+	public boolean getChatActive() {
+		return this.relayChat;
 	}
 
 	/**
