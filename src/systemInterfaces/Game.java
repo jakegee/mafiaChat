@@ -27,6 +27,7 @@ public abstract class Game {
 		this.server = server;
 		this.gameChoice = new HashMap<String, Integer>();
 		this.playerChoice = new HashMap<String, String>();
+		this.nonGameUsers = new ArrayList<Integer>();
 	}
 	
 	
