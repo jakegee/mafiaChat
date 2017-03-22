@@ -40,7 +40,15 @@ public class Mafia extends Game {
     private Timer dayElimTimer;
     private Timer nightVoteTimer;
     private Timer nightElimTimer;
-    private Timer publicReminder;
+    private Timer reminder;
+    
+    private TimerTask public5s= new TimerTask(){
+	    @Override
+	    public void run() {
+		server.publicMessage("5 seconds left to vote");
+
+	    }
+	};
 
     public Mafia(IServer server) {
 	super(server);
@@ -294,7 +302,7 @@ public class Mafia extends Game {
 
 	    votedStart.add(origin);
 	    if (votedStart.size() == ready.size() && votedStart.size() >= 6) {
-		server.publicMessage("The game has started, it is currently day and the number of players is " + players.size());
+		server.publicMessage("The game has started, it is currently day and the number of players is " + votedStart.size());
 		gameStart();
 
 	    } else {
@@ -304,8 +312,10 @@ public class Mafia extends Game {
 
 	} else if (votedStart.contains(origin)) {
 	    server.privateMessage("you have already voted to start", origin);
-	} else {
+	} else if(!ready.contains(origin)){
 	    server.privateMessage("you need to be set to ready before you can vote to start", origin);
+	} else if(ready.size() < 6){
+	    server.privateMessage("There are not enough users ready to start the vote", origin);
 	}
     }
 
@@ -412,18 +422,12 @@ public class Mafia extends Game {
 		    }
 		};
 		
-		TimerTask reminder= new TimerTask(){
-		    @Override
-		    public void run() {
-			server.publicMessage("5 seconds left to vote");
-
-		    }
-		};
+		
 
 		dayElimTimer = new Timer();
-		publicReminder = new Timer();
+		reminder = new Timer();
 		
-		publicReminder.schedule(reminder, 25000);
+		reminder.schedule(public5s, 25000);
 		dayElimTimer.schedule(dayElimVoteTimeout, 30000);
 
 	    } else {
