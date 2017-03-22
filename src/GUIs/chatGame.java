@@ -61,17 +61,7 @@ public class chatGame {
 	public JList listChat;
 	public JList listUsers;
 	public JList listPrivate;
-//	public JScrollPane scrollB;
-//	public JScrollBar Scroll;
-	
-//	public JTextArea txtServerMess;
-//	public JTextArea txtEnterMess;
-//	public JTextArea txtEnterMess1;
-//	public JOptionPane password;
-//	public JButton btnLogIn;
-//	public JPanel Game;
 
-//	public ScrollPane scrollPane;
 
 
 	
@@ -93,14 +83,16 @@ public class chatGame {
 		GAME = new JFrame();
 		GAME.setTitle("Mafia Chat");
 		GAME.setBounds(60, 60, 1390, 820);
-	//	GAME.setMinimumSize(new Dimension(550, 670));
-		
+		GAME.setMinimumSize(new Dimension(1390, 820));
+		GAME.setMaximumSize(new Dimension(1390, 820));
+		GAME.setResizable(false);
 		GAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//images
 		Image img = new ImageIcon(this.getClass().getResource("/LOGO.png")).getImage();
 		Image img2 = new ImageIcon(this.getClass().getResource("/bigChat.png")).getImage();
 		Image img3 = new ImageIcon(this.getClass().getResource("/dare-to-play.png")).getImage();
+		
 		//layout
 		GAME.getContentPane().setLayout(new CardLayout(0, 0));
 
@@ -142,34 +134,21 @@ public class chatGame {
 
 		//GAME PANEL COMPONENTS
 
-//		//drop down menu
-//		messageStrings  = new String [] {"Options","Rules", "Highest Scores", "Log out"};
-//		cmbMessageList = new JComboBox(messageStrings);
-//		cmbMessageList.setToolTipText("click drop down to view options");
-//		cmbMessageList.setBounds(415, -11, 135, 50);
-//		JLabel lblDropDown =  new JLabel();
-//		cmbMessageList.setSelectedIndex(0);
-//
-//
-//		Game.add(lblDropDown);
-//		Game.add(cmbMessageList);
-
-
 		//logo image bottom of screen
 		JLabel logoSignIn1 = new JLabel("");
 		logoSignIn1.setBounds(10, 598, 170, 150);
-		Image SigninLogo1 = img2.getScaledInstance(logoSignIn1.getWidth(),logoSignIn1.getHeight(), Image.SCALE_SMOOTH);
+		Image SigninLogo1 = img2.getScaledInstance(logoSignIn1.getWidth(),
+				logoSignIn1.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn1.setIcon(new ImageIcon(SigninLogo1));
 		SignIn.add(logoSignIn1);
 
 		//logo image bottom of screen
 		JLabel logoSignIn2 = new JLabel("");
 		logoSignIn2.setBounds(1186, 598, 170, 150);
-		Image SigninLogo2 = img2.getScaledInstance(logoSignIn2.getWidth(),logoSignIn2.getHeight(), Image.SCALE_SMOOTH);
+		Image SigninLogo2 = img2.getScaledInstance(logoSignIn2.getWidth(),
+				logoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		logoSignIn2.setIcon(new ImageIcon(SigninLogo2));
 		SignIn.add(logoSignIn2);
-
-
 
 		//scroll bar for input text with text box
 		listChat = new JList<String>();
@@ -180,9 +159,6 @@ public class chatGame {
 		scrollPane.setBounds(21,115,911,555);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPane);
-		//this.txtEnterMess = new JTextArea();
-		//scrollPane.setViewportView(txtEnterMess);
-		//txtEnterMess.setLineWrap(true);
 
 		//scroll bar for input text with text box
 		JScrollPane scrollPane1 = new JScrollPane();
@@ -216,16 +192,6 @@ public class chatGame {
 		scrollPrivate.setBounds(950, 395, 412, 268);
 		scrollPrivate.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollPrivate);
-		
-		/*
-		//text areas to view all users messages
-		this.txtServerMess = new JTextArea();
-		txtServerMess.setToolTipText("Messages received from Server");
-		txtServerMess.setEditable(false);
-		txtServerMess.setLineWrap(true);
-		txtServerMess.setBounds(379, 365, 160, 185);
-		Game.add(txtServerMess);
-		*/
 
 		//text area to view online users
 		listUsers = new JList<String>();
@@ -235,15 +201,6 @@ public class chatGame {
 		scrollOnlineUsers.setBounds(950, 120, 412, 224);
 		scrollOnlineUsers.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		Game.add(scrollOnlineUsers);
-		
-		/*
-		JTextArea txtOnlineUsers = new JTextArea();
-		txtOnlineUsers.setToolTipText("View onliner users");
-		txtOnlineUsers.setEditable(false);
-		txtOnlineUsers.setLineWrap(true);
-		txtOnlineUsers.setBounds(379, 107, 158, 229);
-		Game.add(txtOnlineUsers);
-		*/
 
 		//heading for online users
 		JLabel lblOnlineUsers = new JLabel("ONLINE USERS");
@@ -278,7 +235,8 @@ public class chatGame {
 
 		JLabel titleGame = new JLabel("");
 		titleGame.setBounds(135, 20, 1050, 100);
-		Image a = img.getScaledInstance(titleGame.getWidth(),titleGame.getHeight(), Image.SCALE_SMOOTH);
+		Image a = img.getScaledInstance(titleGame.getWidth(),
+				titleGame.getHeight(), Image.SCALE_SMOOTH);
 		titleGame.setIcon(new ImageIcon(a));
 		Game.add(titleGame);
 		
@@ -324,7 +282,8 @@ public class chatGame {
 		//title 
 		JLabel titleWelcome = new JLabel("");
 		titleWelcome.setBounds(135, 20, 1050, 180);
-		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),titleWelcome.getHeight(), Image.SCALE_SMOOTH);
+		Image logoW = img.getScaledInstance(titleWelcome.getWidth(),
+				titleWelcome.getHeight(), Image.SCALE_SMOOTH);
 		titleWelcome.setIcon(new ImageIcon(logoW));
 		Welcome.add(titleWelcome);
 
@@ -332,7 +291,8 @@ public class chatGame {
 		//dare to play text
 		JLabel dareTxt = new JLabel("");
 		dareTxt.setBounds(480, 525, 440, 180);
-		Image one = img3.getScaledInstance(dareTxt.getWidth(),dareTxt.getHeight(), Image.SCALE_SMOOTH);
+		Image one = img3.getScaledInstance(dareTxt.getWidth(),
+				dareTxt.getHeight(), Image.SCALE_SMOOTH);
 		dareTxt.setIcon(new ImageIcon(one));
 		Welcome.add(dareTxt);
 
@@ -353,12 +313,14 @@ public class chatGame {
 		//main logo
 		JLabel msnLogo = new JLabel("");
 		msnLogo.setBounds(440, 157, 518, 390);
-		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),msnLogo.getHeight(), Image.SCALE_SMOOTH);
+		Image imgage = img2.getScaledInstance(msnLogo.getWidth(),
+				msnLogo.getHeight(), Image.SCALE_SMOOTH);
 		msnLogo.setIcon(new ImageIcon (imgage));
 		Welcome.add(msnLogo);
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////		
 		//LOGIN SCREEN COMPONENTS
+		
 		//label for password text
 		JLabel lblPassword = new JLabel("Enter Password");
 		lblPassword.setBounds(246, 272, 563, 138);
@@ -425,7 +387,8 @@ public class chatGame {
 
 		JLabel titleLogin = new JLabel("");
 		titleLogin.setBounds(135, 20, 1050, 100);
-		Image logoLog = img.getScaledInstance(titleLogin.getWidth(),titleLogin.getHeight(), Image.SCALE_SMOOTH);
+		Image logoLog = img.getScaledInstance(titleLogin.getWidth(),
+				titleLogin.getHeight(), Image.SCALE_SMOOTH);
 		titleLogin.setIcon(new ImageIcon(logoLog));
 		Login.add(titleLogin);
 
@@ -435,7 +398,8 @@ public class chatGame {
 
 		JLabel LogoSignIn = new JLabel("");
 		LogoSignIn.setBounds(10, 598, 170, 150);
-		Image logoSign = img2.getScaledInstance(LogoSignIn.getWidth(),LogoSignIn.getHeight(), Image.SCALE_SMOOTH);
+		Image logoSign = img2.getScaledInstance(LogoSignIn.getWidth(),
+				LogoSignIn.getHeight(), Image.SCALE_SMOOTH);
 		LogoSignIn.setIcon(new ImageIcon(logoSign));
 		Login.add(LogoSignIn);
 
@@ -444,7 +408,8 @@ public class chatGame {
 
 		JLabel LogoSignIn2 = new JLabel("");
 		LogoSignIn2.setBounds(1186, 598, 170, 150);
-		Image logoSign2 = img2.getScaledInstance(LogoSignIn2.getWidth(),LogoSignIn2.getHeight(), Image.SCALE_SMOOTH);
+		Image logoSign2 = img2.getScaledInstance(LogoSignIn2.getWidth(),
+				LogoSignIn2.getHeight(), Image.SCALE_SMOOTH);
 		LogoSignIn2.setIcon(new ImageIcon(logoSign2));
 		Login.add(LogoSignIn2);
 
@@ -492,7 +457,8 @@ public class chatGame {
 					String password = new String (textPassword.getPassword());
 					String question = txtSecurityQ.getText();
 					String answer = txtSecurityA.getText();
-					ServerMessage response = client.createAccountPacket(username, password, question, answer);
+					ServerMessage response = client.createAccountPacket(username,
+							password, question, answer);
 					if (response.type == ServerMessage.messageType.SUCCESS) {
 						Login.setVisible(true);
 						SignIn.setVisible(false);
@@ -511,7 +477,8 @@ public class chatGame {
 
 		JLabel titleSignIn = new JLabel("");
 		titleSignIn.setBounds(135, 20, 1050, 100);
-		Image newimg = img.getScaledInstance(titleSignIn.getWidth(),titleSignIn.getHeight(), Image.SCALE_SMOOTH);
+		Image newimg = img.getScaledInstance(titleSignIn.getWidth(),
+				titleSignIn.getHeight(), Image.SCALE_SMOOTH);
 		titleSignIn.setIcon(new ImageIcon(newimg));
 		SignIn.add(titleSignIn);
 
@@ -553,12 +520,16 @@ public class chatGame {
 		textPassword = new JPasswordField();
 		textPassword.setBounds(640, 280, 500, 50);
 		SignIn.add(textPassword);
+		
+		
 		/////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		//ForgottenPassword Panel
 
 		JLabel titleForgotten = new JLabel("");
 		titleForgotten.setBounds(135, 20, 1050, 100);
-		Image Logo1 = img.getScaledInstance(titleForgotten.getWidth(),titleForgotten.getHeight(), Image.SCALE_SMOOTH);
+		Image Logo1 = img.getScaledInstance(titleForgotten.getWidth(),
+				titleForgotten.getHeight(), Image.SCALE_SMOOTH);
 		titleForgotten.setIcon(new ImageIcon(Logo1));
 		ForgotPassword.add(titleForgotten);
 
@@ -575,14 +546,6 @@ public class chatGame {
 		usernameEntry.setColumns(10);
 		ForgotPassword.add(usernameEntry);
 
-		/*
-		JLabel lblSecurityQuestion = new JLabel("Security question");
-		lblSecurityQuestion.setFont(new Font("Silom", Font.PLAIN, 20));
-		lblSecurityQuestion.setForeground(Color.WHITE);
-		lblSecurityQuestion.setBounds(450, 325, 328, 58);
-		ForgotPassword.add(lblSecurityQuestion);
-		*/
-
 		securityAnswer = new JTextField();
 		securityAnswer.setFont(new Font("Futura", Font.PLAIN, 24));
 		securityAnswer.setColumns(10);
@@ -597,14 +560,16 @@ public class chatGame {
 
 		JLabel msnForgotten1 = new JLabel("");
 		msnForgotten1.setBounds(10, 598, 170, 150);
-		Image LogPassword1 = img2.getScaledInstance(msnForgotten1.getWidth(),msnForgotten1.getHeight(), Image.SCALE_SMOOTH);
+		Image LogPassword1 = img2.getScaledInstance(msnForgotten1.getWidth(),
+				msnForgotten1.getHeight(), Image.SCALE_SMOOTH);
 		msnForgotten1.setIcon(new ImageIcon(LogPassword1));
 		ForgotPassword.add(msnForgotten1);
 
 
 		JLabel msnForgotten2 = new JLabel("");
 		msnForgotten2.setBounds(1186, 598, 170, 150);
-		Image LogPassword11 = img2.getScaledInstance(msnForgotten2.getWidth(),msnForgotten2.getHeight(), Image.SCALE_SMOOTH);
+		Image LogPassword11 = img2.getScaledInstance(msnForgotten2.getWidth(),
+				msnForgotten2.getHeight(), Image.SCALE_SMOOTH);
 		msnForgotten2.setIcon(new ImageIcon(LogPassword11));
 		ForgotPassword.add(msnForgotten2);
 
