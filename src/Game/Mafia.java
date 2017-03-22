@@ -233,7 +233,6 @@ public class Mafia extends Game {
 
 		server.publicMessage(server.getUsername(origin) + " has been set to ready");
 		server.publicMessage("number of players ready: " + ready.size());
-		// possibly extend to mention which players are ready
 
 		if (ready.size() >= 6) {
 
@@ -478,6 +477,9 @@ public class Mafia extends Game {
     private void eliminateDay() {
 	dayElimTimer.cancel();
 	dayElimTimer.purge();
+	
+	reminder.cancel();
+	reminder.purge();
 
 	players.remove(playerOnTrialID);
 
