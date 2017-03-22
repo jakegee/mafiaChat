@@ -41,14 +41,6 @@ public class Mafia extends Game {
     private Timer nightVoteTimer;
     private Timer nightElimTimer;
     private Timer reminder;
-    
-    private TimerTask public5s= new TimerTask(){
-	    @Override
-	    public void run() {
-		server.publicMessage("5 seconds left to vote");
-
-	    }
-	};
 
     public Mafia(IServer server) {
 	super(server);
@@ -58,16 +50,13 @@ public class Mafia extends Game {
 	save = new ArrayList<>();
 	nightVote = new ArrayList<>();
 	dayVote = new ArrayList<>();
-	
 
-	rules = "send \"/ready\" to ready up for mafia \n"
-		+ "send \"/unready\" to cancel the above \n"
-		+ "one there are at least 6 users ready, you can send \"/start\" \n"
-		+ "to vote to start the game\n"
+	rules = "send \"/ready\" to ready up for mafia \n" + "send \"/unready\" to cancel the above \n"
+		+ "one there are at least 6 users ready, you can send \"/start\" \n" + "to vote to start the game\n"
 		+ "once all users who are ready have voted to start, the game begins\n"
 		+ "when game starts you will be assigned to either the innocent or\n"
 		+ "mafia team, this will be send to you privately.\n"
-		+ "If you are on the mafia team you will also be told who the other mafia players are.\n" 
+		+ "If you are on the mafia team you will also be told who the other mafia players are.\n"
 		+ "If you are innocent you are only informed of your own role\n"
 		+ "All players are informed of how many mafia there are in the game "
 		+ "which is a 1/3 (to nearest whole number) of the players."
@@ -76,14 +65,12 @@ public class Mafia extends Game {
 		+ "start a vote to either\n eliminate another player or to change the game to night\n"
 		+ "Once a vote is in session it needs to complete before another vote can be started\n"
 		+ "there is a timer on how long a vote can last which when this runs out, only the votes\n"
-		+ "that have been made are counted\n"
-		+ "The commands that are valid during the day are: \n"
+		+ "that have been made are counted\n" + "The commands that are valid during the day are: \n"
 		+ "\"elim [playername]\" in order to put a player on trial or if there is already a player on trial\n"
 		+ "this command will add your vote to eliminate them.\n"
 		+ "\"/save\" to vote to save the player who is currently on trial.\n "
 		+ "If a player is eliminated, they are unable to vote and are muted so they can't continue to influence "
-		+ "the game. They can still observer however"
-		+ "\"/night\" to vote to change the game to night\n"
+		+ "the game. They can still observer however" + "\"/night\" to vote to change the game to night\n"
 		+ "\"/day\" to vote to keep the game as day\n"
 		+ "If the vote to change the game to night is successful, the game is changed to night, where chat is\n"
 		+ "disabled and the mafai attempt to eliminate an innocent. \n"
@@ -301,7 +288,8 @@ public class Mafia extends Game {
 
 	    votedStart.add(origin);
 	    if (votedStart.size() == ready.size() && votedStart.size() >= 6) {
-		server.publicMessage("The game has started, it is currently day and the number of players is " + votedStart.size());
+		server.publicMessage(
+			"The game has started, it is currently day and the number of players is " + votedStart.size());
 		gameStart();
 
 	    } else {
@@ -311,9 +299,9 @@ public class Mafia extends Game {
 
 	} else if (votedStart.contains(origin)) {
 	    server.privateMessage("you have already voted to start", origin);
-	} else if(!ready.contains(origin)){
+	} else if (!ready.contains(origin)) {
 	    server.privateMessage("you need to be set to ready before you can vote to start", origin);
-	} else if(ready.size() < 6){
+	} else if (ready.size() < 6) {
 	    server.privateMessage("There are not enough users ready to start the vote", origin);
 	}
     }
@@ -420,12 +408,18 @@ public class Mafia extends Game {
 
 		    }
 		};
-		
-		
+
+		TimerTask public5s = new TimerTask() {
+		    @Override
+		    public void run() {
+			server.publicMessage("5 seconds left to vote");
+
+		    }
+		};
 
 		dayElimTimer = new Timer();
 		reminder = new Timer();
-		
+
 		reminder.schedule(public5s, 25000);
 		dayElimTimer.schedule(dayElimVoteTimeout, 30000);
 
@@ -477,7 +471,7 @@ public class Mafia extends Game {
     private void eliminateDay() {
 	dayElimTimer.cancel();
 	dayElimTimer.purge();
-	
+
 	reminder.cancel();
 	reminder.purge();
 
@@ -846,13 +840,13 @@ public class Mafia extends Game {
     }
 
     private void gameEnd() { // could make public to force the game to end
-	
+
 	String message = "The mafia were:";
 
 	for (int i = 0; i < mafiaAtStart.length; i++) {
 	    message += " " + mafiaAtStart[i];
 	}
-	
+
 	server.publicMessage(message);
 
 	gameInProgress = false;
@@ -897,9 +891,9 @@ public class Mafia extends Game {
 
     @Override
     public synchronized void handleLogout(int leaverID) {
-	
-	if(!gameInProgress){
-	    if(ready.contains(leaverID)){
+
+	if (!gameInProgress) {
+	    if (ready.contains(leaverID)) {
 		unready(leaverID);
 	    }
 	    return;
@@ -1099,9 +1093,9 @@ public class Mafia extends Game {
     public Integer getPlayerOnTrialID() {
 	return playerOnTrialID;
     }
-   
+
     @Override
-    public String getRules(){
+    public String getRules() {
 	return rules;
     }
 
