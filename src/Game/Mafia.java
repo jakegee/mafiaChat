@@ -885,6 +885,9 @@ public class Mafia extends Game {
     public synchronized void handleLogout(int leaverID) {
 	
 	if(!gameInProgress){
+	    if(ready.contains(leaverID)){
+		unready(leaverID);
+	    }
 	    return;
 	}
 
