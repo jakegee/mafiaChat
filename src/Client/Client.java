@@ -220,7 +220,7 @@ public class Client {
 	 * 
 	 * @return responses from the  server
 	 */
-	public ServerMessage getResponse() {
+	public synchronized ServerMessage getResponse() {
 		try {
 			return decodeServerMessage(inputStream.readUTF());
 		} catch (IOException e) {
