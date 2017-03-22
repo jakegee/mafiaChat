@@ -16,8 +16,44 @@ import org.apache.commons.collections4.OrderedBidiMap;
 import org.apache.commons.collections4.bidimap.TreeBidiMap;
 
 public class Mafia extends Game {
+		
+//		"Mafia rules go here, use \n to end a line, this will appear \n"
+//		+ "on a dialog box when rules are pressed";
 
-    static { // TODO add rules here
+    TreeBidiMap<Integer, String> players;
+
+    private boolean nightVoteInProgress = false;
+    private boolean elimDayVoteInProgress = false;
+
+    private boolean day = true;
+
+    private ArrayList<Integer> ready;
+    private ArrayList<Integer> votedStart;
+    private String[] mafiaAtStart;
+    private ArrayList<Integer> mafia;
+    private ArrayList<Integer> innocentIDs;
+    private ArrayList<Integer> elimDay;
+    private ArrayList<Integer> save;
+
+    private HashMap<Integer, String> eliminate;
+    private ArrayList<Integer> dayVote;
+    private ArrayList<Integer> nightVote;
+    private Integer playerOnTrialID = null;
+
+    private Timer dayElimTimer;
+    private Timer nightVoteTimer;
+    private Timer nightElimTimer;
+
+    public Mafia(IServer server) {
+	super(server);
+	ready = new ArrayList<>();
+	votedStart = new ArrayList<>();
+	elimDay = new ArrayList<>();
+	save = new ArrayList<>();
+	nightVote = new ArrayList<>();
+	dayVote = new ArrayList<>();
+	
+
 	rules = "send \"/ready\" to ready up for mafia \n"
 		+ "send \"/unready\" to cancel the above \n"
 		+ "one there are at least 6 users ready, you can send \"/start\" \n"
@@ -53,45 +89,6 @@ public class Mafia extends Game {
 		+ "The innocent must eliminate all the mafia "
 		+ "The mafia must eliminate enough of the innocents to be equal in number"
 		+ "A player leaving the game will result in them being counted as eliminated.";
-		
-		
-		
-//		"Mafia rules go here, use \n to end a line, this will appear \n"
-//		+ "on a dialog box when rules are pressed";
-    }
-
-    TreeBidiMap<Integer, String> players;
-
-    private boolean nightVoteInProgress = false;
-    private boolean elimDayVoteInProgress = false;
-
-    private boolean day = true;
-
-    private ArrayList<Integer> ready;
-    private ArrayList<Integer> votedStart;
-    private String[] mafiaAtStart;
-    private ArrayList<Integer> mafia;
-    private ArrayList<Integer> innocentIDs;
-    private ArrayList<Integer> elimDay;
-    private ArrayList<Integer> save;
-
-    private HashMap<Integer, String> eliminate;
-    private ArrayList<Integer> dayVote;
-    private ArrayList<Integer> nightVote;
-    private Integer playerOnTrialID = null;
-
-    private Timer dayElimTimer;
-    private Timer nightVoteTimer;
-    private Timer nightElimTimer;
-
-    public Mafia(IServer server) {
-	super(server);
-	ready = new ArrayList<>();
-	votedStart = new ArrayList<>();
-	elimDay = new ArrayList<>();
-	save = new ArrayList<>();
-	nightVote = new ArrayList<>();
-	dayVote = new ArrayList<>();
 
     }
 
