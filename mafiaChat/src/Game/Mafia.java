@@ -420,7 +420,7 @@ public class Mafia extends Game {
 		dayElimTimer = new Timer();
 		reminder = new Timer();
 
-		reminder.schedule(public5s, 25000);
+		//reminder.schedule(public5s, 25000);
 		dayElimTimer.schedule(dayElimVoteTimeout, 30000);
 
 	    } else {
@@ -472,8 +472,8 @@ public class Mafia extends Game {
 	dayElimTimer.cancel();
 	dayElimTimer.purge();
 
-	reminder.cancel();
-	reminder.purge();
+	//reminder.cancel();
+	//reminder.purge();
 
 	players.remove(playerOnTrialID);
 

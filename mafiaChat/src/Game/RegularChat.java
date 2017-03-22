@@ -88,7 +88,6 @@ public class RegularChat extends Game {
 	@Override
 	protected void handleTimerEvent(String message, int delay) {
 		super.handleTimerEvent(message, delay);
-		server.publicMessage("<t> " + message + " (Sent " + delay + " second(s) ago)");
 	}
 	
 }
