@@ -18,8 +18,46 @@ import org.apache.commons.collections4.bidimap.TreeBidiMap;
 public class Mafia extends Game {
 
     static { // TODO add rules here
-	rules = "Mafia rules go here, use \n to end a line, this will appear \n"
-		+ "on a dialog box when rules are pressed";
+	rules = "send \"/ready\" to ready up for mafia \n"
+		+ "send \"/unready\" to cancel the above \n"
+		+ "one there are at least 6 users ready, you can send \"/start\" \n"
+		+ "to vote to start the game\n"
+		+ "once all users who are ready have voted to start, the game begins\n"
+		+ "when game starts you will be assigned to either the innocent or\n"
+		+ "mafia team, this will be send to you privately.\n"
+		+ "If you are on the mafia team you will also be told who the other mafia players are.\n" 
+		+ "If you are innocent you are only informed of your own role\n"
+		+ "All players are informed of how many mafia there are in the game "
+		+ "which is a 1/3 (to nearest whole number) of the players."
+		+ "Mafia has a day and night phase, where the game starts in the day\n"
+		+ "In the day chat can be used normally, where at any point a player can\n"
+		+ "start a vote to either\n eliminate another player or to change the game to night\n"
+		+ "Once a vote is in session it needs to complete before another vote can be started\n"
+		+ "there is a timer on how long a vote can last which when this runs out, only the votes\n"
+		+ "that have been made are counted\n"
+		+ "The commands that are valid during the day are: \n"
+		+ "\"elim [playername]\" in order to put a player on trial or if there is already a player on trial\n"
+		+ "this command will add your vote to eliminate them.\n"
+		+ "\"/save\" to vote to save the player who is currently on trial.\n "
+		+ "If a player is eliminated, they are unable to vote and are muted so they can't continue to influence "
+		+ "the game. They can still observer however"
+		+ "\"/night\" to vote to change the game to night\n"
+		+ "\"/day\" to vote to keep the game as day\n"
+		+ "If the vote to change the game to night is successful, the game is changed to night, where chat is\n"
+		+ "disabled and the mafai attempt to eliminate an innocent. \n"
+		+ "During the night the only valid command for the mafia is: \n"
+		+ "\"/elim [playername]\" where this vote fails if the timer runs out or any of the mafia vote to eliminate\n an"
+		+ "innocent who is different from the one that the previous mafia have voted for\n"
+		+ "after the mafia vote during the night has completed the game is return to day\n"
+		+ "The victory conditions for the teams are as follows: \n"
+		+ "The innocent must eliminate all the mafia "
+		+ "The mafia must eliminate enough of the innocents to be equal in number"
+		+ "A player leaving the game will result in them being counted as eliminated.";
+		
+		
+		
+//		"Mafia rules go here, use \n to end a line, this will appear \n"
+//		+ "on a dialog box when rules are pressed";
     }
 
     TreeBidiMap<Integer, String> players;
@@ -845,6 +883,10 @@ public class Mafia extends Game {
 
     @Override
     public synchronized void handleLogout(int leaverID) {
+	
+	if(!gameInProgress){
+	    return;
+	}
 
 	String leaver = server.getUsername(leaverID);
 
