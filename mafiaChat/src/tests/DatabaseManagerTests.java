@@ -40,111 +40,181 @@ public class DatabaseManagerTests {
 			System.out.println("Driver not found");
 		}
 	}
+	
 	@Test public void readtest1() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE user = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE password = 'jon'");
 	
 	while(rs.next()) {
-		
-//		int userid = rs.getInt(0);
-//		String username = rs.getString(1);
-//		String password = rs.getString(2);
-		String question = rs.getString("question");
-//		String answer = rs.getString("answer");
-//		String output = DatabaseManager.getSecurityQuestion(question);
+		String username = rs.getString("username");
 
-		assertEquals(question,"hi");
-	
-//		System.out.println("userid = " + userid);
-//		System.out.println("username = " + username);
-//		System.out.println("password = " + password);
-		System.out.println("question = " + question);
-//		System.out.println("answer = " + answer);
-//		System.out.println();
+		assertEquals(username,"jon");
+		System.out.println("username = " + username +"\n");
+		System.out.println();
 	}
 	}
 	
 	@Test public void readtest2() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE username = 'jon'");
 	
 	while(rs.next()) {
-		
-//		int userid = rs.getInt(0);
-//		String username = rs.getString(1);
-//		String password = rs.getString(2);
-//		String question = rs.getString("question");
-		String answer = rs.getString("answer");
-//		String output = DatabaseManager.getSecurityQuestion(question);
+		String username = rs.getString("username");
 
-		assertEquals(answer,"no");
-	
-//		System.out.println("userid = " + userid);
-//		System.out.println("username = " + username);
-//		System.out.println("password = " + password);
-//		System.out.println("question = " + question);
-//		System.out.println("answer = " + answer);
-//		System.out.println();
+		assertEquals(username,"jon");
+		System.out.println("username = " + username);
+		System.out.println();
 	}
 	}
 	
 	@Test public void readtest3() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE user = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE username = 'jon'");
 	
 	while(rs.next()) {
-		
-//		int userid = rs.getInt(0);
-//		String username = rs.getString(1);
-//		String password = rs.getString(2);
-		String question = rs.getString("question");
-//		String answer = rs.getString("answer");
-//		String output = DatabaseManager.getSecurityQuestion(question);
+		String username = rs.getString("username");
 
-		assertEquals(question,"hi");
+		assertEquals(username,"jon");
+		System.out.println("username = " + username);
+		System.out.println();
+	}
+	}
 	
-//		System.out.println("userid = " + userid);
-//		System.out.println("username = " + username);
-//		System.out.println("password = " + password);
-		System.out.println("question = " + question);
-//		System.out.println("answer = " + answer);
-//		System.out.println();
-	}
-	}
-
 	@Test public void readtest4() throws SQLException {
 	stmt=dbConn.createStatement();
-
-	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE user = 'newUser'");
-	while(rs.next()) {
-		
-//		int userid = rs.getInt(0);
-//		String username = rs.getString(1);
-//		String password = rs.getString(2);
-		String question = rs.getString("question");
-//		String answer = rs.getString("answer");
-//		String output = DatabaseManager.getSecurityQuestion(question);
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
 	
-		assertEquals(question,"ques");
+	while(rs.next()) {
+		String password = rs.getString("password");
+
+		assertEquals(password,"jon");
+		System.out.println("password = " + password);
+		System.out.println();
 	}
 	}
 	
 	@Test public void readtest5() throws SQLException {
 	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	
+	while(rs.next()) {
+		String password = rs.getString("password");
 
-	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE user LIKE 'Ja'");
+		assertEquals(password,"jon");
+		System.out.println("password = " + password);
+		System.out.println();
+	}
+	}
+	
+	@Test public void readtest6() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	
+	while(rs.next()) {
+		String password = rs.getString("password");
+
+		assertEquals(password,"jon");
+		System.out.println("password = " + password);
+		System.out.println();
+	}
+	}
+
+	@Test public void readtest7() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE user = 'jo'");
+	
+	while(rs.next()) {
+
+		String question = rs.getString("question");
+
+		assertEquals(question,"hi");
+		System.out.println("question = " + question);
+	}
+	}
+
+	@Test public void readtest8() throws SQLException {
+	stmt=dbConn.createStatement();
+
+	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE userid = 2");
 	while(rs.next()) {
 		
-//		int userid = rs.getInt(0);
-//		String username = rs.getString(1);
-//		String password = rs.getString(2);
-		String question = rs.getString(3);
-//		String answer = rs.getString("answer");
-//		String output = DatabaseManager.getSecurityQuestion(question);
-
-		assertEquals(question,"cool");
+		String question = rs.getString("question");
+	
+		assertEquals(question,"this is a test question");
 		System.out.println("question = " + question);
+		System.out.println();
+	}
+	}
+	
+	@Test public void readtest9() throws SQLException {
+	stmt=dbConn.createStatement();
 
+	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE userid = 1");
+	while(rs.next()) {
+		
+		String question = rs.getString("question");
+
+		assertEquals(question,"isianawesome");
+		System.out.println("question = " + question);
+		System.out.println();
+	}
+	}
+	
+	
+	@Test public void readtest10() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	
+	while(rs.next()) {
+		
+		String answer = rs.getString("answer");
+
+		assertEquals(answer,"no");
+		System.out.println("answer = " + answer);
+		System.out.println();
+	}
+	}
+	
+	
+	@Test public void readtest11() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	
+	while(rs.next()) {
+		
+		String answer = rs.getString("answer");
+
+		assertEquals(answer,"no");
+//		System.out.println("password = " + password);
+		System.out.println();
+	}
+	}
+	
+	
+	@Test public void readtest12() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	
+	while(rs.next()) {
+		
+		String answer = rs.getString("answer");
+
+		assertEquals(answer,"no");
+//		System.out.println("password = " + password);
+		System.out.println();
+	}
+	}
+	
+	@Test public void readtest13() throws SQLException {
+	stmt=dbConn.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	
+	while(rs.next()) {
+		String password = rs.getString("password");
+
+		assertEquals(password,"jon");
+		System.out.println("password = " + password);
+		System.out.println();
 	}
 	
 	rs.close();
