@@ -19,6 +19,12 @@ import systemInterfaces.Game;
 // apparently you can't junit test methods when it requires client and server
 // Don't delete this class just yet incase it is needed later
 
+/**
+ * The MafiaTest class tests the Mafia class and its methods
+ * 
+ * @author Team Nice
+ * @version 23-03-2017
+ */
 public class MafiaTest {
     private ServerStubJUnit serverStub;
 
@@ -34,11 +40,10 @@ public class MafiaTest {
     private int client6ID;
     private int client7ID;
     private int client8ID;
-    
+
     private int testLengthTimers = 1000;
     private int testWaitLength = testLengthTimers + 250;
-    
-    
+
     @Before
     public void setUp() {
 
@@ -62,13 +67,13 @@ public class MafiaTest {
 	client6ID = serverStub.getUserID("client6");
 	client7ID = serverStub.getUserID("client7");
 	client8ID = serverStub.getUserID("client8");
-	
+
 	mafia.setDayTimersLengthMs(testLengthTimers);
 	mafia.setMafiaNightTimerLengthMs(testLengthTimers);
 
     }
-    
-    public void ready6Players(){
+
+    public void ready6Players() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
@@ -76,8 +81,8 @@ public class MafiaTest {
 	serverStub.sendCommand("/ready", "client5");
 	serverStub.sendCommand("/ready", "client6");
     }
-    
-    public void ready7Players(){
+
+    public void ready7Players() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
@@ -100,7 +105,7 @@ public class MafiaTest {
 
     public void gameStart3Mafia() {
 	ready7Players();
-	
+
 	serverStub.sendCommand("/ready", "client8");
 
 	serverStub.sendCommand("/start", "client1");
@@ -112,7 +117,7 @@ public class MafiaTest {
 	serverStub.sendCommand("/start", "client7");
 	serverStub.sendCommand("/start", "client8");
     }
-    
+
     public void successNightVote6Players() {
 	gameStart6Players();
 
@@ -214,9 +219,9 @@ public class MafiaTest {
 
 	assertEquals(1, mafia.getReady().size());
     }
-    
+
     @Test
-    public void testReady3(){
+    public void testReady3() {
 	serverStub.sendCommand("/ready", "client1");
 	serverStub.sendCommand("/ready", "client2");
 	serverStub.sendCommand("/ready", "client3");
@@ -232,12 +237,12 @@ public class MafiaTest {
 	serverStub.sendCommand("/ready", "client13");
 	serverStub.sendCommand("/ready", "client14");
 	serverStub.sendCommand("/ready", "client15");
-	serverStub.sendCommand("/ready", "client16");	
+	serverStub.sendCommand("/ready", "client16");
 	serverStub.sendCommand("/ready", "client17");
-	
+
 	assertEquals(16, mafia.getReady().size());
 	assertFalse(mafia.getReady().contains("client17"));
-	
+
     }
 
     /**
@@ -260,7 +265,7 @@ public class MafiaTest {
 
 	assertFalse(mafia.getReady().contains(client1ID));
     }
-    
+
     @Test
     public void testUnready3() {
 	serverStub.sendCommand("/unready", "client4");
@@ -475,7 +480,7 @@ public class MafiaTest {
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertFalse(mafia.isElimDayVoteInProgress());
     }
-    
+
     @Test
     public void testElimDayVote8() {
 	gameStart6Players();
@@ -484,8 +489,6 @@ public class MafiaTest {
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertFalse(mafia.isElimDayVoteInProgress());
     }
-    
-    
 
     @Test
     public void testSaveVote5() {
@@ -527,7 +530,7 @@ public class MafiaTest {
 	assertTrue(mafia.getSave().isEmpty());
 	assertFalse(mafia.isElimDayVoteInProgress());
     }
-    
+
     @Test
     public void testSaveVote8() {
 	gameStart6Players();
@@ -795,7 +798,7 @@ public class MafiaTest {
 	assertTrue(mafia.getEliminate().isEmpty());
 	assertTrue(serverStub.getActiveChat());
     }
-    
+
     @Test
     public void testElimNightVote6() {
 	successNightVote6Players();
@@ -863,77 +866,77 @@ public class MafiaTest {
 
 	assertTrue(random);
     }
-    
+
     @Test
-    public void gameStartedReady(){
+    public void gameStartedReady() {
 	gameStart6Players();
 	serverStub.sendCommand("/ready", "client7");
-	
+
 	assertTrue(mafia.getReady().isEmpty());
-	
+
     }
-    
+
     @Test
-    public void playerUnready(){
+    public void playerUnready() {
 	gameStart6Players();
 	serverStub.sendCommand("/unready", "client2");
-	
+
 	assertTrue(mafia.getReady().isEmpty());
 	assertTrue(mafia.getPlayers().containsValue("client2"));
     }
-    
+
     @Test
-    public void nonPlayerVoteStart(){
+    public void nonPlayerVoteStart() {
 	gameStart6Players();
 	serverStub.sendCommand("/start", "client7");
-	
+
 	assertTrue(mafia.getReady().isEmpty());
 	assertTrue(mafia.getVotedStart().isEmpty());
     }
-    
+
     @Test
-    public void nonPlayerVoteElim(){
+    public void nonPlayerVoteElim() {
 	gameStart6Players();
 	serverStub.sendCommand("/elim client2", "client7");
-	
-	assertTrue(mafia.getElimDay().isEmpty());	
+
+	assertTrue(mafia.getElimDay().isEmpty());
 	assertTrue(mafia.getSave().isEmpty());
 	assertTrue(mafia.getPlayerOnTrialID() == null);
     }
-    
+
     @Test
-    public void nonPlayerVoteSave(){
+    public void nonPlayerVoteSave() {
 	gameStart6Players();
 	serverStub.sendCommand("/elim client3", "client2");
 	serverStub.sendCommand("/save client3", "client9");
-	
+
 	assertEquals(1, mafia.getElimDay().size());
 	assertTrue(mafia.getSave().isEmpty());
     }
-    
+
     @Test
-    public void nonPlayerVoteNight(){
+    public void nonPlayerVoteNight() {
 	gameStart6Players();
 	serverStub.sendCommand("/night", "client7");
-	
-	assertTrue(mafia.getNightVote().isEmpty());	
+
+	assertTrue(mafia.getNightVote().isEmpty());
 	assertTrue(mafia.getDayVote().isEmpty());
     }
-    
+
     @Test
-    public void nonPlayerVoteDay(){
+    public void nonPlayerVoteDay() {
 	gameStart6Players();
 	serverStub.sendCommand("/night", "client4");
 	serverStub.sendCommand("/day", "client7");
-	
-	assertEquals(1, mafia.getNightVote().size());	
+
+	assertEquals(1, mafia.getNightVote().size());
 	assertTrue(mafia.getDayVote().isEmpty());
     }
-    
+
     @Test
-    public void nonPlayerElimNight(){
+    public void nonPlayerElimNight() {
 	successNightVote6Players();
-	
+
 	int innocent1ID = (int) mafia.getInnocentIDs().get(0);
 	String innocent1 = serverStub.getUsername(innocent1ID);
 
@@ -942,19 +945,19 @@ public class MafiaTest {
 	assertFalse(mafia.isDay());
 	assertTrue(mafia.getEliminate().isEmpty());
     }
-    
+
     @Test
-    public void timerDayElim(){
+    public void timerDayElim() {
 	gameStart6Players();
 	serverStub.sendCommand("/elim client3", "client4");
 	assertFalse(mafia.getPlayerOnTrialID() == null);
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-	
+
 	assertTrue(mafia.getPlayerOnTrialID() == null);
 	assertFalse(mafia.getPlayers().containsValue("client3"));
 	assertFalse(mafia.getInnocentIDs().contains(client3ID));
@@ -962,54 +965,54 @@ public class MafiaTest {
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertTrue(mafia.getSave().isEmpty());
     }
-    
+
     @Test
-    public void timerDayElim2(){
+    public void timerDayElim2() {
 	gameStart6Players();
 	serverStub.sendCommand("/elim client3", "client4");
 	serverStub.sendCommand("/save client3", "client2");
 	assertFalse(mafia.getPlayerOnTrialID() == null);
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-	
+
 	assertTrue(mafia.getPlayerOnTrialID() == null);
 	assertTrue(mafia.getPlayers().containsValue("client3"));
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertTrue(mafia.getSave().isEmpty());
     }
-    
+
     @Test
-    public void timerDayElim3(){
+    public void timerDayElim3() {
 	gameStart6Players();
 	serverStub.sendCommand("/elim client3", "client4");
 	serverStub.sendCommand("/save client3", "client2");
 	serverStub.sendCommand("/save client3", "client5");
 	assertFalse(mafia.getPlayerOnTrialID() == null);
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
 	    e.printStackTrace();
 	}
-	
+
 	assertTrue(mafia.getPlayerOnTrialID() == null);
 	assertTrue(mafia.getPlayers().containsValue("client3"));
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertTrue(mafia.getSave().isEmpty());
     }
-    
+
     @Test
-    public void timerNight(){
+    public void timerNight() {
 	gameStart6Players();
 	serverStub.sendCommand("/night", "client4");
-	
+
 	assertTrue(mafia.isDay());
 	assertTrue(mafia.isNightVoteInProgress());
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
@@ -1020,16 +1023,16 @@ public class MafiaTest {
 	assertTrue(mafia.getNightVote().isEmpty());
 	assertTrue(mafia.getDayVote().isEmpty());
     }
-    
+
     @Test
-    public void timerNight2(){
+    public void timerNight2() {
 	gameStart6Players();
 	serverStub.sendCommand("/night", "client2");
 	serverStub.sendCommand("/day", "client1");
-	
+
 	assertTrue(mafia.isDay());
 	assertTrue(mafia.isNightVoteInProgress());
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
@@ -1040,18 +1043,17 @@ public class MafiaTest {
 	assertTrue(mafia.getNightVote().isEmpty());
 	assertTrue(mafia.getDayVote().isEmpty());
     }
-    
+
     @Test
-    public void timerNight3(){
+    public void timerNight3() {
 	gameStart6Players();
 	serverStub.sendCommand("/night", "client2");
 	serverStub.sendCommand("/day", "client1");
 	serverStub.sendCommand("/day", "client6");
-	
-	
+
 	assertTrue(mafia.isDay());
 	assertTrue(mafia.isNightVoteInProgress());
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
@@ -1062,11 +1064,11 @@ public class MafiaTest {
 	assertTrue(mafia.getNightVote().isEmpty());
 	assertTrue(mafia.getDayVote().isEmpty());
     }
-    
+
     @Test
-    public void timerElimNight(){
+    public void timerElimNight() {
 	successNightVote3Mafia();
-	
+
 	int innocent1ID = (int) mafia.getInnocentIDs().get(0);
 	String innocent1 = serverStub.getUsername(innocent1ID);
 
@@ -1077,7 +1079,7 @@ public class MafiaTest {
 
 	serverStub.sendCommand("/elim " + innocent1, mafia1);
 	serverStub.sendCommand("/elim " + innocent1, mafia2);
-	
+
 	try {
 	    Thread.sleep(testWaitLength);
 	} catch (InterruptedException e) {
@@ -1089,241 +1091,240 @@ public class MafiaTest {
 	assertTrue(mafia.getInnocentIDs().contains(innocent1ID));
 	assertTrue(mafia.getEliminate().isEmpty());
 	assertTrue(serverStub.getActiveChat());
-	
+
     }
-    
+
     @Test
-    public void dcGameNotStarted(){
-	mafia.handleLogout(client4ID);	
-	
+    public void dcGameNotStarted() {
+	mafia.handleLogout(client4ID);
+
 	assertFalse(mafia.getReady().contains(client4ID));
 	assertFalse(mafia.getVotedStart().contains(client4ID));
     }
-    
+
     @Test
-    public void dcUserReady(){
+    public void dcUserReady() {
 	mafia.ready(client2ID);
 	mafia.handleLogout(client2ID);
-	
+
 	assertFalse(mafia.getReady().contains(client2ID));
     }
-    
+
     @Test
-    public void dcUserVotedStart(){
-	ready6Players();	
-	serverStub.sendCommand("/start", client3ID);	
-	
+    public void dcUserVotedStart() {
+	ready6Players();
+	serverStub.sendCommand("/start", client3ID);
+
 	mafia.handleLogout(client3ID);
-	
+
 	assertFalse(mafia.getReady().contains(client3ID));
 	assertFalse(mafia.getVotedStart().contains(client3ID));
     }
-    
+
     @Test
-    public void dcPlayer(){
+    public void dcPlayer() {
 	gameStart6Players();
-	
+
 	mafia.handleLogout(client5ID);
-	
+
 	assertFalse(mafia.getPlayers().containsKey(client5ID));
 	assertFalse(mafia.getInnocentIDs().contains(client5ID));
 	assertFalse(mafia.getMafia().contains(client5ID));
     }
-    
+
     @Test
-    public void dcPlayerElim(){	
+    public void dcPlayerElim() {
 	gameStart6Players();
-	
+
 	serverStub.sendCommand("/elim client1", client2ID);
-	
+
 	mafia.handleLogout(client2ID);
-	
+
 	assertFalse(mafia.getElimDay().contains(client2ID));
 	assertTrue(mafia.getPlayerOnTrialID() == client1ID);
-	
+
 	assertFalse(mafia.getPlayers().containsKey(client2ID));
 	assertFalse(mafia.getInnocentIDs().contains(client2ID));
-	assertFalse(mafia.getMafia().contains(client2ID));	
+	assertFalse(mafia.getMafia().contains(client2ID));
     }
-    
+
     @Test
-    public void dcPlayerOnTrial(){
+    public void dcPlayerOnTrial() {
 	gameStart6Players();
-	
+
 	serverStub.sendCommand("/elim client4", client2ID);
-	
+
 	mafia.handleLogout(client4ID);
-	
+
 	assertFalse(mafia.isElimDayVoteInProgress());
 	assertTrue(mafia.getPlayerOnTrialID() == null);
 	assertTrue(mafia.getElimDay().isEmpty());
 	assertTrue(mafia.getSave().isEmpty());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(client4ID));
 	assertFalse(mafia.getInnocentIDs().contains(client4ID));
-	assertFalse(mafia.getMafia().contains(client4ID));	
+	assertFalse(mafia.getMafia().contains(client4ID));
     }
-    
 
     @Test
-    public void dcPlayerSave(){	
+    public void dcPlayerSave() {
 	gameStart6Players();
-	
+
 	serverStub.sendCommand("/elim client6", client4ID);
 	serverStub.sendCommand("/save client6", client3ID);
-	
+
 	mafia.handleLogout(client3ID);
-	
+
 	assertTrue(mafia.getElimDay().contains(client4ID));
 	assertFalse(mafia.getSave().contains(client3ID));
 	assertTrue(mafia.getPlayerOnTrialID() == client6ID);
-	
-	assertFalse(mafia.getPlayers().containsKey(client3ID));
-	assertFalse(mafia.getInnocentIDs().contains(client3ID));
-	assertFalse(mafia.getMafia().contains(client3ID));	
-    }
-    
-    @Test
-    public void dcVotedNight(){
-	gameStart6Players();
-	
-	serverStub.sendCommand("/night", client1ID);
-	
-	mafia.handleLogout(client1ID);
-	
-	assertFalse(mafia.getNightVote().contains(client1ID));
-	assertTrue(mafia.isNightVoteInProgress());
-	
-	assertFalse(mafia.getPlayers().containsKey(client1ID));
-	assertFalse(mafia.getInnocentIDs().contains(client1ID));
-	assertFalse(mafia.getMafia().contains(client1ID));	
-    }
-    
-    @Test
-    public void dcVotedDay(){
-	gameStart6Players();
-	
-	serverStub.sendCommand("/night", client4ID);
-	serverStub.sendCommand("/day", client3ID);
-	
-	mafia.handleLogout(client3ID);
-	
-	assertFalse(mafia.getDayVote().contains(client3ID));
-	
+
 	assertFalse(mafia.getPlayers().containsKey(client3ID));
 	assertFalse(mafia.getInnocentIDs().contains(client3ID));
 	assertFalse(mafia.getMafia().contains(client3ID));
     }
-    
+
     @Test
-    public void dcInnocentAtNight(){
+    public void dcVotedNight() {
+	gameStart6Players();
+
+	serverStub.sendCommand("/night", client1ID);
+
+	mafia.handleLogout(client1ID);
+
+	assertFalse(mafia.getNightVote().contains(client1ID));
+	assertTrue(mafia.isNightVoteInProgress());
+
+	assertFalse(mafia.getPlayers().containsKey(client1ID));
+	assertFalse(mafia.getInnocentIDs().contains(client1ID));
+	assertFalse(mafia.getMafia().contains(client1ID));
+    }
+
+    @Test
+    public void dcVotedDay() {
+	gameStart6Players();
+
+	serverStub.sendCommand("/night", client4ID);
+	serverStub.sendCommand("/day", client3ID);
+
+	mafia.handleLogout(client3ID);
+
+	assertFalse(mafia.getDayVote().contains(client3ID));
+
+	assertFalse(mafia.getPlayers().containsKey(client3ID));
+	assertFalse(mafia.getInnocentIDs().contains(client3ID));
+	assertFalse(mafia.getMafia().contains(client3ID));
+    }
+
+    @Test
+    public void dcInnocentAtNight() {
 	successNightVote6Players();
-	
+
 	int innocentID = mafia.getInnocentIDs().get(0);
-	
+
 	mafia.handleLogout(innocentID);
-	
+
 	assertFalse(mafia.isDay());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(innocentID));
 	assertFalse(mafia.getInnocentIDs().contains(innocentID));
     }
-    
+
     @Test
-    public void dcMafiaNightNotVoted(){	
+    public void dcMafiaNightNotVoted() {
 	successNightVote6Players();
-	
+
 	int mafiaID = mafia.getMafia().get(0);
-	
+
 	mafia.handleLogout(mafiaID);
-	
+
 	assertFalse(mafia.isDay());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(mafiaID));
 	assertFalse(mafia.getMafia().contains(mafiaID));
     }
-    
+
     @Test
-    public void dcMafiaNightNotVoted2(){	
+    public void dcMafiaNightNotVoted2() {
 	successNightVote6Players();
-	
+
 	int mafiaID = mafia.getMafia().get(0);
 	int mafia2ID = mafia.getMafia().get(1);
 	int innocentID = mafia.getInnocentIDs().get(0);
-	String innocent = serverStub.getUsername(innocentID);	
-	
-	serverStub.sendCommand("/elim "+ innocent, mafia2ID);
+	String innocent = serverStub.getUsername(innocentID);
+
+	serverStub.sendCommand("/elim " + innocent, mafia2ID);
 	mafia.handleLogout(mafiaID);
-	
+
 	assertTrue(mafia.isDay());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(mafiaID));
 	assertFalse(mafia.getMafia().contains(mafiaID));
-	
+
 	assertFalse(mafia.getPlayers().containsKey(innocentID));
 	assertFalse(mafia.getInnocentIDs().contains(innocentID));
     }
-    
+
     @Test
-    public void dcMafiaNightVoted(){	
+    public void dcMafiaNightVoted() {
 	successNightVote6Players();
-	
+
 	int mafiaID = mafia.getMafia().get(0);
 	int innocentID = mafia.getInnocentIDs().get(0);
-	String innocent = serverStub.getUsername(innocentID);	
-	
-	serverStub.sendCommand("/elim "+ innocent, mafiaID);
+	String innocent = serverStub.getUsername(innocentID);
+
+	serverStub.sendCommand("/elim " + innocent, mafiaID);
 	mafia.handleLogout(mafiaID);
-	
+
 	assertFalse(mafia.isDay());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(mafiaID));
 	assertFalse(mafia.getMafia().contains(mafiaID));
-	
+
 	assertTrue(mafia.getPlayers().containsKey(innocentID));
 	assertTrue(mafia.getInnocentIDs().contains(innocentID));
     }
-    
+
     @Test
-    public void dcMafiaNightVoted2(){	
+    public void dcMafiaNightVoted2() {
 	successNightVote6Players();
-	
+
 	int mafiaID = mafia.getMafia().get(0);
 	int mafia2ID = mafia.getMafia().get(1);
 	int innocentID = mafia.getInnocentIDs().get(0);
-	String innocent = serverStub.getUsername(innocentID);	
-	
-	serverStub.sendCommand("/elim "+ innocent, mafiaID);
+	String innocent = serverStub.getUsername(innocentID);
+
+	serverStub.sendCommand("/elim " + innocent, mafiaID);
 	mafia.handleLogout(mafiaID);
-	
-	serverStub.sendCommand("/elim "+ innocent, mafia2ID);
-	
+
+	serverStub.sendCommand("/elim " + innocent, mafia2ID);
+
 	assertTrue(mafia.isDay());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(mafiaID));
 	assertFalse(mafia.getMafia().contains(mafiaID));
-	
+
 	assertFalse(mafia.getPlayers().containsKey(innocentID));
 	assertFalse(mafia.getInnocentIDs().contains(innocentID));
     }
-    
+
     @Test
-    public void dcInnocentTargeted(){	
+    public void dcInnocentTargeted() {
 	successNightVote6Players();
-	
+
 	int mafiaID = mafia.getMafia().get(0);
 	int innocentID = mafia.getInnocentIDs().get(0);
-	String innocent = serverStub.getUsername(innocentID);	
-	
-	serverStub.sendCommand("/elim "+ innocent, mafiaID);
+	String innocent = serverStub.getUsername(innocentID);
+
+	serverStub.sendCommand("/elim " + innocent, mafiaID);
 	mafia.handleLogout(innocentID);
-	
+
 	assertFalse(mafia.isDay());
-	
+
 	assertTrue(mafia.getEliminate().isEmpty());
-	
+
 	assertFalse(mafia.getPlayers().containsKey(innocentID));
 	assertFalse(mafia.getInnocentIDs().contains(innocentID));
     }
-    
+
 }
