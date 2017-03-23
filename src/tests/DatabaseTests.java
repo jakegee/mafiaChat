@@ -13,7 +13,7 @@ import exceptions.InvalidUserException;
 import exceptions.UserExistsException;
 
 /**
- * Short test-suite to ensure the databaseManager works as it should, adapated
+ * Short test-suite to ensure the databaseManager works as it should, adapted
  * from the DatabaseStubTests
  * 
  * @author Team Nice
