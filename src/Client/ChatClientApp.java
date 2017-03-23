@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
 import GUIs.*;
+import Server.Server;
 
 /**
  * this class creates an instance of the Client and chatGame class and initializes the application.
@@ -46,7 +47,9 @@ public class ChatClientApp {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws UnknownHostException, IOException {
-
+	
+		String[] args_ = {"localhost", "8000"};
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				//try {
@@ -55,7 +58,7 @@ public class ChatClientApp {
 					String host = "localhost";
 					Client client;
 					try {
-						client = new Client(port, host);
+						client = new Client(Integer.parseInt(args_[1]), args_[0]);
 						chatGame window = new chatGame(client);
 						window.GAME.setVisible(true);
 					} catch (UnknownHostException e) {
@@ -63,6 +66,10 @@ public class ChatClientApp {
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null, "Server not currently active or Invalid Port, \n"
 								+ "please double check port number");
+					} catch (ArrayIndexOutOfBoundsException e) {
+						JOptionPane.showMessageDialog(null, "Must include both host and port arguments");
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(null, "Port must be a valid int, " + args_[1] + " is not");
 					}
 			}
 		});
