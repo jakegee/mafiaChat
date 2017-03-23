@@ -72,13 +72,13 @@ public class Resistance extends Game{
 	 */
 	public void setUpGame() {
 		gameInProgress = true;
+		server.publicMessage("Welcome to the Resistance");
 		currentConfig = gameConfig.get(users.size());
 		mission = new Mission(users.size());
 		state = GameState.SQUAD_SELECTION;
 		voted = new ArrayList<Integer>();
 		spies = new ArrayList<Integer>();
 		leaderQueue = new LinkedBlockingQueue<String>(users.size());
-		server.publicMessage("Welcome to the Resistance");
 		
 		String messageForSpies = "You are a spy, the spies are: ";
 		for (int i = 0; i < currentConfig[1]; i++) {
@@ -222,14 +222,19 @@ public class Resistance extends Game{
 			state = GameState.SQUAD_SELECTION;
 			this.votes = 0;
 			this.negVotes = 0;
+			server.publicMessage("Current mission requires " + squadSize + " team members, "
+					+ "and " + currentConfig[7] + " downvote(s) to fail");
 			nextLeader();
 		}
 		
 		/**
-		 * Function called when the mission is s
+		 * Function called when the mission is in the SQUAD_ATTEMPT phase,
+		 * evaluates the effect of a squad member submitting a success
+		 * or fail vote
 		 * 
-		 * @param success
-		 * @param origin
+		 * @param success whether the player submitted a success or a
+		 * failure for the mission
+		 * @param origin player which sent the success messages
 		 */
 		public void addSubmittedSuccessFail(boolean success, int origin) {
 			if (selectedSquad.contains(origin)) {
@@ -243,6 +248,12 @@ public class Resistance extends Game{
 			}
 		}
 		
+		/**
+		 * Function called during SQUAD_VOTE phase, waits for over half the current
+		 * users to vote for or against the mission
+		 * 
+		 * @param vote whether the user voted for or against the mission
+		 */
 		public void squadVote(boolean vote) {
 			if (vote) {
 				votes++;				
@@ -272,6 +283,11 @@ public class Resistance extends Game{
 			}
 		}
 		
+		/**
+		 * Function called once all members of the squad which went on the mission
+		 * have been submitted, evaluates whether the mission has been a success or
+		 * not
+		 */
 		public void evaluateMission() {
 			int failures = Collections.frequency(missionSuccess, false);
 			if (missionNumber == 4 && currentConfig[7] == 2) {
@@ -311,6 +327,14 @@ public class Resistance extends Game{
 		
 	}
 	
+	/**
+	 * Function which is called by the Server whenever a command is
+	 * received from a client
+	 * 
+	 * @param message String representing the command passed in
+	 * as well as the rest of the text passed in to the client
+	 * @param origin int representing the user which entered the command
+	 */
 	@Override
 	public synchronized void handleMessage(Message message, int origin) {
 		String text = message.messageText;
@@ -422,14 +446,29 @@ public class Resistance extends Game{
 		}
 	}
 	
+	/**
+	 * Function called by server when a user logs out of the system
+	 * 
+	 * @param origin ID of the user which logged out
+	 */
 	@Override
 	public void handleLogout(int origin) {
-		server.publicMessage("User: " + server.getUsername(origin) + " has left, "
-				+ " game cannot continue as number of players has changed, re-starting game");
-		gameInProgress = false;
-		state = GameState.GAMESTART;
+		if (gameInProgress) {
+			server.publicMessage("User: " + server.getUsername(origin) + " has left, "
+					+ " game cannot continue as number of players has changed, restart game"
+					+ "with /start if 5 or more people are still present");
+			gameInProgress = false;
+			state = GameState.GAMESTART;
+		}
 	}
 	
+	/**
+	 * Function called when the user requests the rules of the game,
+	 * default behaviour is to return the rules string
+	 * 
+	 * @return String containing the rules to be displayed to the
+	 * user
+	 */
 	@Override
 	public String getRules() {
 		
@@ -446,7 +485,8 @@ public class Resistance extends Game{
 			+ "team votes on whether the mission should go, then the \n"
 			+ "squad attempt the mission, and can either submit a pass or fail\n"
 			+ "the spies have to cause 3 out of the 5 missions to fail, or make\n"
-			+ "the resistance fall to in-fighting by failing 5 votes for squads";
+			+ "the resistance fall to in-fighting by failing 5 votes for squads.\n"
+			+ "The leader changes after every mission, the leader order is random.";
 		
 		case SQUAD_SELECTION:
 			return "The game is currently in the Squad Selection section,\n"

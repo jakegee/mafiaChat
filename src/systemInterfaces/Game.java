@@ -8,6 +8,15 @@ import java.util.TimerTask;
 
 import messages.Message;
 
+/**
+ * Abstract Game class, which is the parent class to all games which are
+ * playable by the system. Contains convenience methods for use by developers
+ * of the games, and a suite of functions which should be overriden to provide
+ * the desired functionality within a game.
+ * 
+ * @author Team nice
+ * @version 23-03-2017
+ */
 public abstract class Game {
 	protected IServer server;
 	protected ArrayList<Integer> users;
@@ -20,6 +29,12 @@ public abstract class Game {
 	
 	protected String rules;
 	
+	/**
+	 * Constructor for instantiating an object of the Game class
+	 * 
+	 * @param server Server to attach to the Game object in order
+	 * to send messages to the clients
+	 */
 	public Game(IServer server) {
 		this.server = server;
 		this.gameChoice = new HashMap<String, Integer>();
@@ -61,7 +76,7 @@ public abstract class Game {
 					server.privateMessage("You already voted for " + messageDecode[1], origin);
 				}
 			} catch (ClassNotFoundException e) {
-				server.privateMessage("Game: " + messageDecode[1] + " is not known", origin);
+				server.publicMessage("Game: " + messageDecode[1] + " is not known");
 			}
 			break;
 		
@@ -83,6 +98,13 @@ public abstract class Game {
 		
 	}
 	
+	/**
+	 * Function called when the user requests the rules of the game,
+	 * default behaviour is to return the rules string
+	 * 
+	 * @return String containing the rules to be displayed to the
+	 * user
+	 */
 	public String getRules() {
 		return rules;
 	}
@@ -148,9 +170,9 @@ public abstract class Game {
 	}
 	
 	/**
+	 * Function called by server when a user logs out of the system
 	 * 
-	 * 
-	 * @param origin
+	 * @param origin ID of the user which logged out
 	 */
 	public void handleLogout(int origin) {
 		

@@ -200,12 +200,17 @@ public class Server implements IServer{
 		}
 		
 		/**
-		 * @return username attached to the client handler
+		 * @return username The username associated with the client in
+		 * communication with this thread
 		 */
 		public synchronized String getUsername() {
 			return this.username;
 		}
 		
+		/**
+		 * @param username The username associated with the client in
+		 * communication with this thread
+		 */
 		public synchronized void setUsername(String username) {
 			this.username = username;
 		}
@@ -436,8 +441,6 @@ public class Server implements IServer{
 	 * @param Origin ID of the ClientHandler which passed on the command
 	 */
 	public synchronized void relayChat(String JSONText) {
-		
-		// TODO: Add userName support to specify which user sent the message
 
 		for (ClientHandler serverThread : threads) {
 			serverThread.sendServerMessage(JSONText);
@@ -450,10 +453,6 @@ public class Server implements IServer{
 	 * 
 	 * @param message String to be sent to the chat window of all
 	 * clients, will be marked as being from the Server
-	 * 
-	 * 											df.format(new Date()) + " " +
-											"<" + username + "> " + message.messageText));
-	 * 
 	 */
 	@Override
 	public void publicMessage(String message) {
@@ -618,6 +617,10 @@ public class Server implements IServer{
 		return -1;
 	}
 	
+	/**
+	 * Function for changing the game object during the operation of the
+	 * system, 
+	 */
 	@Override
 	public void setGameObject(String gameClassName) throws ClassNotFoundException {
 		try {

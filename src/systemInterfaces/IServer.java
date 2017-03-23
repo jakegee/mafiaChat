@@ -109,6 +109,15 @@ public interface IServer {
 	 */
 	public int getUserID(String username);
 
-	public void setGameObject(String string) throws ClassNotFoundException;
+	/**
+	 * Function called to set the Game Object within the Server class, allows the
+	 * changing of games without having to restart the server
+	 * 
+	 * @param string String representing a game which is known to the system and
+	 * stored within the Game package
+	 * @throws ClassNotFoundException Thrown if the game is not a valid classname
+	 * within the system
+	 */
+	public void setGameObject(String classname) throws ClassNotFoundException;
 	
 }
