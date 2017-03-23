@@ -56,7 +56,7 @@ public abstract class Game {
 						server.setGameObject("Game." + messageDecode[1]);
 						server.publicMessage("Game set to " + messageDecode[1]);
 					}
-					gameChoice.put(messageDecode[1], ++currentVal);
+					gameChoice.put(messageDecode[1], currentVal);
 				} else {
 					server.privateMessage("You already voted for " + messageDecode[1], origin);
 				}

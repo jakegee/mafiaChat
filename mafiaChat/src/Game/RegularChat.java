@@ -13,7 +13,8 @@ public class RegularChat extends Game {
 				+ "- /public: Make server send chat\n"
 				+ "- /private (username): Send private chat\n"
 				+ "- /time (time): Server sends message after time\n"
-				+ "- /game (game): Vote to change game";
+				+ "- /game Mafia: Vote to change game to Mafia\n"
+				+ "- /game Resistance: Vote to change game to Resistance";
 	}
 
 	@Override
