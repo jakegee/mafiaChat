@@ -156,6 +156,8 @@ public class Resistance extends Game{
 			this.failedVotes = 0;
 			this.failedMissions = 0;
 			this.missionSuccess = new ArrayList<Boolean>();
+			server.publicMessage("Current mission requires " + squadSize + " team members, "
+					+ "and " + currentConfig[7] + " downvote(s) to fail");
 		}
 		
 		/**
@@ -255,10 +257,16 @@ public class Resistance extends Game{
 				voted.clear();
 			} else if (negVotes >= Math.ceil(numberOfPlayers/2)) {
 				failedVotes++;
-				server.publicMessage("Vote failed, " + failedVotes + " failed votes so far, "
-						+ (5 - failedVotes) + " failed votes until spies win");
-				repeatMission();
-				voted.clear();
+				if (failedVotes >= 5) {
+					server.publicMessage("5 votes failed, spies win");
+					state = GameState.GAMESTART;
+					gameInProgress = false;
+				} else {
+					server.publicMessage("Vote failed, " + failedVotes + " failed votes so far, "
+							+ (5 - failedVotes) + " failed votes until spies win");
+					repeatMission();
+					voted.clear();
+				}
 			} else {
 				server.publicMessage("Currently " + votes + " votes and " + negVotes + " against votes");
 			}
@@ -323,11 +331,12 @@ public class Resistance extends Game{
 			remText = "";
 		}
 		
-		
+		boolean handled = false;
 		switch(state) {
 		
 			case GAMESTART :
 				if (command.equals("/start")) {
+					handled = true;
 					users = server.getActiveClientIDs();
 					if (users.size() < minPlayers) {
 						server.publicMessage("Start Failed, at least " + (minPlayers - users.size()) + " player(s) still needed");
@@ -342,13 +351,15 @@ public class Resistance extends Game{
 			case SQUAD_SELECTION :
 				if (origin == currentLeader) {
 					if (command.equals("/add")) {
+						handled = true;
 						int result = server.getUserID(remText);
 						if (result == -1) {
 							server.privateMessage("No valid user " + remText, origin);
 						} else {
 							mission.addSquadMember(server.getUserID(remText));
 						}
-					} else if (command.equals("/remmove")) {
+					} else if (command.equals("/remove")) {
+						handled = true;
 						int result = server.getUserID(remText);
 						if (result == -1) {
 							server.privateMessage("No valid user " + remText, origin);
@@ -358,11 +369,13 @@ public class Resistance extends Game{
 					}
 				} else {
 					server.privateMessage("Only the leader can vote during squad selection", origin);
+					handled = true;
 				}
 				break;
 			
 			case SQUAD_VOTE :
 				if (command.equals("/vote")) {
+					handled = true;
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
@@ -371,6 +384,7 @@ public class Resistance extends Game{
 						voted.add(origin);
 					}
 				} else if (command.equals("/downvote")) {
+					handled = true;
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
@@ -385,12 +399,14 @@ public class Resistance extends Game{
 				
 			case SQUAD_ATTEMPT :
 				if (command.equals("/vote")) {
+					handled = true;
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
 						mission.addSubmittedSuccessFail(true, origin);
 					}
 				} else if (command.equals("/downvote")) {
+					handled = true;
 					if (voted.contains(origin)) {
 						server.privateMessage("You already voted", origin);
 					} else {
@@ -401,7 +417,9 @@ public class Resistance extends Game{
 				}
 				break;	
 		}
-		super.handleMessage(message, origin);
+		if (!handled) {
+			super.handleMessage(message, origin);
+		}
 	}
 	
 	@Override
@@ -410,6 +428,50 @@ public class Resistance extends Game{
 				+ " game cannot continue as number of players has changed, re-starting game");
 		gameInProgress = false;
 		state = GameState.GAMESTART;
+	}
+	
+	@Override
+	public String getRules() {
+		
+		switch (state) {
+		// {GAMESTART, SQUAD_SELECTION, SQUAD_VOTE, SQUAD_ATTEMPT};
+		case GAMESTART:
+			return "Welcome to Resistance, to start the game type /start\n"
+			+ "Resistance is a game consisting of 5 missions,\n"
+			+ "each mission has three sections: \n"
+			+ "- squad selection\n"
+			+ "- squad vote\n"
+			+ "- squad attempt\n"
+			+ "A leader choses who goes on the missions, then the whole\n"
+			+ "team votes on whether the mission should go, then the \n"
+			+ "squad attempt the mission, and can either submit a pass or fail\n"
+			+ "the spies have to cause 3 out of the 5 missions to fail, or make\n"
+			+ "the resistance fall to in-fighting by failing 5 votes for squads";
+		
+		case SQUAD_SELECTION:
+			return "The game is currently in the Squad Selection section,\n"
+					+ "the team should be discussing who to send on the current mission\n"
+					+ "the current leader ultimately decides who will go on this mission, and\n"
+					+ "adds players to the team using '/add username' and can remove players\n"
+					+ "using '/remove username' where username is the name of the player";
+	
+		case SQUAD_VOTE:
+			return "The game is currently in the Squad Vote section,\n"
+					+ "The team can now vote on whether the current squad assigned to the\n"
+					+ "mission should go on the mission, vote for the team with /vote and vote\n"
+					+ "against the team with /downvote.\n"
+					+ "Note: If 5 votes fail throughout the game, the spies win";
+			
+		case SQUAD_ATTEMPT:
+			return "The game is currently in the Squad Attempt section, \n"
+					+ "The selected squad now attempt the mission, to submit a success\n"
+					+ "for the mission, send /vote, to submit a failure for the mission\n"
+					+ "send /downvote";
+			
+		default:
+			return rules;
+			
+		}
 	}
 	
 	public static void main(String[] args) {

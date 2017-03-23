@@ -71,7 +71,7 @@ public class Server implements IServer{
 		this.sGson = builder.create();
 		this.connections = new LinkedBlockingQueue<Socket>(5);
 		this.game = new GameStub(this);
-		this.database = new DatabaseManager();
+		this.database = new DatabaseStub();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
 		this.port = port;
@@ -273,7 +273,6 @@ public class Server implements IServer{
 					while(this.active == true) {
 						String input = in.readUTF();
 						Message message = gson.fromJson(input, Message.class);
-						System.out.println("New Message" + message.messageText);
 						
 						switch (message.type) {
 				
@@ -292,7 +291,6 @@ public class Server implements IServer{
 								break;
 								
 							case LOGIN :
-								System.out.println("Server Login Code executed");
 								decode = message.messageText.split("/");
 								try {
 									if (server.currentUsers.contains(decode[0])) {
@@ -302,8 +300,6 @@ public class Server implements IServer{
 									}
 									database.loginUser(decode[0], decode[1]);
 									this.setUsername(decode[0]);
-									System.out.println(gson.toJson(new ServerMessage(
-											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									sendLoginMessage(gson.toJson(new ServerMessage(
 											ServerMessage.messageType.SUCCESS, "Welcome " + this.username)));
 									
@@ -365,7 +361,6 @@ public class Server implements IServer{
 							case PASSWORDHINT :
 								decode = message.messageText.split("/");
 								if (decode.length == 1) {
-									System.out.println("Executing Password Hint Retrieval");
 									try {
 										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, database.getSecurityQuestion(decode[0]))));
@@ -377,7 +372,6 @@ public class Server implements IServer{
 												ServerMessage.messageType.ERROR, "All fields must contain text")));
 									}
 								} else {
-									System.out.println("Executing Security Question Guess");
 									try {
 										sendLoginMessage(gson.toJson(new ServerMessage(
 												ServerMessage.messageType.SUCCESS, "Password: " + database.checkQuestionAnswer(
