@@ -2,19 +2,28 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 import messages.Message;
 import systemInterfaces.Game;
-import systemInterfaces.IGame;
 import systemInterfaces.IServer;
 
 import org.apache.commons.collections4.OrderedBidiMap;
 import org.apache.commons.collections4.bidimap.TreeBidiMap;
 
+/**
+ * The Mafia class contains the game logic for the chat lobby implementation of
+ * the Mafia party game. The game logic implements the rules of the game as well
+ * as playing the part of the moderator which would be done by a player in the
+ * original party game. This class extends the game class where the rules
+ * displayed for this game depend on the state that the game currently is in.
+ * 
+ * @author Team Nice
+ * @version 23-03-2017
+ *
+ */
 public class Mafia extends Game {
 
     TreeBidiMap<Integer, String> players;
@@ -40,11 +49,21 @@ public class Mafia extends Game {
     private Timer dayElimTimer;
     private Timer nightVoteTimer;
     private Timer nightElimTimer;
-    private Timer reminder;
+    // private Timer reminder;
 
     private int dayTimersLengthMs = 30000;
     private int mafiaNightTimerLengthMs = dayTimersLengthMs - 10000;
 
+    /**
+     * Constructor method for Mafia class
+     * 
+     * This initialises the ready, votedStart, elimDay, save, nightVote and
+     * dayVote field variables. This also sets the server that the Mafia class
+     * is attached to.
+     * 
+     * @param server
+     *            is the Server class that the Mafia class is initialised in
+     */
     public Mafia(IServer server) {
 	super(server);
 	ready = new ArrayList<>();
@@ -53,59 +72,6 @@ public class Mafia extends Game {
 	save = new ArrayList<>();
 	nightVote = new ArrayList<>();
 	dayVote = new ArrayList<>();
-
-	// rules = "send \"/ready\" to ready up for mafia \n" + "send
-	// \"/unready\" to cancel the above \n"
-	// + "one there are at least 6 users ready, you can send \"/start\" \n"
-	// + "to vote to start the game\n"
-	// + "once all users who are ready have voted to start, the game
-	// begins\n"
-	// + "when game starts you will be assigned to either the innocent or\n"
-	// + "mafia team, this will be send to you privately.\n"
-	// + "If you are on the mafia team you will also be told who the other
-	// mafia players are.\n"
-	// + "If you are innocent you are only informed of your own role\n"
-	// + "All players are informed of how many mafia there are in the game "
-	// + "which is a 1/3 (to nearest whole number) of the players."
-	// + "Mafia has a day and night phase, where the game starts in the
-	// day\n"
-	// + "In the day chat can be used normally, where at any point a player
-	// can\n"
-	// + "start a vote to either\n eliminate another player or to change the
-	// game to night\n"
-	// + "Once a vote is in session it needs to complete before another vote
-	// can be started\n"
-	// + "there is a timer on how long a vote can last which when this runs
-	// out, only the votes\n"
-	// + "that have been made are counted\n" + "The commands that are valid
-	// during the day are: \n"
-	// + "\"elim [playername]\" in order to put a player on trial or if
-	// there is already a player on trial\n"
-	// + "this command will add your vote to eliminate them.\n"
-	// + "\"/save\" to vote to save the player who is currently on trial.\n
-	// "
-	// + "If a player is eliminated, they are unable to vote and are muted
-	// so they can't continue to influence "
-	// + "the game. They can still observer however" + "\"/night\" to vote
-	// to change the game to night\n"
-	// + "\"/day\" to vote to keep the game as day\n"
-	// + "If the vote to change the game to night is successful, the game is
-	// changed to night, where chat is\n"
-	// + "disabled and the mafai attempt to eliminate an innocent. \n"
-	// + "During the night the only valid command for the mafia is: \n"
-	// + "\"/elim [playername]\" where this vote fails if the timer runs out
-	// or any of the mafia vote to eliminate\n an"
-	// + "innocent who is different from the one that the previous mafia
-	// have voted for\n"
-	// + "after the mafia vote during the night has completed the game is
-	// return to day\n"
-	// + "The victory conditions for the teams are as follows: \n"
-	// + "The innocent must eliminate all the mafia "
-	// + "The mafia must eliminate enough of the innocents to be equal in
-	// number"
-	// + "A player leaving the game will result in them being counted as
-	// eliminated.";
-
     }
 
     /**
@@ -226,7 +192,13 @@ public class Mafia extends Game {
     }
 
     /**
-     * The ready method
+     * The ready method is called when a user sends the /ready command. This
+     * method takes in the id of the user and checks if they are already in the
+     * ready list, if this isn't the case and if the ready list is not bigger
+     * than 16, the user's id is added to the list. If this addition causes the
+     * ready list to be of size 6 or more it then sends a private message to all
+     * the users in the ready list that there are enough users to start the game
+     * and prompts them to use the /start command to start the vote.
      * 
      * @param origin
      *            is the userID of type int for the person who sent the command
@@ -261,10 +233,24 @@ public class Mafia extends Game {
 		server.privateMessage("The maximum amount of players (16) has already been reached.", origin);
 	    }
 	} else {
-	    server.privateMessage("you are already set as ready", origin);
+	    server.privateMessage("You are already set as ready", origin);
 	}
     }
 
+    /**
+     * The unready method is called when a user sends the /unready command. This
+     * method takes in the id of the user and checks if they are set as ready,
+     * if so then it removes them from the ready list. If removing them from the
+     * ready list causes it to drop below 6, the votedStart list is cleared. If
+     * the ready list is still 6 or more it checks to see if the user had voted
+     * to start and if so also removes them from that list. If a user is not in
+     * the ready list and tries to unready they are informed that they weren't
+     * set as ready to begin with.
+     * 
+     * @param origin
+     *            is the userID of type int for the person who sent the command
+     *            message.
+     */
     private void unready(int origin) {
 	if (ready.contains(origin)) { // ensures players aren't added more than
 	    // once
@@ -294,12 +280,16 @@ public class Mafia extends Game {
 			+ " more players to ready up before the game of Mafia can be " + "voted to start");
 	    }
 	} else {
-	    server.privateMessage("you weren't set as ready to begin with", origin);
+	    server.privateMessage("You weren't set as ready to begin with", origin);
 	}
 
     }
 
     /**
+     * The voteStart method is called when a user sends the /start command. This
+     * method checks whether that there are at least 6 users ready before
+     * acknowledging such a vote, where it doesn't accept multiple votes by the
+     * same user.
      * 
      * @param origin
      *            is the userID of type int for the person who sent the command
@@ -321,14 +311,25 @@ public class Mafia extends Game {
 	    }
 
 	} else if (votedStart.contains(origin)) {
-	    server.privateMessage("you have already voted to start", origin);
+	    server.privateMessage("You have already voted to start", origin);
 	} else if (!ready.contains(origin)) {
-	    server.privateMessage("you need to be set to ready before you can vote to start", origin);
+	    server.privateMessage("You need to be set to ready before you can vote to start", origin);
 	} else if (ready.size() < 6) {
 	    server.privateMessage("There are not enough users ready to start the vote", origin);
 	}
     }
 
+    /**
+     * The gameStart method is called when all the users that are set to ready
+     * have also voted to start. This method clears the ready list and
+     * initialises the players, mafiaIDs and innocentIDs variables. It puts the
+     * id and username of each user into players and randomly assigns a third of
+     * the players (rounded to the nearest whole number) as Mafia. The method
+     * then assigns the remaining players as innocent. This method also sends
+     * the private server messages to the players informing them of their role
+     * and in the case of Mafia they are also privately informed of who the
+     * other Mafia are.
+     */
     private void gameStart() {
 	ready.clear();
 
@@ -364,9 +365,9 @@ public class Mafia extends Game {
 
 	votedStart.clear();
 
-	server.privateMessage("you are an innocent", innocentIDs);
+	server.privateMessage("You are an innocent", innocentIDs);
 
-	String message = "you are one of the mafia, the mafia members (including " + "you) are:";
+	String message = "You are one of the mafia, the mafia members (including " + "you) are:";
 
 	for (int i = 0; i < numMafia; i++) {
 	    message += " " + server.getUsername(mafiaIDs.get(i));
@@ -409,13 +410,13 @@ public class Mafia extends Game {
 			"cannot vote to eliminate a player while there is a vote to change the game to night", origin);
 
 	    } else if (playerID == origin) {
-		server.privateMessage("you cannot vote for yourself", origin);
+		server.privateMessage("You cannot vote for yourself", origin);
 
 	    } else if (elimDay.contains(origin)) {
-		server.privateMessage("you have already voted to start", origin);
+		server.privateMessage("You have already voted", origin);
 
 	    } else if (!players.containsKey(origin)) {
-		server.privateMessage("you are not in the game, so cannot participate", origin);
+		server.privateMessage("You are not in the game, so cannot participate", origin);
 
 	    } else if (playerOnTrialID == null) {
 		elimDayVoteInProgress = true;
@@ -441,14 +442,14 @@ public class Mafia extends Game {
 		// };
 
 		dayElimTimer = new Timer();
-		reminder = new Timer();
+		// reminder = new Timer();
 
 		// reminder.schedule(public5s, 25000);
 		dayElimTimer.schedule(dayElimVoteTimeout, dayTimersLengthMs);
 
 	    } else {
 		if (playerOnTrialID != playerID) {
-		    server.privateMessage("cannot vote for " + player + " while the vote for "
+		    server.privateMessage("Cannot vote for " + player + " while the vote for "
 			    + server.getUsername(playerOnTrialID) + " is in progress", origin);
 		} else {
 		    if (save.contains(origin)) {
@@ -542,15 +543,15 @@ public class Mafia extends Game {
 	    int playerID = invPlayers.get(player);
 
 	    if (playerOnTrialID == null) {
-		server.privateMessage("you cannot vote to save someone when there is no-one on trial", origin);
+		server.privateMessage("You cannot vote to save someone when there is no-one on trial", origin);
 
 	    } else {
 		if (playerOnTrialID != playerID) {
-		    server.privateMessage("cannot vote for " + player + " while the vote for "
+		    server.privateMessage("Cannot vote for " + player + " while the vote for "
 			    + server.getUsername(playerOnTrialID) + " is in progress", origin);
 
 		} else if (!players.containsKey(origin)) {
-		    server.privateMessage("you are not in the game, so cannot participate", origin);
+		    server.privateMessage("You are not in the game, so cannot participate", origin);
 
 		} else {
 		    if (elimDay.contains(origin)) {
@@ -623,14 +624,14 @@ public class Mafia extends Game {
     private void voteNight(int origin) {
 	// if (playerOnTrialID != null) {
 	if (elimDayVoteInProgress) {
-	    server.privateMessage("you cannot start a vote for it to be night when there is a vote in progress "
+	    server.privateMessage("You cannot start a vote for it to be night when there is a vote in progress "
 		    + "to eliminate a player", origin);
 
 	} else if (nightVote.contains(origin)) {
-	    server.privateMessage("you have already voted to change the game to night", origin);
+	    server.privateMessage("You have already voted to change the game to night", origin);
 
 	} else if (!players.containsKey(origin)) {
-	    server.privateMessage("you are not in the game, so cannot participate", origin);
+	    server.privateMessage("You are not in the game, so cannot participate", origin);
 
 	} else {
 	    nightVoteInProgress = true;
@@ -678,13 +679,13 @@ public class Mafia extends Game {
      */
     private void voteDay(int origin) {
 	if (!nightVoteInProgress) {
-	    server.privateMessage("cannot use this command when there isn't a vote to change to night", origin);
+	    server.privateMessage("Cannot use this command when there isn't a vote to change to night", origin);
 
 	} else if (dayVote.contains(origin)) {
-	    server.privateMessage("you have already voted to keep the game in the day phase", origin);
+	    server.privateMessage("You have already voted to keep the game in the day phase", origin);
 
 	} else if (!players.containsKey(origin)) {
-	    server.privateMessage("you are not in the game, so cannot participate", origin);
+	    server.privateMessage("You are not in the game, so cannot participate", origin);
 
 	} else {
 	    if (nightVote.contains(origin)) {
@@ -795,15 +796,15 @@ public class Mafia extends Game {
 		server.privateMessage("Only mafia are active during the night", origin);
 
 	    } else if (playerID == origin) {
-		server.privateMessage("you cannot vote for yourself", origin);
+		server.privateMessage("You cannot vote for yourself", origin);
 
 	    } else if (mafiaIDs.contains(playerID)) { // wondering whether it's
 						      // better to
 						      // leave this out
-		server.privateMessage("you cannot vote for another mafia player", origin);
+		server.privateMessage("You cannot vote for another mafia player", origin);
 
 	    } else if (eliminate.containsKey(origin)) {
-		server.privateMessage("you can only vote for a valid player once", origin);
+		server.privateMessage("You can only vote for a valid player once", origin);
 
 	    } else {
 		eliminate.put(origin, player);
@@ -834,7 +835,7 @@ public class Mafia extends Game {
 	}
 
 	if (eliminate.size() < mafiaIDs.size()) {
-	    server.privateMessage("waiting for " + (mafiaIDs.size() - votes.length) + "more mafia to vote", mafiaIDs);
+	    server.privateMessage("Waiting for " + (mafiaIDs.size() - votes.length) + "more mafia to vote", mafiaIDs);
 
 	} else if (eliminate.size() == mafiaIDs.size()) {
 	    String victim = votes[0];
@@ -1275,6 +1276,8 @@ public class Mafia extends Game {
      * Getter method for rules of Mafia which overrides this method in the Game
      * class.
      * 
+     * The String that this returns varies depending on the state that the game is in.
+     * 
      * @return the rules as type String
      */
     @Override
@@ -1285,7 +1288,7 @@ public class Mafia extends Game {
 		+ "Mafia players, who are fewer in number,  the objective is to eliminate members of the\n"
 		+ "Innocent team until each team is the same size. Mafia members have to hide their identity\n"
 		+ "and pose as Innocent players in order to turn the Innocent players against each other. It is in\n"
-		+ "each player’s best interest to prove his or her innocence (or if you are a Mafia member, to\n"
+		+ "each player's best interest to prove his or her innocence (or if you are a Mafia member, to\n"
 		+ "hide your guilt) by accusing and interrogating their fellow suspects, until the victory conditions\n"
 		+ "are met. The game has two phases, day and night.\n" + "\n";
 
