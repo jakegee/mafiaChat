@@ -17,6 +17,13 @@ import Server.Server;
 import exceptions.InvalidInformationException;
 import exceptions.InvalidUserException;
 
+/**
+ * Short test-suite of SQL queries in order to test that DatabaseManager is reading
+ * from the database correctly.
+ * 
+ * @author Team Nice
+ * @version 18-03-2017
+ */
 public class DatabaseManagerTests {
 
 	Statement stmt = null;
@@ -34,7 +41,6 @@ public class DatabaseManagerTests {
 			dbName = "jdbc:postgresql://mod-fund-databases.cs.bham.ac.uk/jgs630";
 			dbConn = DriverManager.getConnection(dbName, "jgs630", "bakny4ne83");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException ex) {
 			System.out.println("Driver not found");
