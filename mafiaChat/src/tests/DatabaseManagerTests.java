@@ -49,20 +49,20 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest1() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE password = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE password = 'hello'");
 	
 	while(rs.next()) {
 		String username = rs.getString("username");
 
-		assertEquals(username,"jon");
-		System.out.println("username = " + username +"\n");
+		assertEquals(username,"jake");
+		System.out.println("username = " + username);
 		System.out.println();
 	}
 	}
 	
 	@Test public void readtest2() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE username = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE question = 'hi'");
 	
 	while(rs.next()) {
 		String username = rs.getString("username");
@@ -75,7 +75,7 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest3() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE username = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT username FROM users WHERE answer = 'no'");
 	
 	while(rs.next()) {
 		String username = rs.getString("username");
@@ -88,12 +88,12 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest4() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jake'");
 	
 	while(rs.next()) {
 		String password = rs.getString("password");
 
-		assertEquals(password,"jon");
+		assertEquals(password,"hello");
 		System.out.println("password = " + password);
 		System.out.println();
 	}
@@ -101,12 +101,12 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest5() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'fozia'");
 	
 	while(rs.next()) {
 		String password = rs.getString("password");
 
-		assertEquals(password,"jon");
+		assertEquals(password,"fozia");
 		System.out.println("password = " + password);
 		System.out.println();
 	}
@@ -114,12 +114,12 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest6() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
+	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'david'");
 	
 	while(rs.next()) {
 		String password = rs.getString("password");
 
-		assertEquals(password,"jon");
+		assertEquals(password,"david");
 		System.out.println("password = " + password);
 		System.out.println();
 	}
@@ -127,7 +127,7 @@ public class DatabaseManagerTests {
 
 	@Test public void readtest7() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE user = 'jo'");
+	ResultSet rs = stmt.executeQuery("SELECT question FROM users WHERE answer = 'no'");
 	
 	while(rs.next()) {
 
@@ -135,6 +135,7 @@ public class DatabaseManagerTests {
 
 		assertEquals(question,"hi");
 		System.out.println("question = " + question);
+		System.out.println();
 	}
 	}
 
@@ -184,14 +185,14 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest11() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'me'");
 	
 	while(rs.next()) {
 		
 		String answer = rs.getString("answer");
 
-		assertEquals(answer,"no");
-//		System.out.println("password = " + password);
+		assertEquals(answer,"me");
+		System.out.println("answer = " + answer);
 		System.out.println();
 	}
 	}
@@ -199,27 +200,14 @@ public class DatabaseManagerTests {
 	
 	@Test public void readtest12() throws SQLException {
 	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'hi'");
+	ResultSet rs = stmt.executeQuery("SELECT answer FROM users WHERE question = 'how is the weather'");
 	
 	while(rs.next()) {
 		
 		String answer = rs.getString("answer");
 
-		assertEquals(answer,"no");
-//		System.out.println("password = " + password);
-		System.out.println();
-	}
-	}
-	
-	@Test public void readtest13() throws SQLException {
-	stmt=dbConn.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT password FROM users WHERE username = 'jon'");
-	
-	while(rs.next()) {
-		String password = rs.getString("password");
-
-		assertEquals(password,"jon");
-		System.out.println("password = " + password);
+		assertEquals(answer,"okay");
+		System.out.println("answer = " + answer);
 		System.out.println();
 	}
 	
