@@ -58,6 +58,31 @@ public class Server implements IServer{
 	private int maxServerSize;
 	
 	/**
+	 * Constructor for instantiating an instance of the Server class in
+	 * debug mode using game and database stubs
+	 * 
+	 * @param port Port on which the server will listen for incoming
+	 * connection requests
+	 * @param maxServerSize Number of simultaneous clients the Server
+	 * will be able to support
+	 */
+	public Server() {
+		this.threads = new ClientHandler[maxServerSize];
+		GsonBuilder builder = new GsonBuilder();
+		this.sGson = builder.create();
+		this.connections = new LinkedBlockingQueue<Socket>(5);
+		this.game = new GameStub(this);
+		this.database = new DatabaseStub();
+		this.currentUsers = new ArrayList<String>();
+		this.df = new SimpleDateFormat("HH:mm:ss");
+		this.port = 8000;
+		this.maxServerSize = 20;
+		System.out.println("Server listening on port " + port);
+		System.out.println("Max number of users " + maxServerSize);
+		this.relayChat = true;
+	}
+	
+	/**
 	 * Constructor for instantiating an instance of the Server class
 	 * 
 	 * @param port Port on which the server will listen for incoming
@@ -70,14 +95,14 @@ public class Server implements IServer{
 		GsonBuilder builder = new GsonBuilder();
 		this.sGson = builder.create();
 		this.connections = new LinkedBlockingQueue<Socket>(5);
-		this.game = new GameStub(this);
-		this.database = new DatabaseStub();
+		this.game = new RegularChat(this);
+		this.database = new DatabaseManager();
 		this.currentUsers = new ArrayList<String>();
 		this.df = new SimpleDateFormat("HH:mm:ss");
 		this.port = port;
+		this.maxServerSize = maxServerSize;
 		System.out.println("Server listening on port " + port);
 		System.out.println("Max number of users " + maxServerSize);
-		this.maxServerSize = maxServerSize;
 		this.relayChat = true;
 	}
 	
@@ -645,7 +670,7 @@ public class Server implements IServer{
 	}
 	
 	public static void main(String[] args) {
-		String[] args_ = {"8000", "20", "Mafia"};
+		String[] args_ = {"8000", "20", "RegularChat"};
 		int port = 8000;
 		int serverSize;
 		Server server;
@@ -666,16 +691,13 @@ public class Server implements IServer{
 		
 		try {
 			port = Integer.parseInt(args_[0]);
-			if (args_[0].equals("debug")) {
-				server = new Server(8000, 20);
-				System.out.println("Server successfully set to debug mode");
-				server.startServerListening();
-			}
 		} catch (NumberFormatException e) {
 			if (args_[0].equals("debug")) {
-				server = new Server(8000, 20);
+				server = new Server();
 				System.out.println("Server successfully set to debug mode");
 				server.startServerListening();
+				System.out.println("Server shutting down");
+				return;
 			} else {
 				System.out.println("Invalid argument " + args_[0] + " must be a valid port number, debug or help");
 				return;
@@ -686,6 +708,7 @@ public class Server implements IServer{
 			serverSize = Integer.parseInt(args_[1]);
 			if (serverSize <= 0) {
 				System.out.println("MaxServerSize should be at least 1, and probably more");
+				return;
 			}
 		} catch (NumberFormatException e) {
 			System.out.println("Second argument must be valid maximum server size, " + args_[1] + " is not valid");
@@ -693,19 +716,21 @@ public class Server implements IServer{
 		}
 		
 		server = new Server(port, serverSize);
-		if (args_.length < 2) {
+		if (args_.length <= 2) {
 			try {
 				server.setGameObject("Game.RegularChat");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			server.startServerListening();
+			System.out.println("Server shutting down");
 			return;
 		} else {
 			System.out.println("hi");
 			try {
 				server.setGameObject("Game." + args_[2]);
 				server.startServerListening();
+				System.out.println("Server shutting down");
 				return;
 			} catch (ClassNotFoundException e) {
 				System.out.println("Class " + args_[2] + " is not a valid Class Name, exiting server");
